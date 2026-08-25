@@ -1,6 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bbpncqyy6jylk"]
 
 [ext_resource type="Shader" uid="uid://do14j15q8kqju" path="res://orb/orb_surface_shader.tres" id="1_surface_shader"]
+[ext_resource type="Texture3D" uid="uid://d1fb8k1d7tceb" path="res://orb/orb_surface_noise.tres" id="2_orb_noise"]
 
 [resource]
 render_priority = 1
@@ -15,7 +16,7 @@ shader_parameter/rim_noise_strength = 0.02
 shader_parameter/inner_band_start = 0.52
 shader_parameter/inner_band_softness = 0.03
 shader_parameter/rim_overlap = 0.02
-shader_parameter/noise_direction_x = 0.35
+shader_parameter/noise_direction = Vector3(0.35, 0.8, 0.2)
 shader_parameter/noise_scale = 1.0
 shader_parameter/noise_speed = 0.08
 shader_parameter/surface_noise_scale = 2.5
@@ -28,3 +29,4 @@ shader_parameter/inner_alpha = 1.0
 shader_parameter/surface_alpha = 0.15
 shader_parameter/inner_emission_strength = 3.0
 shader_parameter/surface_emission_strength = 2.0
+shader_parameter/orb_noise = ExtResource("2_orb_noise")
