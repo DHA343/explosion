@@ -6,16 +6,14 @@ render_mode blend_add, unshaded;
 
 instance uniform float particle_size = 128.0;
 uniform vec4 color : source_color = vec4(1.0);
-uniform float width_scale = 0.35;
-uniform float edge_softness = 0.06;
 
 void vertex() {
-	VERTEX *= vec2(particle_size * width_scale, particle_size);
+	VERTEX *= particle_size;
 }
 
 void fragment() {
-	vec2 ellipse_position = UV * 2.0 - 1.0;
-	float edge = 1.0 - smoothstep(1.0 - edge_softness, 1.0, dot(ellipse_position, ellipse_position));
+	vec2 circle_position = UV * 2.0 - 1.0;
+	float edge = 1.0 - smoothstep(0.94, 1.0, dot(circle_position, circle_position));
 	COLOR = vec4(color.rgb, color.a * edge);
 }
 "

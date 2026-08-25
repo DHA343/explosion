@@ -1,8 +1,6 @@
 @tool
 extends GPUParticles2D
 
-const TRAIL_WIDTH_SCALE := 0.12
-
 @export_range(1.0, 1024.0, 1.0) var particle_size: float = 128.0:
 	set(value):
 		particle_size = value
@@ -15,36 +13,32 @@ const TRAIL_WIDTH_SCALE := 0.12
 		if is_inside_tree():
 			_apply_sphere_radius()
 
-@onready var _trail: GPUParticles2D = $Trail
+@export_range(1.0, 8.0, 0.01) var speed_decay_power: float = 2.5:
+	set(value):
+		speed_decay_power = value
+		if is_inside_tree():
+			_apply_speed_decay_power()
 
 
 func _enter_tree() -> void:
 	_apply_particle_size()
 	_apply_sphere_radius()
-
-
-func _ready() -> void:
-	_synchronize_trail()
-	_apply_particle_size()
-	_apply_sphere_radius()
+	_apply_speed_decay_power()
 
 
 func _apply_particle_size() -> void:
 	set_instance_shader_parameter("particle_size", particle_size)
-	if is_node_ready():
-		_trail.set_instance_shader_parameter("trail_width", particle_size * TRAIL_WIDTH_SCALE)
 
 
 func _apply_sphere_radius() -> void:
+	_get_process_shader_material().set_shader_parameter("sphere_radius", sphere_radius)
+
+
+func _apply_speed_decay_power() -> void:
+	_get_process_shader_material().set_shader_parameter("speed_decay_power", speed_decay_power)
+
+
+func _get_process_shader_material() -> ShaderMaterial:
 	var shader_material := process_material as ShaderMaterial
 	assert(shader_material != null, "LightBurstにはShaderMaterialを設定してください。")
-	shader_material.set_shader_parameter("sphere_radius", sphere_radius)
-
-
-func _synchronize_trail() -> void:
-	_trail.amount = amount
-	_trail.lifetime = lifetime
-	_trail.local_coords = local_coords
-	_trail.process_material = process_material
-	_trail.use_fixed_seed = true
-	_trail.seed = seed
+	return shader_material

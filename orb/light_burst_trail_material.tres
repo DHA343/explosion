@@ -1,9 +1,0 @@
-[gd_resource type="ShaderMaterial" format=3]
-
-[ext_resource type="Shader" path="res://orb/light_burst_trail_shader.gdshader" id="1_trail"]
-
-[resource]
-shader = ExtResource("1_trail")
-shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-shader_parameter/edge_softness = 0.2
-shader_parameter/fade_power = 1.5

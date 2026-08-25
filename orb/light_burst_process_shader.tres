@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" format=3 uid="uid://ew82n02a5esl"]
+[gd_resource type="VisualShader" format=3 uid="uid://dbdwe6jfcvdod"]
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_es6xq"]
 linked_parent_graph_frame = 20
@@ -36,7 +36,7 @@ input_name = "transform"
 input_name = "custom"
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_c6a4f"]
-size = Vector2(1024, 574)
+size = Vector2(1024, 574.00024)
 title = "寿命経過割合に対応した位置計算"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(11, 13, 15, 24, 12, 23)
@@ -76,35 +76,6 @@ default_input_values = [0, 1.0, 1, 0.0]
 default_input_values = [0, Quaternion(0, 0, 0, 0)]
 op_type = 2
 
-[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_8fhpu"]
-size = Vector2(664.0001, 594)
-title = "短縮投影"
-tint_color_enabled = true
-attached_nodes = PackedInt32Array(33, 34, 35, 36)
-
-[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_c6a4f"]
-linked_parent_graph_frame = 32
-op_type = 0
-
-[sub_resource type="VisualShaderNodeVectorLen" id="VisualShaderNodeVectorLen_fy23h"]
-default_input_values = [0, Vector2(0, 0)]
-linked_parent_graph_frame = 32
-op_type = 0
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_44d6x"]
-linked_parent_graph_frame = 32
-parameter_name = "min_length_scale"
-hint = 2
-step = 0.01
-default_value_enabled = true
-default_value = 0.4
-
-[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_htubc"]
-linked_parent_graph_frame = 32
-
-[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_2l5wp"]
-operator = 2
-
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_es6xq"]
 operator = 2
 
@@ -112,23 +83,6 @@ operator = 2
 operator = 2
 
 [sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_htubc"]
-
-[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_2l5wp"]
-default_input_values = [0, 1.0, 1, 1.0, 2, 0.5]
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_es6xq"]
-parameter_name = "end_length_scale"
-hint = 2
-step = 0.01
-default_value_enabled = true
-default_value = 0.5
-
-[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_sc4hn"]
-operator = 2
-
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_hstrb"]
-default_input_values = [0, 0.0, 1, 2.3]
-operator = 5
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_mufju"]
 linked_parent_graph_frame = 9
@@ -146,7 +100,7 @@ operator = 3
 linked_parent_graph_frame = 9
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_0kpt5"]
-size = Vector2(824, 286)
+size = Vector2(824.0001, 286)
 title = "寿命経過割合"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(5, 8, 7, 6)
@@ -269,8 +223,6 @@ flags/collision_use_scale = false
 flags/disable_force = false
 flags/disable_velocity = false
 flags/keep_data = false
-preview_params/speed_decay_power = "2.5000000223518"
-preview_params/sphere_radius = "450.0"
 nodes/start/0/position = Vector2(1040, 60)
 nodes/start_custom/0/position = Vector2(1040, 300)
 nodes/start_custom/5/node = SubResource("VisualShaderNodeFrame_m3rjr")
@@ -377,28 +329,8 @@ nodes/process_custom/28/node = SubResource("VisualShaderNodeVectorFunc_mvc3l")
 nodes/process_custom/28/position = Vector2(760, 360)
 nodes/process_custom/29/node = SubResource("VisualShaderNodeVectorFunc_y2p8r")
 nodes/process_custom/29/position = Vector2(760, 540)
-nodes/process_custom/32/node = SubResource("VisualShaderNodeFrame_8fhpu")
-nodes/process_custom/32/position = Vector2(520, -680)
-nodes/process_custom/33/node = SubResource("VisualShaderNodeVectorCompose_c6a4f")
-nodes/process_custom/33/position = Vector2(560, -640)
-nodes/process_custom/34/node = SubResource("VisualShaderNodeVectorLen_fy23h")
-nodes/process_custom/34/position = Vector2(760, -640)
-nodes/process_custom/35/node = SubResource("VisualShaderNodeFloatParameter_44d6x")
-nodes/process_custom/35/position = Vector2(620, -440)
-nodes/process_custom/36/node = SubResource("VisualShaderNodeMix_htubc")
-nodes/process_custom/36/position = Vector2(980, -640)
-nodes/process_custom/37/node = SubResource("VisualShaderNodeVectorOp_2l5wp")
-nodes/process_custom/37/position = Vector2(980, 340)
 nodes/process_custom/38/node = SubResource("VisualShaderNodeVectorOp_es6xq")
 nodes/process_custom/38/position = Vector2(980, 540)
 nodes/process_custom/39/node = SubResource("VisualShaderNodeVectorOp_rgbdh")
 nodes/process_custom/39/position = Vector2(1200, 340)
-nodes/process_custom/40/node = SubResource("VisualShaderNodeMix_2l5wp")
-nodes/process_custom/40/position = Vector2(1640, 1040)
-nodes/process_custom/41/node = SubResource("VisualShaderNodeFloatParameter_es6xq")
-nodes/process_custom/41/position = Vector2(1100, 1380)
-nodes/process_custom/42/node = SubResource("VisualShaderNodeVectorOp_sc4hn")
-nodes/process_custom/42/position = Vector2(1400, 320)
-nodes/process_custom/43/node = SubResource("VisualShaderNodeFloatOp_hstrb")
-nodes/process_custom/43/position = Vector2(1263.4784, 1069.1707)
-nodes/process_custom/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 3, 1, 4, 1, 3, 2, 4, 2, 5, 0, 7, 0, 6, 0, 7, 1, 3, 3, 8, 0, 7, 0, 8, 1, 13, 0, 11, 1, 15, 0, 12, 1, 16, 0, 17, 0, 17, 2, 18, 2, 18, 0, 0, 5, 8, 0, 0, 1, 4, 0, 0, 0, 4, 0, 21, 0, 12, 0, 21, 1, 21, 0, 18, 3, 8, 0, 23, 0, 23, 0, 11, 0, 11, 0, 24, 0, 24, 0, 12, 0, 24, 0, 22, 1, 3, 2, 22, 0, 22, 0, 26, 0, 25, 0, 26, 1, 26, 0, 27, 1, 33, 0, 34, 0, 35, 0, 36, 0, 34, 0, 36, 2, 17, 0, 28, 0, 17, 1, 29, 0, 3, 0, 33, 0, 3, 1, 33, 1, 29, 0, 38, 0, 27, 0, 38, 1, 27, 0, 39, 1, 28, 0, 37, 1, 37, 0, 39, 0, 38, 0, 18, 1, 36, 0, 37, 0, 41, 0, 40, 1, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 18, 0, 8, 0, 43, 0, 43, 0, 40, 2)
+nodes/process_custom/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 3, 1, 4, 1, 3, 2, 4, 2, 5, 0, 7, 0, 6, 0, 7, 1, 3, 3, 8, 0, 7, 0, 8, 1, 13, 0, 11, 1, 15, 0, 12, 1, 16, 0, 17, 0, 17, 2, 18, 2, 18, 0, 0, 5, 8, 0, 0, 1, 4, 0, 0, 0, 4, 0, 21, 0, 12, 0, 21, 1, 21, 0, 18, 3, 8, 0, 23, 0, 23, 0, 11, 0, 11, 0, 24, 0, 24, 0, 12, 0, 24, 0, 22, 1, 3, 2, 22, 0, 22, 0, 26, 0, 25, 0, 26, 1, 26, 0, 27, 1, 17, 0, 28, 0, 17, 1, 29, 0, 29, 0, 38, 0, 27, 0, 38, 1, 27, 0, 39, 1, 38, 0, 18, 1, 39, 0, 18, 0, 28, 0, 39, 0)

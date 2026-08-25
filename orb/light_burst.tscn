@@ -3,29 +3,13 @@
 [ext_resource type="Material" uid="uid://r7tadqrv8a74" path="res://orb/light_burst_material.tres" id="2_4glmt"]
 [ext_resource type="Material" uid="uid://bitx5gvu4qwd2" path="res://orb/light_burst_process_material.tres" id="2_kbmwm"]
 [ext_resource type="Script" uid="uid://0u43suc8ln6t" path="res://orb/light_burst.gd" id="3_t5wk0"]
-[ext_resource type="Material" path="res://orb/light_burst_trail_material.tres" id="4_trail"]
 
 [node name="LightBurst" type="GPUParticles2D" unique_id=15074733]
 material = ExtResource("2_4glmt")
-instance_shader_parameters/particle_size = 400.0
+instance_shader_parameters/particle_size = 239.0
 amount = 10
 lifetime = 1.09
 local_coords = true
 process_material = ExtResource("2_kbmwm")
-use_fixed_seed = true
-seed = 1
 script = ExtResource("3_t5wk0")
-particle_size = 400.0
-
-[node name="Trail" type="GPUParticles2D" parent="."]
-material = ExtResource("4_trail")
-amount = 10
-lifetime = 1.09
-local_coords = true
-trail_enabled = true
-trail_lifetime = 0.1
-trail_sections = 4
-trail_section_subdivisions = 1
-process_material = ExtResource("2_kbmwm")
-use_fixed_seed = true
-seed = 1
+particle_size = 239.0
