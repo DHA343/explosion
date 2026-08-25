@@ -28,6 +28,7 @@ func _enter_tree() -> void:
 
 func _apply_particle_size() -> void:
 	set_instance_shader_parameter("particle_size", particle_size)
+	_get_process_shader_material().set_shader_parameter("particle_size", particle_size)
 
 
 func _apply_sphere_radius() -> void:

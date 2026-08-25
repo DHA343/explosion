@@ -6,10 +6,10 @@
 
 [node name="LightBurst" type="GPUParticles2D" unique_id=15074733]
 material = ExtResource("2_4glmt")
-instance_shader_parameters/particle_size = 239.0
+instance_shader_parameters/particle_size = 128.0
 amount = 10
-lifetime = 1.09
+lifetime = 0.2
+randomness = 0.2
 local_coords = true
 process_material = ExtResource("2_kbmwm")
 script = ExtResource("3_t5wk0")
-particle_size = 239.0

@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bitx5gvu4qwd2"]
 
-[ext_resource type="Shader" uid="uid://dbdwe6jfcvdod" path="res://orb/light_burst_process_shader.tres" id="1_xbxo3"]
+[ext_resource type="Shader" uid="uid://c4gnjli4ksrks" path="res://orb/light_burst_process_shader.gdshader" id="1_xbxo3"]
 
 [resource]
 resource_local_to_scene = true
@@ -8,3 +8,5 @@ shader = ExtResource("1_xbxo3")
 shader_parameter/speed_decay_power = 2.5
 shader_parameter/depth_strength = 0.3999999910592
 shader_parameter/sphere_radius = 450.0
+shader_parameter/particle_size = 128.0
+shader_parameter/trail_duration = 0.049999998882400004

@@ -6,14 +6,39 @@ render_mode blend_add, unshaded;
 
 instance uniform float particle_size = 128.0;
 uniform vec4 color : source_color = vec4(1.0);
+uniform float tail_radius_ratio : hint_range(0.01, 0.5, 0.01) = 0.14;
+uniform float trail_head_ratio : hint_range(0.0, 1.0, 0.01) = 0.7;
+varying float trail_length;
 
 void vertex() {
+	float horizontal_scale = length(MODEL_MATRIX[0].xy);
+	float vertical_scale = max(length(MODEL_MATRIX[1].xy), 0.001);
+	float trail_scale = horizontal_scale / vertical_scale;
+	trail_length = max(trail_scale - 1.0, 0.0) * particle_size;
 	VERTEX *= particle_size;
+	VERTEX.x = (VERTEX.x - trail_length * (1.0 - UV.x)) / trail_scale;
 }
 
 void fragment() {
-	vec2 circle_position = UV * 2.0 - 1.0;
-	float edge = 1.0 - smoothstep(0.94, 1.0, dot(circle_position, circle_position));
+	float head_radius = particle_size * 0.5;
+	vec2 position = vec2(
+		(UV.x - 1.0) * (particle_size + trail_length) + head_radius,
+		(UV.y - 0.5) * particle_size
+	);
+	float head_distance = length(position) - head_radius;
+	float trail_head_x = -head_radius * trail_head_ratio;
+	float trail_tail_x = trail_head_x - trail_length;
+	float trail_progress = clamp(
+		(position.x - trail_tail_x) / max(trail_length, 0.001),
+		0.0,
+		1.0
+	);
+	float tail_radius = head_radius * tail_radius_ratio;
+	vec2 trail_center = vec2(mix(trail_tail_x, trail_head_x, trail_progress), 0.0);
+	float trail_radius = mix(tail_radius, head_radius * 0.6, trail_progress);
+	float trail_distance = length(position - trail_center) - trail_radius;
+	float shape_distance = min(head_distance, trail_distance);
+	float edge = 1.0 - smoothstep(0.0, 2.0, shape_distance);
 	COLOR = vec4(color.rgb, color.a * edge);
 }
 "

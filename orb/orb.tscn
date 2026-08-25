@@ -3,24 +3,43 @@
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://orb/inflow_streaks.tscn" id="1_kjlvm"]
 [ext_resource type="Script" uid="uid://2b6s7lu7wl2v" path="res://orb/orb.gd" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://cc2sj0i1hx77n" path="res://orb/light_burst.tscn" id="3_nfcmq"]
-[ext_resource type="Shader" uid="uid://dbdwe6jfcvdod" path="res://orb/light_burst_process_shader.tres" id="4_womfm"]
-[ext_resource type="Material" path="res://orb/orb_surface_material.tres" id="5_surface_material"]
+[ext_resource type="Shader" uid="uid://dsoq1i6qscra8" path="res://orb/light_burst_shader.tres" id="4_h5tvb"]
+[ext_resource type="Shader" uid="uid://c4gnjli4ksrks" path="res://orb/light_burst_process_shader.gdshader" id="4_womfm"]
+[ext_resource type="Material" uid="uid://bbpncqyy6jylk" path="res://orb/orb_surface_material.tres" id="5_surface_material"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kxnac"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j35yx"]
+resource_local_to_scene = true
+shader = ExtResource("4_h5tvb")
+shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+shader_parameter/tail_radius_ratio = 0.14
+shader_parameter/trail_head_ratio = 0.7
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5nceb"]
 resource_local_to_scene = true
 shader = ExtResource("4_womfm")
 shader_parameter/speed_decay_power = 2.5
 shader_parameter/depth_strength = 0.3
 shader_parameter/sphere_radius = 450.0
+shader_parameter/particle_size = 128.0
+shader_parameter/trail_duration = 0.1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h5tvb"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jhoxl"]
+resource_local_to_scene = true
+shader = ExtResource("4_h5tvb")
+shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+shader_parameter/tail_radius_ratio = 0.14
+shader_parameter/trail_head_ratio = 0.7
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8p6yb"]
 resource_local_to_scene = true
 shader = ExtResource("4_womfm")
 shader_parameter/speed_decay_power = 2.5
 shader_parameter/depth_strength = 0.3
 shader_parameter/sphere_radius = 150.0
+shader_parameter/particle_size = 171.0
+shader_parameter/trail_duration = 0.1
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_j35yx"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_st261"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3xot"]
@@ -28,7 +47,7 @@ resource_local_to_scene = true
 transparency = 1
 blend_mode = 1
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_j35yx")
+albedo_texture = SubResource("ViewportTexture_st261")
 billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_ua4af"]
@@ -49,13 +68,15 @@ position = Vector2(640, 640)
 [node name="InflowStreaks" parent="SubViewport/Position" unique_id=165995017 instance=ExtResource("1_kjlvm")]
 
 [node name="LightBurst" parent="SubViewport/Position" unique_id=15074733 instance=ExtResource("3_nfcmq")]
-process_material = SubResource("ShaderMaterial_kxnac")
+material = SubResource("ShaderMaterial_j35yx")
+process_material = SubResource("ShaderMaterial_5nceb")
 
 [node name="LightBurst2" parent="SubViewport/Position" unique_id=1850069955 instance=ExtResource("3_nfcmq")]
-instance_shader_parameters/particle_size = 300.0
+material = SubResource("ShaderMaterial_jhoxl")
+instance_shader_parameters/particle_size = 171.0
 amount = 40
-process_material = SubResource("ShaderMaterial_h5tvb")
-particle_size = 300.0
+process_material = SubResource("ShaderMaterial_8p6yb")
+particle_size = 171.0
 sphere_radius = 150.0
 
 [node name="CoreEffects" type="MeshInstance3D" parent="." unique_id=976299695]
