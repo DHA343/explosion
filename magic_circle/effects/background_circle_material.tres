@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://co4asow72fdyp"]
+
+[ext_resource type="Shader" uid="uid://2k114eu30im8" path="res://magic_circle/effects/background_circle_shader.tres" id="1_j2axg"]
+
+[sub_resource type="Gradient" id="Gradient_j2axg"]
+offsets = PackedFloat32Array(0.07481297, 0.13466334, 0.36716416, 1)
+colors = PackedColorArray(0.27450982, 0, 0, 1, 0.47843137, 0, 0, 1, 0.84313726, 0.05490196, 0.0627451, 1, 1, 0.36862746, 0.21960784, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nl4hs"]
+gradient = SubResource("Gradient_j2axg")
+use_hdr = true
+
+[resource]
+shader = ExtResource("1_j2axg")
+shader_parameter/noise_width = 1.0
+shader_parameter/noise_height = 1.0
+shader_parameter/noise_speed = 0.04
+shader_parameter/noise_strength = 0.999999977648
+shader_parameter/color_gradient = SubResource("GradientTexture1D_nl4hs")
+shader_parameter/opacity = 0.698000033155

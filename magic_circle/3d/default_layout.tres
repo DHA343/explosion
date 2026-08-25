@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="MagicCircleLayout" format=3 uid="uid://0v3dlu785tfa"]
+
+[ext_resource type="Script" uid="uid://bxhmk7b415mhv" path="res://magic_circle/3d/magic_circle_layout.gd" id="1_layout"]
+[ext_resource type="Script" uid="uid://bi45k4lp32pow" path="res://magic_circle/3d/magic_circle_layer_layout.gd" id="2_layer_layout"]
+
+[sub_resource type="Resource" id="Resource_layer_01"]
+script = ExtResource("2_layer_layout")
+scale_factor = 1.6
+rotation_deg = 72.0
+
+[sub_resource type="Resource" id="Resource_layer_02"]
+script = ExtResource("2_layer_layout")
+scale_factor = 1.2
+rotation_deg = 288.0
+
+[sub_resource type="Resource" id="Resource_layer_03"]
+script = ExtResource("2_layer_layout")
+scale_factor = 0.85
+
+[sub_resource type="Resource" id="Resource_layer_04"]
+script = ExtResource("2_layer_layout")
+scale_factor = 1.2
+rotation_deg = 72.0
+
+[sub_resource type="Resource" id="Resource_layer_05"]
+script = ExtResource("2_layer_layout")
+scale_factor = 1.6
+rotation_deg = 216.0
+
+[sub_resource type="Resource" id="Resource_layer_06"]
+script = ExtResource("2_layer_layout")
+scale_factor = 1.1
+rotation_deg = 144.0
+
+[resource]
+script = ExtResource("1_layout")
+layers = Array[ExtResource("2_layer_layout")]([SubResource("Resource_layer_01"), SubResource("Resource_layer_02"), SubResource("Resource_layer_03"), SubResource("Resource_layer_04"), SubResource("Resource_layer_05"), SubResource("Resource_layer_06")])

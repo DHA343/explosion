@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MagicCircleAppearance3D" format=3 uid="uid://b7v2dklwjph0n"]
+
+[ext_resource type="Script" uid="uid://bwqru78eyfscb" path="res://magic_circle/3d/magic_circle_appearance_3d.gd" id="1_appearance"]
+
+[resource]
+script = ExtResource("1_appearance")
+blend_balance = 0.4
+body_intensity = 0.5
+ring_intensity = 0.5
+glow_intensity = 0.5

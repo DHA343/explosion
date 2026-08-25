@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://0i6t50b7cqwi"]
+
+[ext_resource type="Shader" uid="uid://c7i0tkhhso7h0" path="res://magic_circle/effects/glow_line_shader.tres" id="1_qh5h0"]
+[ext_resource type="Texture2D" uid="uid://bx14lobmrgssm" path="res://テクスチャ/T_Noise1_tiled.png" id="2_ex1t3"]
+
+[resource]
+shader = ExtResource("1_qh5h0")
+shader_parameter/opacity = 1.0
+shader_parameter/endpoint_fade_width = 0.05999999865888
+shader_parameter/thickness_fade_width = 0.73999998345952
+shader_parameter/move_range = 0.2999999932944
+shader_parameter/move_scale = Vector2(2.785, 1)
+shader_parameter/move_speed = Vector2(0.06, 0.3)
+shader_parameter/move_noise = ExtResource("2_ex1t3")
+shader_parameter/move_texture_strength = 1.0

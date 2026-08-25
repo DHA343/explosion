@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://r7tadqrv8a74"]
+
+[ext_resource type="Shader" uid="uid://dsoq1i6qscra8" path="res://orb/light_burst_shader.tres" id="1_kedwy"]
+
+[resource]
+shader = ExtResource("1_kedwy")
+shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+shader_parameter/inner_width = 0.08
+shader_parameter/outer_width = 0.25
+shader_parameter/edge_softness = 0.02
+shader_parameter/join_softness = 0.005

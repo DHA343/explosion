@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cat7hxl1duwyq"]
+
+[ext_resource type="Shader" uid="uid://dwkr58eoa22j0" path="res://magic_circle/effects/thin_line_shader.tres" id="1_khra3"]
+
+[sub_resource type="Gradient" id="Gradient_ljgbl"]
+offsets = PackedFloat32Array(0, 0.054862842, 0.13715711)
+colors = PackedColorArray(1.8247963, 0.60199416, 0, 1, 1.8247963, 0.38538346, 0.2596095, 0.78039217, 1.8247963, 0.78366756, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vyw6x"]
+gradient = SubResource("Gradient_ljgbl")
+
+[resource]
+shader = ExtResource("1_khra3")
+shader_parameter/noise_width = 0.48
+shader_parameter/noise_height = 0.06
+shader_parameter/noise_speed = 0.1
+shader_parameter/noise_offset = Vector3(0, 0, 0)
+shader_parameter/noise_strength = 0.95999997854208
+shader_parameter/color_gradient = SubResource("GradientTexture1D_vyw6x")

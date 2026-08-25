@@ -1,0 +1,8 @@
+[gd_resource type="NoiseTexture3D" format=3 uid="uid://mwt7iw6mwyqn"]
+
+[ext_resource type="FastNoiseLite" uid="uid://cgeevbbb723r5" path="res://magic_circle/effects/thin_line_fast_noise.tres" id="1_863pn"]
+
+[resource]
+noise = ExtResource("1_863pn")
+seamless = true
+seamless_blend_skirt = 0.196

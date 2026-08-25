@@ -1,0 +1,45 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cyberr4bu6vbe"]
+
+[ext_resource type="Shader" uid="uid://cmli876imvp1i" path="res://magic_circle/effects/line_shader.tres" id="1_r3qld"]
+[ext_resource type="Texture2D" uid="uid://c5y6rpj4khytf" path="res://テクスチャ/T_VFX_Noise41.jpg" id="2_vbxwk"]
+
+[sub_resource type="Gradient" id="Gradient_t2agb"]
+offsets = PackedFloat32Array(0.36434108, 0.4857881, 0.6020672, 0.72868216, 1)
+colors = PackedColorArray(1.353256, 1.007768, 0, 1, 1, 0.043137256, 0, 0.6431373, 1, 0.08235294, 0.15294118, 0.57254905, 1, 0, 0, 0.49019608, 1, 0.15686275, 0.13333334, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_b54s2"]
+gradient = SubResource("Gradient_t2agb")
+use_hdr = true
+
+[sub_resource type="Gradient" id="Gradient_ohogs"]
+offsets = PackedFloat32Array(0.19314642, 0.94392526)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3ru5x"]
+gradient = SubResource("Gradient_ohogs")
+
+[resource]
+shader = ExtResource("1_r3qld")
+shader_parameter/width_gradient = SubResource("GradientTexture1D_3ru5x")
+shader_parameter/noise_width = 1.0
+shader_parameter/noise_height = 1.0
+shader_parameter/noise_speed = 0.2
+shader_parameter/noise_offset = Vector3(0, 0, 0)
+shader_parameter/noise_strength = 0.6999999843536
+shader_parameter/move_scale = Vector2(7.495, 0.86)
+shader_parameter/move_speed = Vector2(0.15, 0.145)
+shader_parameter/move_noise = ExtResource("2_vbxwk")
+shader_parameter/move_texture_strength = 0.462000021945
+shader_parameter/large_noise_scale = Vector2(1, 0.25)
+shader_parameter/large_noise_speed = Vector2(0.055, -0.04)
+shader_parameter/large_noise_speed_wobble_frequency = 0.445
+shader_parameter/large_noise_speed_wobble_ratio = 0.1
+shader_parameter/large_noise_offset = Vector2(0, 0)
+shader_parameter/large_noise_gamma = 5.0
+shader_parameter/large_nosie_dead_zone_width = 0.175
+shader_parameter/color_gradient = SubResource("GradientTexture1D_b54s2")
+shader_parameter/pulse_speed = 1.8
+shader_parameter/pulse_dark_intensity = 1.0
+shader_parameter/pulse_bright_intensity = 3.5
+shader_parameter/opacity = 1.0
+shader_parameter/thickness_fade_width = 0.15
+shader_parameter/endpoint_fade_width = 0.1

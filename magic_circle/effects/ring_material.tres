@@ -1,0 +1,35 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dnq5yb6vxxima"]
+
+[ext_resource type="Shader" uid="uid://obidp0ryb3iv" path="res://magic_circle/effects/ring_shader.tres" id="1_3qw4k"]
+[ext_resource type="Texture2D" uid="uid://c5y6rpj4khytf" path="res://テクスチャ/T_VFX_Noise41.jpg" id="2_3qw4k"]
+
+[sub_resource type="Gradient" id="Gradient_4l8g0"]
+offsets = PackedFloat32Array(0.19121447, 0.5813953, 1)
+colors = PackedColorArray(2.454227, 2.454227, 0.112890586, 1, 1.8247963, 0.5251323, 0.03137255, 1, 1.8247963, 1.0002784, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_57g53"]
+gradient = SubResource("Gradient_4l8g0")
+use_hdr = true
+
+[sub_resource type="Gradient" id="Gradient_55hbs"]
+offsets = PackedFloat32Array(0.0062305294, 0.317757, 0.99376947)
+colors = PackedColorArray(0.038397163, 0.038397174, 0.038397145, 1, 0.2123048, 0.21230483, 0.21230477, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0yiqg"]
+gradient = SubResource("Gradient_55hbs")
+
+[resource]
+shader = ExtResource("1_3qw4k")
+shader_parameter/width_gradient = SubResource("GradientTexture1D_0yiqg")
+shader_parameter/noise_width = 1.0
+shader_parameter/noise_height = 1.0
+shader_parameter/noise_speed = 0.205
+shader_parameter/noise_strength = 0.999999977648
+shader_parameter/move_scale = Vector2(15, 1)
+shader_parameter/move_speed = Vector2(0.29, 0.295)
+shader_parameter/move_noise = ExtResource("2_3qw4k")
+shader_parameter/move_texture_strength = 0.1550000073625
+shader_parameter/color_gradient = SubResource("GradientTexture1D_57g53")
+shader_parameter/pulse_speed = 1.8
+shader_parameter/pulse_dark_intensity = 1.0
+shader_parameter/pulse_bright_intensity = 3.5

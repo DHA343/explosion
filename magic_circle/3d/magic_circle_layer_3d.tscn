@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://magic_circle/3d/magic_circle_layer_3d.gd" id="1_layer"]
+[ext_resource type="Script" uid="uid://cg3hdkbux8kwj" path="res://magic_circle/3d/magic_circle_surface_3d.gd" id="2_surface"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_magic_circle"]
+size = Vector2(100, 100)
+
+[node name="MagicCircleLayer3D" type="Node3D"]
+script = ExtResource("1_layer")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+rotation = Vector3(-1.5707964, 0, 0)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_magic_circle")
+script = ExtResource("2_surface")
+
+[node name="Ring" type="MeshInstance3D" parent="."]
+rotation = Vector3(-1.5707964, 0, 0)
+sorting_offset = -0.01
+cast_shadow = 0
+mesh = SubResource("QuadMesh_magic_circle")
+script = ExtResource("2_surface")
+
+[node name="GlowRing" type="MeshInstance3D" parent="."]
+rotation = Vector3(-1.5707964, 0, 0)
+sorting_offset = -0.02
+cast_shadow = 0
+mesh = SubResource("QuadMesh_magic_circle")
+script = ExtResource("2_surface")
