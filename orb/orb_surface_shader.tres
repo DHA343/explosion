@@ -1,0 +1,180 @@
+[gd_resource type="VisualShader" format=3 uid="uid://do14j15q8kqju"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_rim_start"]
+linked_parent_graph_frame = 101
+parameter_name = "rim_start"
+hint = 2
+max = 0.99
+step = 0.01
+default_value_enabled = true
+default_value = 0.72
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_fresnel"]
+size = Vector2(650, 500)
+title = "球面フレネル"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(2, 3, 4, 5)
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_layer_mask"]
+size = Vector2(1100, 900)
+title = "レイヤーマスク"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(10, 11, 12, 13, 14, 20)
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_composite"]
+size = Vector2(900, 650)
+title = "表面合成"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(30, 31, 32, 33)
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_rim_softness"]
+linked_parent_graph_frame = 101
+parameter_name = "rim_softness"
+hint = 2
+min = 0.001
+max = 0.25
+step = 0.001
+default_value_enabled = true
+default_value = 0.06
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_inner_band_start"]
+linked_parent_graph_frame = 101
+parameter_name = "inner_band_start"
+hint = 2
+step = 0.01
+default_value_enabled = true
+default_value = 0.52
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_inner_band_end"]
+linked_parent_graph_frame = 101
+parameter_name = "inner_band_end"
+hint = 2
+step = 0.01
+default_value_enabled = true
+default_value = 0.68
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_inner_band_softness"]
+linked_parent_graph_frame = 101
+parameter_name = "inner_band_softness"
+hint = 2
+min = 0.001
+max = 0.25
+step = 0.001
+default_value_enabled = true
+default_value = 0.03
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_fresnel_power"]
+linked_parent_graph_frame = 100
+parameter_name = "fresnel_power"
+hint = 2
+min = 0.25
+max = 8.0
+step = 0.01
+default_value_enabled = true
+default_value = 1.0
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_layer_masks"]
+linked_parent_graph_frame = 101
+size = Vector2(500, 500)
+expression = "float safe_rim_softness = max(rim_softness, 0.0001);
+float rim_end = min(rim_start + safe_rim_softness, 1.0);
+
+rim_mask = smoothstep(rim_start, rim_end, fresnel);
+
+float band_lo = min(inner_band_start, inner_band_end);
+float band_hi = max(inner_band_start, inner_band_end);
+float band_width = max(band_hi - band_lo, 0.0002);
+float safe_band_softness = min(max(inner_band_softness, 0.0001), band_width * 0.5);
+
+float band_enter = smoothstep(band_lo, band_lo + safe_band_softness, fresnel);
+float band_exit = 1.0 - smoothstep(band_hi - safe_band_softness, band_hi, fresnel);
+
+inner_mask = band_enter * band_exit * (1.0 - rim_mask);"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_normal"]
+linked_parent_graph_frame = 100
+input_name = "normal"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_inner_color"]
+linked_parent_graph_frame = 102
+parameter_name = "inner_color"
+default_value_enabled = true
+default_value = Color(1, 0.15, 0.8, 1)
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_rim_color"]
+linked_parent_graph_frame = 102
+parameter_name = "rim_color"
+default_value_enabled = true
+default_value = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_surface_color"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 1), 2, 0.5]
+linked_parent_graph_frame = 102
+op_type = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_alpha_max"]
+linked_parent_graph_frame = 102
+operator = 6
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_view"]
+linked_parent_graph_frame = 100
+input_name = "view"
+
+[sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_surface"]
+linked_parent_graph_frame = 100
+
+[resource]
+flags/unshaded = true
+nodes/fragment/0/position = Vector2(1550, -50)
+nodes/fragment/2/node = SubResource("VisualShaderNodeFloatParameter_fresnel_power")
+nodes/fragment/2/position = Vector2(-1740, -180)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_normal")
+nodes/fragment/3/position = Vector2(-1740, 20)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_view")
+nodes/fragment/4/position = Vector2(-1500, 20)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFresnel_surface")
+nodes/fragment/5/position = Vector2(-1500, -180)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_rim_start")
+nodes/fragment/10/position = Vector2(-880, -420)
+nodes/fragment/11/node = SubResource("VisualShaderNodeFloatParameter_rim_softness")
+nodes/fragment/11/position = Vector2(-880, -300)
+nodes/fragment/12/node = SubResource("VisualShaderNodeFloatParameter_inner_band_start")
+nodes/fragment/12/position = Vector2(-880, -180)
+nodes/fragment/13/node = SubResource("VisualShaderNodeFloatParameter_inner_band_end")
+nodes/fragment/13/position = Vector2(-880, -60)
+nodes/fragment/14/node = SubResource("VisualShaderNodeFloatParameter_inner_band_softness")
+nodes/fragment/14/position = Vector2(-880, 60)
+nodes/fragment/20/node = SubResource("VisualShaderNodeExpression_layer_masks")
+nodes/fragment/20/position = Vector2(-450, -220)
+nodes/fragment/20/size = Vector2(500, 500)
+nodes/fragment/20/input_ports = "0,0,fresnel;1,0,rim_start;2,0,rim_softness;3,0,inner_band_start;4,0,inner_band_end;5,0,inner_band_softness;"
+nodes/fragment/20/output_ports = "0,0,rim_mask;1,0,inner_mask;"
+nodes/fragment/20/expression = "float safe_rim_softness = max(rim_softness, 0.0001);
+float rim_end = min(rim_start + safe_rim_softness, 1.0);
+
+rim_mask = smoothstep(rim_start, rim_end, fresnel);
+
+float band_lo = min(inner_band_start, inner_band_end);
+float band_hi = max(inner_band_start, inner_band_end);
+float band_width = max(band_hi - band_lo, 0.0002);
+float safe_band_softness = min(max(inner_band_softness, 0.0001), band_width * 0.5);
+
+float band_enter = smoothstep(band_lo, band_lo + safe_band_softness, fresnel);
+float band_exit = 1.0 - smoothstep(band_hi - safe_band_softness, band_hi, fresnel);
+
+inner_mask = band_enter * band_exit * (1.0 - rim_mask);"
+nodes/fragment/30/node = SubResource("VisualShaderNodeColorParameter_inner_color")
+nodes/fragment/30/position = Vector2(460, -220)
+nodes/fragment/31/node = SubResource("VisualShaderNodeColorParameter_rim_color")
+nodes/fragment/31/position = Vector2(460, -80)
+nodes/fragment/32/node = SubResource("VisualShaderNodeMix_surface_color")
+nodes/fragment/32/position = Vector2(760, -160)
+nodes/fragment/33/node = SubResource("VisualShaderNodeFloatOp_alpha_max")
+nodes/fragment/33/position = Vector2(760, 100)
+nodes/fragment/100/node = SubResource("VisualShaderNodeFrame_fresnel")
+nodes/fragment/100/position = Vector2(-1800, -300)
+nodes/fragment/101/node = SubResource("VisualShaderNodeFrame_layer_mask")
+nodes/fragment/101/position = Vector2(-950, -520)
+nodes/fragment/102/node = SubResource("VisualShaderNodeFrame_composite")
+nodes/fragment/102/position = Vector2(400, -350)
+nodes/fragment/connections = PackedInt32Array(2, 0, 5, 3, 3, 0, 5, 0, 4, 0, 5, 1, 5, 0, 20, 0, 10, 0, 20, 1, 11, 0, 20, 2, 12, 0, 20, 3, 13, 0, 20, 4, 14, 0, 20, 5, 30, 0, 32, 0, 31, 0, 32, 1, 20, 0, 32, 2, 20, 0, 33, 0, 20, 1, 33, 1, 32, 0, 0, 0, 33, 0, 0, 1)
