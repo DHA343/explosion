@@ -4,8 +4,11 @@
 
 [resource]
 shader = ExtResource("1_kedwy")
+shader_parameter/back_width_scale = 0.6
+shader_parameter/front_width_scale = 1.2
 shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
 shader_parameter/inner_width = 0.02999999932944
 shader_parameter/outer_width = 0.12999999709424
+shader_parameter/perspective_power = 1.5
 shader_parameter/edge_softness = 0.05999999865888
 shader_parameter/join_softness = 0.0050000002375
