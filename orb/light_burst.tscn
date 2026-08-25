@@ -1,20 +1,14 @@
 [gd_scene format=3 uid="uid://cc2sj0i1hx77n"]
 
 [ext_resource type="Material" uid="uid://r7tadqrv8a74" path="res://orb/light_burst_material.tres" id="2_4glmt"]
-[ext_resource type="Shader" uid="uid://ew82n02a5esl" path="res://orb/light_burst_process_shader.tres" id="2_3qvib"]
-[ext_resource type="Script" path="res://orb/light_burst.gd" id="3_t5wk0"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_process"]
-resource_local_to_scene = true
-shader = ExtResource("2_3qvib")
-shader_parameter/min_length_scale = 0.35
-shader_parameter/speed_decay_power = 2.5000000223518
-shader_parameter/sphere_radius = 450.0
+[ext_resource type="Material" uid="uid://bitx5gvu4qwd2" path="res://orb/light_burst_process_material.tres" id="2_kbmwm"]
+[ext_resource type="Script" uid="uid://0u43suc8ln6t" path="res://orb/light_burst.gd" id="3_t5wk0"]
 
 [node name="LightBurst" type="GPUParticles2D" unique_id=15074733]
 material = ExtResource("2_4glmt")
-script = ExtResource("3_t5wk0")
+instance_shader_parameters/particle_size = 128.0
 amount = 50
-lifetime = 0.2
+lifetime = 1.61
 local_coords = true
-process_material = SubResource("ShaderMaterial_process")
+process_material = ExtResource("2_kbmwm")
+script = ExtResource("3_t5wk0")
