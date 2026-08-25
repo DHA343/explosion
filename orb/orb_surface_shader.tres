@@ -110,7 +110,7 @@ default_value = Color(0, 0, 0, 1)
 [sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_surface_color"]
 default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 1), 2, 0.5]
 linked_parent_graph_frame = 102
-op_type = 2
+op_type = 4
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_alpha_max"]
 linked_parent_graph_frame = 102
