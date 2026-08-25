@@ -36,8 +36,8 @@ input_name = "transform"
 input_name = "custom"
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_c6a4f"]
-size = Vector2(1024, 574.0001)
-title = "寿命割合に対応した位置計算"
+size = Vector2(1024, 574)
+title = "寿命経過割合に対応した位置計算"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(11, 13, 15, 24, 12, 23)
 
@@ -77,7 +77,7 @@ default_input_values = [0, Quaternion(0, 0, 0, 0)]
 op_type = 2
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_8fhpu"]
-size = Vector2(664, 594)
+size = Vector2(664.0001, 594)
 title = "短縮投影"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(33, 34, 35, 36)
@@ -93,25 +93,42 @@ op_type = 0
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_44d6x"]
 linked_parent_graph_frame = 32
-parameter_name = "min_length_scale3"
+parameter_name = "min_length_scale"
 hint = 2
 step = 0.01
 default_value_enabled = true
-default_value = 0.3
+default_value = 0.4
 
 [sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_htubc"]
 linked_parent_graph_frame = 32
 
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_mufju"]
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_2l5wp"]
 operator = 2
 
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_mki3x"]
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_es6xq"]
 operator = 2
 
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_0kpt5"]
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_rgbdh"]
 operator = 2
 
 [sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_htubc"]
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_2l5wp"]
+default_input_values = [0, 1.0, 1, 1.0, 2, 0.5]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_es6xq"]
+parameter_name = "end_length_scale"
+hint = 2
+step = 0.01
+default_value_enabled = true
+default_value = 0.5
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_sc4hn"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_hstrb"]
+default_input_values = [0, 0.0, 1, 2.3]
+operator = 5
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_mufju"]
 linked_parent_graph_frame = 9
@@ -129,8 +146,8 @@ operator = 3
 linked_parent_graph_frame = 9
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_0kpt5"]
-size = Vector2(824.00006, 286)
-title = "寿命割合"
+size = Vector2(824, 286)
+title = "寿命経過割合"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(5, 8, 7, 6)
 
@@ -209,8 +226,6 @@ input_name = "transform"
 [sub_resource type="VisualShaderNodeTransformOp" id="VisualShaderNodeTransformOp_ric3a"]
 linked_parent_graph_frame = 30
 
-[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_4witw"]
-
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_s5lx0"]
 size = Vector2(724, 664)
 title = "向きを進行方向"
@@ -224,40 +239,14 @@ title = "z"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(17)
 
-[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_hjteb"]
-size = Vector2(664, 594)
-title = "短縮投影"
-tint_color_enabled = true
-attached_nodes = PackedInt32Array(33, 34, 37, 36)
-
-[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_w4xwm"]
-linked_parent_graph_frame = 32
-op_type = 0
-
-[sub_resource type="VisualShaderNodeVectorLen" id="VisualShaderNodeVectorLen_v74ht"]
-default_input_values = [0, Vector2(0, 0)]
-linked_parent_graph_frame = 32
-op_type = 0
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ojgep"]
-linked_parent_graph_frame = 32
-parameter_name = "min_length_scale2"
-hint = 2
-step = 0.01
-default_value_enabled = true
-default_value = 0.3
-
-[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_quskp"]
-linked_parent_graph_frame = 32
-
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_m3rjr"]
-size = Vector2(243.99998, 230)
+size = Vector2(244.00002, 229.99998)
 title = "x"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(13)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_c6jem"]
-size = Vector2(243.99998, 230)
+size = Vector2(244.00002, 230)
 title = "y"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(14)
@@ -280,8 +269,10 @@ flags/collision_use_scale = false
 flags/disable_force = false
 flags/disable_velocity = false
 flags/keep_data = false
+preview_params/speed_decay_power = "2.5000000223518"
+preview_params/sphere_radius = "450.0"
 nodes/start/0/position = Vector2(1040, 60)
-nodes/start_custom/0/position = Vector2(1420, 560)
+nodes/start_custom/0/position = Vector2(1040, 300)
 nodes/start_custom/5/node = SubResource("VisualShaderNodeFrame_m3rjr")
 nodes/start_custom/5/position = Vector2(-80, 500)
 nodes/start_custom/6/node = SubResource("VisualShaderNodeFrame_c6jem")
@@ -303,9 +294,9 @@ nodes/start_custom/13/position = Vector2(-40, 340)
 nodes/start_custom/14/node = SubResource("VisualShaderNodeFloatOp_quskp")
 nodes/start_custom/14/position = Vector2(-40, 600)
 nodes/start_custom/15/node = SubResource("VisualShaderNodeVectorCompose_ihi5d")
-nodes/start_custom/15/position = Vector2(1080, 540)
+nodes/start_custom/15/position = Vector2(700, 280)
 nodes/start_custom/16/node = SubResource("VisualShaderNodeVectorCompose_jwxvr")
-nodes/start_custom/16/position = Vector2(220, 960)
+nodes/start_custom/16/position = Vector2(80, 940)
 nodes/start_custom/17/node = SubResource("VisualShaderNodeParticleRandomness_th6en")
 nodes/start_custom/17/position = Vector2(-780, 0)
 nodes/start_custom/18/node = SubResource("VisualShaderNodeParticleRandomness_4wa5p")
@@ -315,38 +306,26 @@ nodes/start_custom/19/position = Vector2(-720, 360)
 nodes/start_custom/20/node = SubResource("VisualShaderNodeFrame_53ieu")
 nodes/start_custom/20/position = Vector2(-820, -60)
 nodes/start_custom/21/node = SubResource("VisualShaderNodeFloatConstant_jx6im")
-nodes/start_custom/21/position = Vector2(1080, 780)
+nodes/start_custom/21/position = Vector2(700, 520)
 nodes/start_custom/22/node = SubResource("VisualShaderNodeVectorCompose_mstbk")
-nodes/start_custom/22/position = Vector2(220, 1160)
+nodes/start_custom/22/position = Vector2(80, 1140)
 nodes/start_custom/23/node = SubResource("VisualShaderNodeVectorCompose_wxjxy")
-nodes/start_custom/23/position = Vector2(220, 1360)
+nodes/start_custom/23/position = Vector2(80, 1340)
 nodes/start_custom/24/node = SubResource("VisualShaderNodeFloatOp_o3wst")
 nodes/start_custom/24/position = Vector2(-380, 880)
 nodes/start_custom/25/node = SubResource("VisualShaderNodeFloatOp_udt1h")
 nodes/start_custom/25/position = Vector2(-380, 1080)
 nodes/start_custom/26/node = SubResource("VisualShaderNodeTransformCompose_oyb4r")
-nodes/start_custom/26/position = Vector2(480, 1160)
+nodes/start_custom/26/position = Vector2(340, 1140)
 nodes/start_custom/27/node = SubResource("VisualShaderNodeInput_aekoq")
-nodes/start_custom/27/position = Vector2(440, 960)
+nodes/start_custom/27/position = Vector2(300, 940)
 nodes/start_custom/28/node = SubResource("VisualShaderNodeTransformOp_ric3a")
-nodes/start_custom/28/position = Vector2(700, 1160)
-nodes/start_custom/29/node = SubResource("VisualShaderNodeVectorCompose_4witw")
-nodes/start_custom/29/position = Vector2(1100, 920)
+nodes/start_custom/28/position = Vector2(560, 1140)
 nodes/start_custom/30/node = SubResource("VisualShaderNodeFrame_s5lx0")
-nodes/start_custom/30/position = Vector2(180, 920)
+nodes/start_custom/30/position = Vector2(40, 900)
 nodes/start_custom/31/node = SubResource("VisualShaderNodeFrame_jx2tc")
 nodes/start_custom/31/position = Vector2(-820, -40)
-nodes/start_custom/32/node = SubResource("VisualShaderNodeFrame_hjteb")
-nodes/start_custom/32/position = Vector2(300, -81)
-nodes/start_custom/33/node = SubResource("VisualShaderNodeVectorCompose_w4xwm")
-nodes/start_custom/33/position = Vector2(340, -40)
-nodes/start_custom/34/node = SubResource("VisualShaderNodeVectorLen_v74ht")
-nodes/start_custom/34/position = Vector2(540, -40)
-nodes/start_custom/36/node = SubResource("VisualShaderNodeFloatParameter_ojgep")
-nodes/start_custom/36/position = Vector2(400, 160)
-nodes/start_custom/37/node = SubResource("VisualShaderNodeMix_quskp")
-nodes/start_custom/37/position = Vector2(760, -40)
-nodes/start_custom/connections = PackedInt32Array(10, 0, 11, 1, 11, 0, 12, 0, 12, 0, 13, 1, 8, 0, 13, 0, 12, 0, 14, 1, 9, 0, 14, 0, 13, 0, 15, 0, 17, 0, 10, 0, 17, 0, 10, 1, 7, 0, 18, 2, 18, 0, 8, 0, 18, 0, 9, 0, 15, 0, 0, 0, 8, 0, 24, 0, 9, 0, 25, 0, 8, 0, 16, 0, 9, 0, 16, 1, 25, 0, 22, 0, 8, 0, 22, 1, 22, 0, 26, 1, 23, 0, 26, 2, 27, 0, 28, 0, 26, 0, 28, 1, 28, 0, 0, 5, 29, 0, 0, 2, 33, 0, 34, 0, 36, 0, 37, 0, 34, 0, 37, 2, 13, 0, 33, 0, 14, 0, 33, 1, 14, 0, 15, 1, 21, 0, 0, 1, 17, 0, 15, 2, 16, 0, 26, 0)
+nodes/start_custom/connections = PackedInt32Array(10, 0, 11, 1, 11, 0, 12, 0, 12, 0, 13, 1, 8, 0, 13, 0, 12, 0, 14, 1, 9, 0, 14, 0, 13, 0, 15, 0, 17, 0, 10, 0, 17, 0, 10, 1, 7, 0, 18, 2, 18, 0, 8, 0, 18, 0, 9, 0, 15, 0, 0, 0, 8, 0, 24, 0, 9, 0, 25, 0, 8, 0, 16, 0, 9, 0, 16, 1, 25, 0, 22, 0, 8, 0, 22, 1, 22, 0, 26, 1, 23, 0, 26, 2, 27, 0, 28, 0, 26, 0, 28, 1, 28, 0, 0, 5, 14, 0, 15, 1, 21, 0, 0, 1, 17, 0, 15, 2, 16, 0, 26, 0)
 nodes/process_custom/0/position = Vector2(1460, -60)
 nodes/process_custom/2/node = SubResource("VisualShaderNodeInput_8fhpu")
 nodes/process_custom/2/position = Vector2(-320, 140)
@@ -399,19 +378,27 @@ nodes/process_custom/28/position = Vector2(760, 360)
 nodes/process_custom/29/node = SubResource("VisualShaderNodeVectorFunc_y2p8r")
 nodes/process_custom/29/position = Vector2(760, 540)
 nodes/process_custom/32/node = SubResource("VisualShaderNodeFrame_8fhpu")
-nodes/process_custom/32/position = Vector2(560, -840)
+nodes/process_custom/32/position = Vector2(520, -680)
 nodes/process_custom/33/node = SubResource("VisualShaderNodeVectorCompose_c6a4f")
-nodes/process_custom/33/position = Vector2(600, -800)
+nodes/process_custom/33/position = Vector2(560, -640)
 nodes/process_custom/34/node = SubResource("VisualShaderNodeVectorLen_fy23h")
-nodes/process_custom/34/position = Vector2(800, -800)
+nodes/process_custom/34/position = Vector2(760, -640)
 nodes/process_custom/35/node = SubResource("VisualShaderNodeFloatParameter_44d6x")
-nodes/process_custom/35/position = Vector2(660, -600)
+nodes/process_custom/35/position = Vector2(620, -440)
 nodes/process_custom/36/node = SubResource("VisualShaderNodeMix_htubc")
-nodes/process_custom/36/position = Vector2(1020, -800)
-nodes/process_custom/37/node = SubResource("VisualShaderNodeFloatOp_mufju")
-nodes/process_custom/37/position = Vector2(1000, 360)
-nodes/process_custom/38/node = SubResource("VisualShaderNodeFloatOp_mki3x")
-nodes/process_custom/38/position = Vector2(1220, 340)
-nodes/process_custom/39/node = SubResource("VisualShaderNodeFloatOp_0kpt5")
-nodes/process_custom/39/position = Vector2(1020, 540)
-nodes/process_custom/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 3, 1, 4, 1, 3, 2, 4, 2, 5, 0, 7, 0, 6, 0, 7, 1, 3, 3, 8, 0, 7, 0, 8, 1, 13, 0, 11, 1, 15, 0, 12, 1, 16, 0, 17, 0, 17, 2, 18, 2, 18, 0, 0, 5, 8, 0, 0, 1, 4, 0, 0, 0, 4, 0, 21, 0, 12, 0, 21, 1, 21, 0, 18, 3, 8, 0, 23, 0, 23, 0, 11, 0, 11, 0, 24, 0, 24, 0, 12, 0, 24, 0, 22, 1, 3, 2, 22, 0, 22, 0, 26, 0, 25, 0, 26, 1, 26, 0, 27, 1, 33, 0, 34, 0, 35, 0, 36, 0, 34, 0, 36, 2, 17, 0, 33, 0, 17, 1, 33, 1, 17, 0, 28, 0, 17, 1, 29, 0, 28, 0, 37, 1, 36, 0, 37, 0, 37, 0, 38, 0, 27, 0, 38, 1, 38, 0, 18, 0, 29, 0, 39, 0, 27, 0, 39, 1, 39, 0, 18, 1)
+nodes/process_custom/36/position = Vector2(980, -640)
+nodes/process_custom/37/node = SubResource("VisualShaderNodeVectorOp_2l5wp")
+nodes/process_custom/37/position = Vector2(980, 340)
+nodes/process_custom/38/node = SubResource("VisualShaderNodeVectorOp_es6xq")
+nodes/process_custom/38/position = Vector2(980, 540)
+nodes/process_custom/39/node = SubResource("VisualShaderNodeVectorOp_rgbdh")
+nodes/process_custom/39/position = Vector2(1200, 340)
+nodes/process_custom/40/node = SubResource("VisualShaderNodeMix_2l5wp")
+nodes/process_custom/40/position = Vector2(1640, 1040)
+nodes/process_custom/41/node = SubResource("VisualShaderNodeFloatParameter_es6xq")
+nodes/process_custom/41/position = Vector2(1100, 1380)
+nodes/process_custom/42/node = SubResource("VisualShaderNodeVectorOp_sc4hn")
+nodes/process_custom/42/position = Vector2(1400, 320)
+nodes/process_custom/43/node = SubResource("VisualShaderNodeFloatOp_hstrb")
+nodes/process_custom/43/position = Vector2(1263.4784, 1069.1707)
+nodes/process_custom/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 3, 1, 4, 1, 3, 2, 4, 2, 5, 0, 7, 0, 6, 0, 7, 1, 3, 3, 8, 0, 7, 0, 8, 1, 13, 0, 11, 1, 15, 0, 12, 1, 16, 0, 17, 0, 17, 2, 18, 2, 18, 0, 0, 5, 8, 0, 0, 1, 4, 0, 0, 0, 4, 0, 21, 0, 12, 0, 21, 1, 21, 0, 18, 3, 8, 0, 23, 0, 23, 0, 11, 0, 11, 0, 24, 0, 24, 0, 12, 0, 24, 0, 22, 1, 3, 2, 22, 0, 22, 0, 26, 0, 25, 0, 26, 1, 26, 0, 27, 1, 33, 0, 34, 0, 35, 0, 36, 0, 34, 0, 36, 2, 17, 0, 28, 0, 17, 1, 29, 0, 3, 0, 33, 0, 3, 1, 33, 1, 29, 0, 38, 0, 27, 0, 38, 1, 27, 0, 39, 1, 28, 0, 37, 1, 37, 0, 39, 0, 38, 0, 18, 1, 36, 0, 37, 0, 41, 0, 40, 1, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 18, 0, 8, 0, 43, 0, 43, 0, 40, 2)
