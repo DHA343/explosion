@@ -64,6 +64,7 @@ process_material = SubResource("ShaderMaterial_j35yx")
 sphere_radius = 200.0
 
 [node name="TestBurst" parent="SubViewport/Position" unique_id=766583928 instance=ExtResource("5_h5tvb")]
+visible = false
 
 [node name="TestBurst2" parent="SubViewport/Position" unique_id=1731246534 instance=ExtResource("5_h5tvb")]
 visible = false

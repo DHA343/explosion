@@ -1,0 +1,137 @@
+shader_type particles;
+
+const float TAU_VALUE = 6.28318530718;
+
+uniform float radius : hint_range(1.0, 2000.0, 1.0) = 300.0;
+uniform float deceleration : hint_range(1.0, 8.0, 0.01) = 3.0;
+uniform float camera_distance : hint_range(1.0, 5000.0, 1.0) = 600.0;
+
+uniform float trail_time : hint_range(0.0, 1.0, 0.01) = 0.12;
+uniform float particle_width : hint_range(1.0, 100.0, 1.0) = 20.0;
+
+
+uint hash_u32(uint x) {
+	x ^= x >> 16u;
+	x *= 2246822519u;
+	x ^= x >> 13u;
+	x *= 3266489917u;
+	x ^= x >> 16u;
+	return x;
+}
+
+
+float rand01(uint seed) {
+	return float(hash_u32(seed)) / 4294967295.0;
+}
+
+
+vec3 random_sphere_direction(uint seed) {
+	float z = rand01(seed) * 2.0 - 1.0;
+	float angle = rand01(seed + 1u) * TAU_VALUE;
+	float xy = sqrt(max(0.0, 1.0 - z * z));
+
+	return vec3(
+		cos(angle) * xy,
+		sin(angle) * xy,
+		z
+	);
+}
+
+
+float distance_at(float t) {
+	float remaining = 1.0 - clamp(t, 0.0, 1.0);
+
+	return radius * (
+		1.0 - pow(remaining, deceleration)
+	);
+}
+
+
+vec3 position_3d_at(float t, vec3 direction) {
+	return direction * distance_at(t);
+}
+
+
+vec2 project_to_2d(vec3 position_3d) {
+	float depth = camera_distance - position_3d.z;
+	float perspective = camera_distance / depth;
+
+	return position_3d.xy * perspective;
+}
+
+
+void process() {
+	if (RESTART) {
+		CUSTOM.w = 0.0;
+	} else {
+		CUSTOM.w = min(
+			CUSTOM.w + DELTA / LIFETIME,
+			1.0
+		);
+	}
+
+	float t = CUSTOM.w;
+
+	uint seed = RANDOM_SEED + NUMBER * 747796405u;
+	vec3 direction = random_sphere_direction(seed);
+
+	float trail_duration = trail_time / LIFETIME;
+	float tail_t = max(t - trail_duration, 0.0);
+
+	vec3 head_3d = position_3d_at(t, direction);
+	vec3 tail_3d = position_3d_at(tail_t, direction);
+
+	vec2 head = project_to_2d(head_3d);
+	vec2 tail = project_to_2d(tail_3d);
+
+	vec2 segment = head - tail;
+	float segment_length = length(segment);
+
+	vec2 axis_x = vec2(1.0, 0.0);
+
+	if (segment_length > 0.0001) {
+		axis_x = segment / segment_length;
+	}
+
+	vec2 axis_y = vec2(
+		-axis_x.y,
+		axis_x.x
+	);
+
+	vec2 center = (head + tail) * 0.5;
+
+	float quad_length = segment_length + particle_width;
+
+	TRANSFORM[0] = vec4(
+		axis_x.x,
+		axis_x.y,
+		0.0,
+		0.0
+	);
+
+	TRANSFORM[1] = vec4(
+		axis_y.x,
+		axis_y.y,
+		0.0,
+		0.0
+	);
+
+	TRANSFORM[2] = vec4(
+		0.0,
+		0.0,
+		1.0,
+		0.0
+	);
+
+	TRANSFORM[3] = vec4(
+		center.x,
+		center.y,
+		0.0,
+		1.0
+	);
+
+	CUSTOM.x = quad_length;
+	CUSTOM.y = particle_width;
+
+	VELOCITY = vec3(0.0);
+}

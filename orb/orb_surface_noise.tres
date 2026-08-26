@@ -1,9 +1,10 @@
 [gd_resource type="NoiseTexture3D" format=3 uid="uid://d1fb8k1d7tceb"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_orb_surface"]
-frequency = 0.0015
+frequency = 0.0702
 fractal_octaves = 2
 
 [resource]
 noise = SubResource("FastNoiseLite_orb_surface")
 seamless = true
+seamless_blend_skirt = 0.3
