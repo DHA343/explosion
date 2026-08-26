@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bbpncqyy6jylk"]
 
-[ext_resource type="Shader" uid="uid://do14j15q8kqju" path="res://orb/orb_surface_shader.tres" id="1_surface_shader"]
-[ext_resource type="NoiseTexture3D" uid="uid://d1fb8k1d7tceb" path="res://orb/orb_surface_noise.tres" id="2_orb_noise"]
+[ext_resource type="Shader" uid="uid://do14j15q8kqju" path="res://orb/sphere/orb_surface_shader.tres" id="1_surface_shader"]
+[ext_resource type="NoiseTexture3D" uid="uid://d1fb8k1d7tceb" path="res://orb/sphere/orb_surface_noise.tres" id="2_orb_noise"]
 
 [resource]
 render_priority = 1

@@ -15,4 +15,4 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
-color = Color(1, 1, 1, 0.6313726)
+color = Color(1, 1, 1, 0.76862746)

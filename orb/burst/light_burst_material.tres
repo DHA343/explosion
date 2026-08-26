@@ -1,11 +1,8 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://r7tadqrv8a74"]
 
-[ext_resource type="Shader" uid="uid://dsoq1i6qscra8" path="res://orb/burst/light_burst_shader.tres" id="1_kedwy"]
+[ext_resource type="Shader" uid="uid://b13h6scqqpaau" path="res://orb/burst/light_burst_shader.gdshader" id="1_kedwy"]
 
 [resource]
 shader = ExtResource("1_kedwy")
-shader_parameter/color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-shader_parameter/inner_width = 0.02999999932944
-shader_parameter/outer_width = 0.12999999709424
-shader_parameter/edge_softness = 0.05999999865888
-shader_parameter/join_softness = 0.0050000002375
+shader_parameter/particle_color = Color(2.1168277, 2.1168277, 2.1168277, 1)
+shader_parameter/edge_softness = 1.0
