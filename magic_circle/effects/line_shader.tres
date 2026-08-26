@@ -29,7 +29,7 @@ default_value_enabled = true
 default_value = 2.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_dpcei"]
-size = Vector2(804.00006, 342)
+size = Vector2(804, 342)
 title = "明滅"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(99, 98, 97, 96)
@@ -375,7 +375,7 @@ default_input_values = [0, 1.0, 1, 0.0]
 operator = 2
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_thickness"]
-size = Vector2(904.00006, 602)
+size = Vector2(904, 602)
 title = "線幅方向の透明度グラデーション"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(26, 27, 28, 29, 45, 47, 46, 48, 49)
@@ -421,7 +421,7 @@ default_input_values = [0, 1.0, 1, 0.0]
 operator = 2
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_color_gradient"]
-size = Vector2(1524, 482)
+size = Vector2(1524, 482.00003)
 title = "線幅方向"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(61, 69, 63, 76, 66, 67, 68)
@@ -584,7 +584,7 @@ default_value_enabled = true
 default_value = 1.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_mdpp1"]
-size = Vector2(1944, 901.99994)
+size = Vector2(1944.0001, 902)
 title = "動くテクスチャ"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(94, 93, 82, 92, 91, 90, 89, 88, 87, 86, 84, 83, 81, 79, 78)

@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://bvh0gbsagtgm7"]
-
-[ext_resource type="Shader" uid="uid://ck3o1auwy7735" path="res://orb/core_glow.tres" id="1_fwi3b"]
-
-[resource]
-shader = ExtResource("1_fwi3b")
-shader_parameter/ColorParameter = Color(1.8247963, 1.8247963, 1.8247963, 0.5529412)
-shader_parameter/scale = 0.999999977648
