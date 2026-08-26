@@ -1,17 +1,9 @@
 [gd_resource type="NoiseTexture3D" format=3 uid="uid://d1fb8k1d7tceb"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_orb_surface"]
-noise_type = 1
-frequency = 0.01
-fractal_type = 1
-fractal_octaves = 5
-fractal_lacunarity = 2.0
-fractal_gain = 0.5
+frequency = 0.0015
+fractal_octaves = 2
 
 [resource]
 noise = SubResource("FastNoiseLite_orb_surface")
-width = 64
-height = 64
-depth = 64
 seamless = true
-normalize = true

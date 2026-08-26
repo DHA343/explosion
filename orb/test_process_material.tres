@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c73odugphg13p"]
+
+[ext_resource type="Shader" uid="uid://dnjk4xkgevnqm" path="res://orb/test_particle_shader.gdshader" id="1_8w6co"]
+
+[resource]
+shader = ExtResource("1_8w6co")
+shader_parameter/radius = 500.0
+shader_parameter/deceleration = 6.23999988287552
+shader_parameter/camera_distance = 900.0
+shader_parameter/base_scale = 1.5799999646838399

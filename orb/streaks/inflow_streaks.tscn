@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b1sr5qiur6oiv"]
 
-[ext_resource type="Material" uid="uid://r8h1ahbjem4h" path="res://orb/inflow_streaks_process_material.tres" id="1_material"]
+[ext_resource type="Material" uid="uid://r8h1ahbjem4h" path="res://orb/streaks/inflow_streaks_process_material.tres" id="1_material"]
 
 [node name="InflowStreaks" type="GPUParticles2D" unique_id=165995017]
 amount = 400

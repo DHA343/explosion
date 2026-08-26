@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bgqlmkf4oik0s"]
+
+[ext_resource type="Material" uid="uid://c73odugphg13p" path="res://orb/test_process_material.tres" id="2_pqkr2"]
+
+[sub_resource type="Gradient" id="Gradient_67qyc"]
+offsets = PackedFloat32Array(0.59949625, 1)
+colors = PackedColorArray(2.454227, 2.454227, 2.454227, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_r3xot"]
+gradient = SubResource("Gradient_67qyc")
+width = 128
+height = 128
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="TestBurst" type="GPUParticles2D" unique_id=766583928]
+amount = 10
+texture = SubResource("GradientTexture2D_r3xot")
+lifetime = 0.32
+randomness = 0.5
+fixed_fps = 60
+local_coords = true
+trail_lifetime = 0.01
+trail_sections = 36
+process_material = ExtResource("2_pqkr2")
