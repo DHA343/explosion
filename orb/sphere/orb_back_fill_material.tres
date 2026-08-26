@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ce5wx1o52tjhj"]
+
+[ext_resource type="Shader" uid="uid://bevso87ickmmm" path="res://orb/sphere/orb_back_fill_shader.tres" id="1_back_fill_shader"]
+
+[resource]
+render_priority = -1
+shader = ExtResource("1_back_fill_shader")
+shader_parameter/fill_color = Color(0.1367799, 0.00023635809, 0.25990525, 1)
+shader_parameter/fill_alpha = 0.8999999798832

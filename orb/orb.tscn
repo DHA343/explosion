@@ -3,48 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://orb/streaks/inflow_streaks.tscn" id="1_kjlvm"]
 [ext_resource type="Script" uid="uid://2b6s7lu7wl2v" path="res://orb/orb.gd" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://cc2sj0i1hx77n" path="res://orb/burst/light_burst.tscn" id="3_nfcmq"]
-[ext_resource type="Shader" uid="uid://dnjk4xkgevnqm" path="res://orb/burst/light_burst_process_shader.gdshader" id="4_kxnac"]
-[ext_resource type="Material" uid="uid://bbpncqyy6jylk" path="res://orb/sphere/orb_surface_material.tres" id="5_surface_material"]
+[ext_resource type="Script" path="res://orb/burst/light_burst.gd" id="4_h5tvb"]
+[ext_resource type="Material" uid="uid://skie0k8jq27s" path="res://orb/sphere/orb_shell_material.tres" id="5_shell_material"]
+[ext_resource type="Material" uid="uid://ce5wx1o52tjhj" path="res://orb/sphere/orb_back_fill_material.tres" id="6_back_fill_material"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h5tvb"]
-resource_local_to_scene = true
-shader = ExtResource("4_kxnac")
-shader_parameter/radius = 400.0
-shader_parameter/deceleration = 2.999999955296
-shader_parameter/camera_distance = 600.0
-shader_parameter/trail_ratio = 0.77999998256544
-shader_parameter/catchup_start = 0.8499999810008
-shader_parameter/catchup_end = 0.999999977648
-shader_parameter/catchup_power = 2.0000000298024
-shader_parameter/final_trail_ratio = 0.3999999910592
-shader_parameter/particle_width = 140.0
-shader_parameter/head_width_scale = 1.0
-shader_parameter/tail_width_scale = 0.45999998971808
-shader_parameter/spawn_width_end = 0.30000001192093
-shader_parameter/size_perspective_strength = 0.499999988824
-shader_parameter/depth_size_start = 0.1
-shader_parameter/depth_size_end = 0.3
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_j35yx"]
-resource_local_to_scene = true
-shader = ExtResource("4_kxnac")
-shader_parameter/radius = 200.0
-shader_parameter/deceleration = 2.999999955296
-shader_parameter/camera_distance = 600.0
-shader_parameter/trail_ratio = 0.77999998256544
-shader_parameter/catchup_start = 0.8499999810008
-shader_parameter/catchup_end = 0.999999977648
-shader_parameter/catchup_power = 2.0000000298024
-shader_parameter/final_trail_ratio = 0.3999999910592
-shader_parameter/particle_width = 140.0
-shader_parameter/head_width_scale = 1.0
-shader_parameter/tail_width_scale = 0.45999998971808
-shader_parameter/spawn_width_end = 0.30000001192093
-shader_parameter/size_perspective_strength = 0.499999988824
-shader_parameter/depth_size_start = 0.1
-shader_parameter/depth_size_end = 0.3
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_5nceb"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_j35yx"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3xot"]
@@ -52,7 +15,7 @@ resource_local_to_scene = true
 transparency = 1
 blend_mode = 1
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_5nceb")
+albedo_texture = SubResource("ViewportTexture_j35yx")
 billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_ua4af"]
@@ -73,15 +36,8 @@ position = Vector2(640, 640)
 [node name="InflowStreaks" parent="SubViewport/Position" unique_id=165995017 instance=ExtResource("1_kjlvm")]
 
 [node name="LightBurst" parent="SubViewport/Position" unique_id=766583928 instance=ExtResource("3_nfcmq")]
-lifetime = 0.15000000000000002
-randomness = 0.0
-process_material = SubResource("ShaderMaterial_h5tvb")
-
-[node name="LightBurst2" parent="SubViewport/Position" unique_id=1731246534 instance=ExtResource("3_nfcmq")]
-lifetime = 0.15000000000000002
-randomness = 0.0
-process_material = SubResource("ShaderMaterial_j35yx")
-sphere_size = 200.0
+script = ExtResource("4_h5tvb")
+particle_width = 90.0
 
 [node name="CoreEffects" type="MeshInstance3D" parent="." unique_id=976299695]
 material_override = SubResource("StandardMaterial3D_r3xot")
@@ -89,6 +45,12 @@ mesh = SubResource("QuadMesh_ua4af")
 
 [node name="Surface" type="MeshInstance3D" parent="." unique_id=1276417568]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00016480684, 0.0015127361, -0.00043857098)
-material_override = ExtResource("5_surface_material")
+material_override = ExtResource("5_shell_material")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_surface")
+
+[node name="BackFill" type="MeshInstance3D" parent="." unique_id=1857364204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00016480684, 0.0015127361, -0.00043857098)
+material_override = ExtResource("6_back_fill_material")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_surface")
