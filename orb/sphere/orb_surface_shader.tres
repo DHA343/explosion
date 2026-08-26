@@ -39,6 +39,12 @@ title = "表面質感"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(78, 79, 80, 81, 82)
 
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_surface_gradient"]
+size = Vector2(1500, 720)
+title = "Surface Gradient"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(130, 131, 132, 133, 134, 135)
+
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_0w0kv"]
 linked_parent_graph_frame = 101
 parameter_name = "rim_softness"
@@ -81,8 +87,9 @@ linked_parent_graph_frame = 102
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_6mrff"]
 linked_parent_graph_frame = 102
-expression = "albedo = surface_color.rgb;
-alpha = surface_mask * surface_alpha;"
+expression = "albedo = gradient_rgb;
+alpha = final_alpha;
+emission = final_emission;"
 
 [sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_gv78h"]
 linked_parent_graph_frame = 103
@@ -115,6 +122,63 @@ float blend_energy = sqrt(max(dot(weights, weights), 0.0001));
 centered_blend /= blend_energy;
 
 surface_noise_value = clamp(centered_blend + 0.5, 0.0, 1.0);"
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_surface_gradient"]
+linked_parent_graph_frame = 105
+parameter_name = "surface_gradient"
+texture_type = 1
+texture_repeat = 2
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_surface_gradient_v"]
+linked_parent_graph_frame = 105
+constant = 0.5
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_surface_gradient_uv"]
+linked_parent_graph_frame = 105
+op_type = 0
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_surface_gradient"]
+linked_parent_graph_frame = 105
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_surface_gradient"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+linked_parent_graph_frame = 105
+op_type = 2
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_surface_gradient_rgb"]
+linked_parent_graph_frame = 105
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_surface_one_minus_rim"]
+default_input_values = [0, 1.0, 1, 0.0]
+linked_parent_graph_frame = 102
+operator = 1
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_surface_fresnel_gradient"]
+linked_parent_graph_frame = 102
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_surface_mask_rim"]
+linked_parent_graph_frame = 102
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_surface_final_alpha"]
+linked_parent_graph_frame = 102
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_surface_emission_base"]
+linked_parent_graph_frame = 102
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_surface_final_emission"]
+linked_parent_graph_frame = 102
+operator = 2
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_surface_gradient_outputs"]
+linked_parent_graph_frame = 105
+expression = "gradient_rgb = rgb_input;
+gradient_alpha = alpha_input;"
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_3ydl2"]
 linked_parent_graph_frame = 100
@@ -499,6 +563,8 @@ nodes/fragment/103/node = SubResource("VisualShaderNodeFrame_ayfk5")
 nodes/fragment/103/position = Vector2(-2940, 160)
 nodes/fragment/104/node = SubResource("VisualShaderNodeFrame_cubn3")
 nodes/fragment/104/position = Vector2(-660, 260)
+nodes/fragment/105/node = SubResource("VisualShaderNodeFrame_surface_gradient")
+nodes/fragment/105/position = Vector2(-640, -260)
 nodes/fragment/114/node = SubResource("VisualShaderNodeVectorCompose_5f2b8")
 nodes/fragment/114/position = Vector2(1680, 480)
 nodes/fragment/115/node = SubResource("VisualShaderNodeVectorCompose_uodu5")
@@ -514,10 +580,11 @@ nodes/fragment/119/position = Vector2(2620, 220)
 nodes/fragment/121/node = SubResource("VisualShaderNodeExpression_6mrff")
 nodes/fragment/121/position = Vector2(2120, -940)
 nodes/fragment/121/size = Vector2(0, 0)
-nodes/fragment/121/input_ports = "0,5,surface_color;1,0,surface_mask;2,0,surface_alpha;"
-nodes/fragment/121/output_ports = "0,4,albedo;1,0,alpha;"
-nodes/fragment/121/expression = "albedo = surface_color.rgb;
-alpha = surface_mask * surface_alpha;"
+nodes/fragment/121/input_ports = "0,4,gradient_rgb;1,0,final_alpha;2,4,final_emission;"
+nodes/fragment/121/output_ports = "0,4,albedo;1,0,alpha;2,4,emission;"
+nodes/fragment/121/expression = "albedo = gradient_rgb;
+alpha = final_alpha;
+emission = final_emission;"
 nodes/fragment/123/node = SubResource("VisualShaderNodeTexture3D_gv78h")
 nodes/fragment/123/position = Vector2(-1460, 1800)
 nodes/fragment/124/node = SubResource("VisualShaderNodeVectorDecompose_hnmtm")
@@ -541,4 +608,35 @@ float blend_energy = sqrt(max(dot(weights, weights), 0.0001));
 centered_blend /= blend_energy;
 
 surface_noise_value = clamp(centered_blend + 0.5, 0.0, 1.0);"
-nodes/fragment/connections = PackedInt32Array(2, 0, 5, 3, 3, 0, 5, 0, 4, 0, 5, 1, 5, 0, 20, 0, 10, 0, 20, 1, 11, 0, 20, 2, 73, 0, 20, 3, 71, 0, 20, 4, 60, 0, 68, 0, 61, 0, 68, 1, 64, 0, 68, 2, 62, 0, 68, 3, 63, 0, 68, 4, 74, 0, 68, 5, 75, 0, 68, 6, 68, 0, 70, 0, 69, 0, 70, 2, 70, 0, 71, 0, 68, 1, 76, 0, 69, 0, 76, 2, 76, 0, 77, 0, 68, 2, 123, 0, 69, 0, 123, 2, 123, 0, 124, 0, 68, 3, 125, 0, 69, 0, 125, 2, 125, 0, 126, 0, 77, 0, 127, 0, 124, 0, 127, 1, 126, 0, 127, 2, 68, 4, 127, 3, 127, 0, 82, 1, 3, 0, 79, 0, 4, 0, 79, 1, 78, 0, 79, 3, 79, 0, 82, 0, 20, 0, 82, 2, 80, 0, 82, 3, 81, 0, 82, 4, 87, 0, 121, 0, 82, 0, 121, 1, 89, 0, 121, 2, 82, 0, 114, 0, 82, 0, 114, 1, 82, 0, 114, 2, 82, 0, 114, 3, 88, 0, 115, 0, 88, 0, 115, 1, 88, 0, 115, 2, 88, 0, 115, 3, 87, 0, 116, 0, 114, 0, 116, 1, 116, 0, 117, 0, 115, 0, 117, 1, 117, 0, 118, 0, 118, 0, 119, 0, 118, 1, 119, 1, 118, 2, 119, 2, 121, 0, 0, 0, 121, 1, 0, 1, 119, 0, 0, 5)
+nodes/fragment/130/node = SubResource("VisualShaderNodeTexture2DParameter_surface_gradient")
+nodes/fragment/130/position = Vector2(-520, -120)
+nodes/fragment/131/node = SubResource("VisualShaderNodeFloatConstant_surface_gradient_v")
+nodes/fragment/131/position = Vector2(-520, 180)
+nodes/fragment/132/node = SubResource("VisualShaderNodeVectorCompose_surface_gradient_uv")
+nodes/fragment/132/position = Vector2(-180, 40)
+nodes/fragment/133/node = SubResource("VisualShaderNodeTexture_surface_gradient")
+nodes/fragment/133/position = Vector2(120, 40)
+nodes/fragment/134/node = SubResource("VisualShaderNodeVectorDecompose_surface_gradient")
+nodes/fragment/134/position = Vector2(420, 40)
+nodes/fragment/135/node = SubResource("VisualShaderNodeVectorCompose_surface_gradient_rgb")
+nodes/fragment/135/position = Vector2(720, -80)
+nodes/fragment/136/node = SubResource("VisualShaderNodeFloatOp_surface_one_minus_rim")
+nodes/fragment/136/position = Vector2(820, 760)
+nodes/fragment/137/node = SubResource("VisualShaderNodeFloatOp_surface_fresnel_gradient")
+nodes/fragment/137/position = Vector2(820, 300)
+nodes/fragment/138/node = SubResource("VisualShaderNodeFloatOp_surface_mask_rim")
+nodes/fragment/138/position = Vector2(1120, 300)
+nodes/fragment/139/node = SubResource("VisualShaderNodeFloatOp_surface_final_alpha")
+nodes/fragment/139/position = Vector2(1440, 120)
+nodes/fragment/140/node = SubResource("VisualShaderNodeVectorOp_surface_emission_base")
+nodes/fragment/140/position = Vector2(1120, -160)
+nodes/fragment/141/node = SubResource("VisualShaderNodeVectorOp_surface_final_emission")
+nodes/fragment/141/position = Vector2(1500, -160)
+nodes/fragment/142/node = SubResource("VisualShaderNodeExpression_surface_gradient_outputs")
+nodes/fragment/142/position = Vector2(980, -80)
+nodes/fragment/142/size = Vector2(0, 0)
+nodes/fragment/142/input_ports = "0,4,rgb_input;1,0,alpha_input;"
+nodes/fragment/142/output_ports = "0,4,gradient_rgb;1,0,gradient_alpha;"
+nodes/fragment/142/expression = "gradient_rgb = rgb_input;
+gradient_alpha = alpha_input;"
+nodes/fragment/connections = PackedInt32Array(2, 0, 5, 3, 3, 0, 5, 0, 4, 0, 5, 1, 5, 0, 20, 0, 10, 0, 20, 1, 11, 0, 20, 2, 73, 0, 20, 3, 71, 0, 20, 4, 60, 0, 68, 0, 61, 0, 68, 1, 64, 0, 68, 2, 62, 0, 68, 3, 63, 0, 68, 4, 74, 0, 68, 5, 75, 0, 68, 6, 68, 0, 70, 0, 69, 0, 70, 2, 70, 0, 71, 0, 68, 1, 76, 0, 69, 0, 76, 2, 76, 0, 77, 0, 68, 2, 123, 0, 69, 0, 123, 2, 123, 0, 124, 0, 68, 3, 125, 0, 69, 0, 125, 2, 125, 0, 126, 0, 77, 0, 127, 0, 124, 0, 127, 1, 126, 0, 127, 2, 68, 4, 127, 3, 127, 0, 82, 1, 3, 0, 79, 0, 4, 0, 79, 1, 78, 0, 79, 3, 79, 0, 82, 0, 20, 0, 82, 2, 80, 0, 82, 3, 81, 0, 82, 4, 87, 0, 121, 0, 82, 0, 121, 1, 89, 0, 121, 2, 82, 0, 114, 0, 82, 0, 114, 1, 82, 0, 114, 2, 82, 0, 114, 3, 88, 0, 115, 0, 88, 0, 115, 1, 88, 0, 115, 2, 88, 0, 115, 3, 87, 0, 116, 0, 114, 0, 116, 1, 116, 0, 117, 0, 115, 0, 117, 1, 117, 0, 118, 0, 118, 0, 119, 0, 118, 1, 119, 1, 118, 2, 119, 2, 121, 0, 0, 0, 121, 1, 0, 1, 119, 0, 0, 5, 130, 0, 133, 0, 131, 0, 132, 1, 132, 0, 133, 2, 133, 0, 134, 0, 134, 0, 135, 0, 134, 1, 135, 1, 134, 2, 135, 2, 79, 0, 137, 0, 134, 3, 137, 1, 20, 0, 136, 1, 137, 0, 138, 0, 136, 0, 138, 1, 138, 0, 139, 0, 89, 0, 139, 1, 135, 0, 140, 0, 138, 0, 140, 1, 140, 0, 141, 0, 88, 0, 141, 1, 135, 0, 121, 0, 139, 0, 121, 1, 141, 0, 121, 2, 121, 2, 0, 5, 127, 0, 132, 0, 135, 0, 142, 0, 134, 3, 142, 1, 142, 1, 137, 1, 142, 0, 140, 0, 142, 0, 121, 0, 130, 0, 133, 2, 132, 0, 133, 0)

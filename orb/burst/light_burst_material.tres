@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_kedwy")
-shader_parameter/particle_color = Color(2.1168277, 2.1168277, 2.1168277, 1)
+shader_parameter/particle_color = Color(3.2944162, 3.2944162, 3.2944162, 0.14509805)
 shader_parameter/edge_softness = 1.0

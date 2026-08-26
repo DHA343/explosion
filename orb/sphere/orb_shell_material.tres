@@ -1,12 +1,12 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://skie0k8jq27s"]
 
+[ext_resource type="Material" uid="uid://d1jldulyrj3jm" path="res://orb/sphere/orb_surface_material.tres" id="1_4i2gu"]
 [ext_resource type="Shader" uid="uid://b7e7htkbchxor" path="res://orb/sphere/orb_shell_shader.tres" id="1_shell_shader"]
-[ext_resource type="Material" uid="uid://d1jldulyrj3jm" path="res://orb/sphere/orb_surface_material.tres" id="2_surface_detail_material"]
 [ext_resource type="NoiseTexture3D" uid="uid://d1fb8k1d7tceb" path="res://orb/sphere/orb_surface_noise.tres" id="3_orb_noise"]
 
 [resource]
 render_priority = 2
-next_pass = ExtResource("2_surface_detail_material")
+next_pass = ExtResource("1_4i2gu")
 shader = ExtResource("1_shell_shader")
 shader_parameter/inner_color = Color(1, 0.15, 0.8, 1)
 shader_parameter/rim_color = Color(0, 0, 0, 1)
@@ -15,7 +15,7 @@ shader_parameter/rim_start = 0.72
 shader_parameter/rim_softness = 0.06
 shader_parameter/rim_noise_strength = 0.02
 shader_parameter/inner_band_start = 0.63999998569472
-shader_parameter/inner_band_softness = 0.2000000095
+shader_parameter/inner_band_softness = 0.05100000242249999
 shader_parameter/rim_overlap = 0.02
 shader_parameter/noise_direction = Vector3(0, 0, 0)
 shader_parameter/noise_scale = 1.0

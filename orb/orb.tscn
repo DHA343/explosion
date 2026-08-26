@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://orb/streaks/inflow_streaks.tscn" id="1_kjlvm"]
 [ext_resource type="Script" uid="uid://2b6s7lu7wl2v" path="res://orb/orb.gd" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://cc2sj0i1hx77n" path="res://orb/burst/light_burst.tscn" id="3_nfcmq"]
-[ext_resource type="Script" path="res://orb/burst/light_burst.gd" id="4_h5tvb"]
+[ext_resource type="Material" uid="uid://bvh0gbsagtgm7" path="res://orb/core_glow_material.tres" id="5_j35yx"]
 [ext_resource type="Material" uid="uid://skie0k8jq27s" path="res://orb/sphere/orb_shell_material.tres" id="5_shell_material"]
 [ext_resource type="Material" uid="uid://ce5wx1o52tjhj" path="res://orb/sphere/orb_back_fill_material.tres" id="6_back_fill_material"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_j35yx"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_h5tvb"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3xot"]
@@ -15,7 +15,7 @@ resource_local_to_scene = true
 transparency = 1
 blend_mode = 1
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_j35yx")
+albedo_texture = SubResource("ViewportTexture_h5tvb")
 billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_ua4af"]
@@ -28,22 +28,35 @@ script = ExtResource("1_root")
 [node name="SubViewport" type="SubViewport" parent="." unique_id=696539737]
 transparent_bg = true
 use_hdr_2d = true
-size = Vector2i(1280, 1280)
+size = Vector2i(1600, 1600)
 
 [node name="Position" type="Node2D" parent="SubViewport" unique_id=771168688]
-position = Vector2(640, 640)
+position = Vector2(800, 800)
 
 [node name="InflowStreaks" parent="SubViewport/Position" unique_id=165995017 instance=ExtResource("1_kjlvm")]
 
 [node name="LightBurst" parent="SubViewport/Position" unique_id=766583928 instance=ExtResource("3_nfcmq")]
-script = ExtResource("4_h5tvb")
-particle_width = 90.0
+amount = 80
+
+[node name="CoreGlow" type="ColorRect" parent="SubViewport/Position" unique_id=917911408]
+material = ExtResource("5_j35yx")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -750.0
+offset_top = -750.0
+offset_right = 750.0
+offset_bottom = 750.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CoreEffects" type="MeshInstance3D" parent="." unique_id=976299695]
 material_override = SubResource("StandardMaterial3D_r3xot")
 mesh = SubResource("QuadMesh_ua4af")
 
-[node name="Surface" type="MeshInstance3D" parent="." unique_id=1276417568]
+[node name="Shell" type="MeshInstance3D" parent="." unique_id=1276417568]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00016480684, 0.0015127361, -0.00043857098)
 material_override = ExtResource("5_shell_material")
 cast_shadow = 0

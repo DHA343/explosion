@@ -4,15 +4,15 @@
 
 [resource]
 shader = ExtResource("1_xbxo3")
-shader_parameter/radius = 400.0
+shader_parameter/radius = 430.0
 shader_parameter/deceleration = 3.999999932944
 shader_parameter/camera_distance = 600.0
 shader_parameter/trail_ratio = 0.77999998256544
-shader_parameter/catchup_start = 0.7999999821184
+shader_parameter/catchup_start = 0.97999997809504
 shader_parameter/catchup_end = 0.999999977648
 shader_parameter/catchup_power = 1.0000000149012
 shader_parameter/final_trail_ratio = 0.249999994412
-shader_parameter/particle_width = 90.0
+shader_parameter/particle_width = 60.0
 shader_parameter/head_width_scale = 1.0
 shader_parameter/tail_width_scale = 0.45999998971808
 shader_parameter/spawn_width_end = 0.30000001192093

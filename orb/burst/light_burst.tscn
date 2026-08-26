@@ -5,7 +5,7 @@
 
 [node name="LightBurst" type="GPUParticles2D" unique_id=15074733]
 material = ExtResource("2_4glmt")
-amount = 20
+amount = 30
 lifetime = 0.2
 randomness = 0.6
 local_coords = true

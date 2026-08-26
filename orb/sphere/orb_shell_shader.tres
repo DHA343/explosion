@@ -275,7 +275,7 @@ default_value_enabled = true
 default_value = 1.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_wc4ww"]
-size = Vector2(733, 166.00009)
+size = Vector2(656, 122)
 title = "ローカル座標"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(2, 3)

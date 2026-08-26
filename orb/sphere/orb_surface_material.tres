@@ -3,22 +3,27 @@
 [ext_resource type="Shader" uid="uid://b3ksht1rpeo5p" path="res://orb/sphere/orb_surface_shader.tres" id="1_surface_detail_shader"]
 [ext_resource type="NoiseTexture3D" uid="uid://d1fb8k1d7tceb" path="res://orb/sphere/orb_surface_noise.tres" id="2_orb_noise"]
 
+[sub_resource type="Gradient" id="Gradient_orb_surface"]
+offsets = PackedFloat32Array(0, 0.35543767, 0.5835544, 0.7984085)
+colors = PackedColorArray(0, 0, 0, 0, 0.39815146, 0.15296806, 0.7659265, 0.47058824, 0.9253334, 0.44, 1, 0.6627451, 0.68, 0.27199998, 0.3468, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_orb_surface"]
+gradient = SubResource("Gradient_orb_surface")
+
 [resource]
 render_priority = 1
 shader = ExtResource("1_surface_detail_shader")
-shader_parameter/surface_color = Color(0.47514987, 0.3145, 0.85, 1)
-shader_parameter/surface_fresnel_power = 0.89999998360852
 shader_parameter/noise_direction = Vector3(0, 0, 0)
 shader_parameter/noise_scale = 1.0
 shader_parameter/noise_speed = 0.08
 shader_parameter/surface_noise_scale = 0.92999998293796
 shader_parameter/surface_noise_speed = 0.8099999371908799
 shader_parameter/orb_noise = ExtResource("2_orb_noise")
-shader_parameter/fresnel_power = 5.20999988913408
+shader_parameter/surface_gradient = SubResource("GradientTexture1D_orb_surface")
+shader_parameter/surface_fresnel_power = 0.4599999934434
+shader_parameter/fresnel_power = 1.0
 shader_parameter/rim_start = 0.72
 shader_parameter/rim_softness = 0.06
 shader_parameter/rim_noise_strength = 0.02
-shader_parameter/surface_noise_threshold = 0.61999998614176
-shader_parameter/surface_noise_softness = 0.25
-shader_parameter/surface_alpha = 0.249999994412
-shader_parameter/surface_emission_strength = 2.0
+shader_parameter/surface_alpha = 0.499999988824
+shader_parameter/surface_emission_strength = 6.15999986231168

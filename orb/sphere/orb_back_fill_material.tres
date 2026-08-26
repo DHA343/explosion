@@ -5,5 +5,5 @@
 [resource]
 render_priority = -1
 shader = ExtResource("1_back_fill_shader")
-shader_parameter/fill_color = Color(0.1367799, 0.00023635809, 0.25990525, 1)
-shader_parameter/fill_alpha = 0.8999999798832
+shader_parameter/fill_color = Color(0.0828, 0.050399996, 0.18, 1)
+shader_parameter/fill_alpha = 0.999999977648
