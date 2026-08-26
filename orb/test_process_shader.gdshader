@@ -2,12 +2,17 @@ shader_type particles;
 
 const float TAU_VALUE = 6.28318530718;
 
-uniform float radius : hint_range(1.0, 2000.0, 1.0) = 300.0;
+uniform float radius : hint_range(1.0, 2000.0, 1.0) = 500.0;
 uniform float deceleration : hint_range(1.0, 8.0, 0.01) = 3.0;
 uniform float camera_distance : hint_range(1.0, 5000.0, 1.0) = 600.0;
 
-uniform float trail_time : hint_range(0.0, 1.0, 0.01) = 0.12;
-uniform float particle_width : hint_range(1.0, 100.0, 1.0) = 20.0;
+uniform float trail_ratio : hint_range(0.0, 1.0, 0.01) = 0.12;
+uniform float particle_width : hint_range(1.0, 200.0, 1.0) = 80.0;
+
+uniform float catchup_start : hint_range(0.0, 1.0, 0.01) = 0.80;
+uniform float catchup_end : hint_range(0.0, 1.0, 0.01) = 0.98;
+uniform float catchup_power : hint_range(0.1, 8.0, 0.1) = 2.0;
+uniform float final_trail_ratio : hint_range(0.0, 1.0, 0.01) = 0.20;
 
 
 uint hash_u32(uint x) {
@@ -39,7 +44,8 @@ vec3 random_sphere_direction(uint seed) {
 
 
 float distance_at(float t) {
-	float remaining = 1.0 - clamp(t, 0.0, 1.0);
+	float clamped_t = clamp(t, 0.0, 1.0);
+	float remaining = 1.0 - clamped_t;
 
 	return radius * (
 		1.0 - pow(remaining, deceleration)
@@ -75,19 +81,56 @@ void process() {
 	uint seed = RANDOM_SEED + NUMBER * 747796405u;
 	vec3 direction = random_sphere_direction(seed);
 
-	float trail_duration = trail_time / LIFETIME;
-	float tail_t = max(t - trail_duration, 0.0);
+	float tail_t = max(
+		t - trail_ratio,
+		0.0
+	);
 
-	vec3 head_3d = position_3d_at(t, direction);
-	vec3 tail_3d = position_3d_at(tail_t, direction);
+	vec3 head_3d = position_3d_at(
+		t,
+		direction
+	);
+
+	vec3 raw_tail_3d = position_3d_at(
+		tail_t,
+		direction
+	);
 
 	vec2 head = project_to_2d(head_3d);
-	vec2 tail = project_to_2d(tail_3d);
+	vec2 raw_tail = project_to_2d(raw_tail_3d);
+
+	float progress = distance_at(t) / radius;
+
+	float catchup = smoothstep(
+		catchup_start,
+		catchup_end,
+		progress
+	);
+
+	catchup = pow(
+		catchup,
+		catchup_power
+	);
+
+	float trail_length_ratio = mix(
+		1.0,
+		final_trail_ratio,
+		catchup
+	);
+
+	vec2 tail = mix(
+		head,
+		raw_tail,
+		trail_length_ratio
+	);
 
 	vec2 segment = head - tail;
 	float segment_length = length(segment);
 
-	vec2 axis_x = vec2(1.0, 0.0);
+	vec2 axis_x = vec2(
+		1.0,
+		0.0
+	);
 
 	if (segment_length > 0.0001) {
 		axis_x = segment / segment_length;
@@ -98,9 +141,13 @@ void process() {
 		axis_x.x
 	);
 
-	vec2 center = (head + tail) * 0.5;
+	vec2 center = (
+		head + tail
+	) * 0.5;
 
-	float quad_length = segment_length + particle_width;
+	float quad_length =
+		segment_length
+		+ particle_width;
 
 	TRANSFORM[0] = vec4(
 		axis_x.x,

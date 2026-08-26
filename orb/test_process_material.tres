@@ -6,6 +6,10 @@
 shader = ExtResource("1_8w6co")
 shader_parameter/radius = 500.0
 shader_parameter/deceleration = 3.0
-shader_parameter/camera_distance = 900.0
-shader_parameter/trail_time = 0.12
-shader_parameter/particle_width = 20.0
+shader_parameter/camera_distance = 600.0
+shader_parameter/trail_ratio = 0.7999999821184
+shader_parameter/particle_width = 122.0
+shader_parameter/catchup_start = 0.8
+shader_parameter/catchup_end = 0.97999997809504
+shader_parameter/catchup_power = 1.5000000223518
+shader_parameter/final_trail_ratio = 0.2
