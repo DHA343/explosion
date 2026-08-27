@@ -4,7 +4,7 @@ extends Node3D
 const ENERGY_MOTE_SCENE := preload("res://orb/energy_emission/energy_mote.tscn")
 
 @export_group("Emission")
-@export_range(1.0, 200.0, 1.0, "suffix:particles/s") var spawn_rate := 50.0
+@export_range(1.0, 200.0, 1.0, "suffix:particles/s") var spawn_rate := 100.0
 @export_range(0.0, 1.0, 0.01) var spawn_randomness := 0.2
 
 @export_group("Collision")
@@ -17,7 +17,7 @@ const ENERGY_MOTE_SCENE := preload("res://orb/energy_emission/energy_mote.tscn")
 @export_range(0.05, 1.0, 0.05) var minimum_speed_ratio := 0.25
 
 @export_group("Appearance")
-@export_range(0.01, 0.1, 0.005) var size := 0.035
+@export_range(0.01, 0.3, 0.005) var size := 0.08
 @export_range(0.0, 0.03, 0.005) var size_variation := 0.01
 
 @export_group("Impact")

@@ -11,25 +11,26 @@ albedo_color = Color(0.116666794, 0, 1, 0.13725491)
 [sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
 
 [node name="EnergyEmission" type="Node3D" unique_id=1084154656]
-
-[node name="Sphere" type="MeshInstance3D" parent="." unique_id=1027100202]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005408764)
-material_override = SubResource("StandardMaterial3D_r3xot")
-mesh = SubResource("SphereMesh_ua4af")
-
-[node name="EnergyEmitter" type="Node3D" parent="." unique_id=895996931]
 script = ExtResource("5_emitter")
-spawn_rate = 94.0
-speed = 7.9
+spawn_rate = 50.0
+speed = 6.699999999999999
 speed_variation = 1.5
-deceleration = 4.0
-minimum_speed_ratio = 0.15000000000000002
-size = 0.045
+deceleration = 1.8
+minimum_speed_ratio = 0.1
 size_variation = 0.02
 impact_strength = 0.8
+impact_duration = 0.1
+fade_duration = 0.09
+emission = 4.0
+
+[node name="GuideSphere" type="MeshInstance3D" parent="." unique_id=1027100202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005408764)
+visible = false
+material_override = SubResource("StandardMaterial3D_r3xot")
+mesh = SubResource("SphereMesh_ua4af")
 
 [node name="OrbitCamera" type="Node3D" parent="." unique_id=1699904532]
 script = ExtResource("3_8xi78")
 
 [node name="Camera3D" type="Camera3D" parent="OrbitCamera" unique_id=1378846785]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1298807)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.9462427)

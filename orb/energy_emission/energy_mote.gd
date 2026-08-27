@@ -38,13 +38,12 @@ func _ready() -> void:
 	var material := mesh.material_override as ShaderMaterial
 	mesh.material_override = material.duplicate() as ShaderMaterial
 	material = mesh.material_override as ShaderMaterial
-	material.set_shader_parameter("sphere_center_world", sphere_center)
-	material.set_shader_parameter("sphere_radius", sphere_radius)
 	material.set_shader_parameter("impact_strength", impact_strength)
 	material.set_shader_parameter("blob_color", color)
 	material.set_shader_parameter("emission_intensity", emission)
 	material.set_shader_parameter("deform", 0.0)
 	material.set_shader_parameter("fade", 1.0)
+	_update_visual_orientation()
 
 
 func _process(delta: float) -> void:
@@ -57,6 +56,7 @@ func _process(delta: float) -> void:
 			_fade(delta)
 
 	mesh.position = direction * distance
+	_update_visual_orientation()
 
 
 func _travel(delta: float) -> void:
@@ -97,3 +97,25 @@ func _fade(delta: float) -> void:
 
 	if fade_progress >= 1.0:
 		queue_free()
+
+
+func _update_visual_orientation() -> void:
+	var camera := get_viewport().get_camera_3d()
+	if camera == null:
+		return
+
+	mesh.look_at(camera.global_position)
+	mesh.scale = Vector3.ONE * size
+
+	var surface_normal := (mesh.global_position - sphere_center).normalized()
+	var camera_direction := (camera.global_position - mesh.global_position).normalized()
+	var projected_normal := surface_normal - camera_direction * surface_normal.dot(camera_direction)
+	var radial_axis := Vector2.RIGHT
+
+	if projected_normal.length_squared() > 0.00000001:
+		var mesh_right := mesh.global_transform.basis.x.normalized()
+		var mesh_up := mesh.global_transform.basis.y.normalized()
+		radial_axis = Vector2(projected_normal.dot(mesh_right), projected_normal.dot(mesh_up)).normalized()
+
+	var material := mesh.material_override as ShaderMaterial
+	material.set_shader_parameter("radial_axis", radial_axis)

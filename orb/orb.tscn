@@ -3,7 +3,7 @@
 [ext_resource type="Shader" uid="uid://b144cgiqqdogf" path="res://main/night_sky.gdshader" id="1_q0apk"]
 [ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://orb/core_glow/core_glow_material.tres" id="2_nfcmq"]
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://orb/orbit_camera.gd" id="2_womfm"]
-[ext_resource type="Script" uid="uid://cxdj0ffff6rrs" path="res://orb/energy_emission/energy_emitter.gd" id="3_energy_emitter"]
+[ext_resource type="PackedScene" uid="uid://dai3wvh3arh42" path="res://orb/energy_emission/energy_emission.tscn" id="5_kxnac"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -47,8 +47,6 @@ volumetric_fog_sky_affect = 0.8
 material = ExtResource("2_nfcmq")
 size = Vector3(2, 2, 2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
-
 [node name="Orb" type="Node3D" unique_id=252090666]
 
 [node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=904025280]
@@ -63,18 +61,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.0222232)
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
 mesh = SubResource("BoxMesh_ua4af")
 
-[node name="EnergyEmitter" type="Node3D" parent="." unique_id=2083796113]
-script = ExtResource("3_energy_emitter")
-spawn_rate = 100.0
-collision_radius = 0.79
-speed = 18.0
-deceleration = 3.0
-minimum_speed_ratio = 0.15000000000000002
-size = 0.045
-size_variation = 0.02
-impact_strength = 0.8
-emission = 7.2
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2059376061]
-visible = false
-mesh = SubResource("SphereMesh_ua4af")
+[node name="EnergyEmission" parent="." unique_id=1084154656 instance=ExtResource("5_kxnac")]
