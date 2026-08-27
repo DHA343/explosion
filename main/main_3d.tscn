@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://be4p8ecdqv0sg" path="res://magic_circle/3d/magic_circle_3d.tscn" id="3_magic_circle"]
 [ext_resource type="Shader" uid="uid://b3r0oo7r2rgv2" path="res://main/ground_plane.gdshader" id="4_ground"]
 [ext_resource type="Script" uid="uid://ccr4uytuht3go" path="res://main/free_fly_camera.gd" id="5_camera"]
+[ext_resource type="PackedScene" uid="uid://c0kne2q7bmeo4" path="res://orb/orb.tscn" id="6_imsqp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night_sky"]
 shader = ExtResource("2_night_sky")
@@ -28,6 +29,10 @@ reflected_light_source = 2
 tonemap_mode = 2
 glow_enabled = true
 glow_normalized = true
+glow_intensity = 0.5
+glow_strength = 1.1
+glow_bloom = 0.15
+glow_hdr_threshold = 0.8
 fog_enabled = true
 fog_light_color = Color(0.018, 0.028, 0.065, 1)
 fog_light_energy = 0.35
@@ -61,6 +66,14 @@ script = ExtResource("1_main")
 [node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=2113279528]
 environment = SubResource("Environment_night")
 
+[node name="Camera3D" type="Camera3D" parent="." unique_id=792399058]
+transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 160)
+current = true
+fov = 52.0
+far = 2000.0
+script = ExtResource("5_camera")
+focus_point = Vector3(0, 60, 0)
+
 [node name="GlobalLight" type="DirectionalLight3D" parent="." unique_id=36469223]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 light_color = Color(0.62, 0.7, 0.9, 1)
@@ -69,17 +82,12 @@ light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 directional_shadow_max_distance = 250.0
 
-[node name="MagicCircle3D" parent="." unique_id=1323669472 instance=ExtResource("3_magic_circle")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75, 0)
-
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=701398073]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013969421, 0, -0.05883789)
 mesh = SubResource("PlaneMesh_ground")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=792399058]
-transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 160)
-current = true
-fov = 52.0
-far = 2000.0
-script = ExtResource("5_camera")
-focus_point = Vector3(0, 60, 0)
+[node name="MagicCircle3D" parent="." unique_id=1323669472 instance=ExtResource("3_magic_circle")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75, 0)
+
+[node name="Orb" parent="." unique_id=252090666 instance=ExtResource("6_imsqp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 152.72737)

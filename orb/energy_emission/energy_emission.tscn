@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://dai3wvh3arh42"]
+
+[ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://orb/orbit_camera.gd" id="3_8xi78"]
+[ext_resource type="Script" uid="uid://cxdj0ffff6rrs" path="res://orb/energy_emission/energy_emitter.gd" id="5_emitter"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3xot"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.116666794, 0, 1, 0.13725491)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
+
+[node name="EnergyEmission" type="Node3D" unique_id=1084154656]
+
+[node name="Sphere" type="MeshInstance3D" parent="." unique_id=1027100202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005408764)
+material_override = SubResource("StandardMaterial3D_r3xot")
+mesh = SubResource("SphereMesh_ua4af")
+
+[node name="EnergyEmitter" type="Node3D" parent="." unique_id=895996931]
+script = ExtResource("5_emitter")
+spawn_rate = 94.0
+speed = 7.9
+speed_variation = 1.5
+deceleration = 4.0
+minimum_speed_ratio = 0.15000000000000002
+size = 0.045
+size_variation = 0.02
+impact_strength = 0.8
+
+[node name="OrbitCamera" type="Node3D" parent="." unique_id=1699904532]
+script = ExtResource("3_8xi78")
+
+[node name="Camera3D" type="Camera3D" parent="OrbitCamera" unique_id=1378846785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1298807)
