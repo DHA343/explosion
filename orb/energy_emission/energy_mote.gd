@@ -13,7 +13,7 @@ var sphere_center := Vector3.ZERO
 var sphere_radius := 0.5
 var size := 0.035
 var initial_speed := 2.0
-var deceleration := 1.5
+var deceleration_exponent := 1.5
 var minimum_speed_ratio := 0.25
 var impact_strength := 0.7
 var impact_duration := 0.12
@@ -21,6 +21,7 @@ var fade_duration := 0.25
 var color := Color.WHITE
 var emission := 2.0
 var direction := Vector3.FORWARD
+var shape_seed := 0.0
 
 @onready var mesh: MeshInstance3D = $Mesh
 
@@ -41,6 +42,7 @@ func _ready() -> void:
 	material.set_shader_parameter("impact_strength", impact_strength)
 	material.set_shader_parameter("blob_color", color)
 	material.set_shader_parameter("emission_intensity", emission)
+	material.set_shader_parameter("shape_seed", shape_seed)
 	material.set_shader_parameter("deform", 0.0)
 	material.set_shader_parameter("fade", 1.0)
 	_update_visual_orientation()
@@ -62,8 +64,8 @@ func _process(delta: float) -> void:
 func _travel(delta: float) -> void:
 	var contact_distance := sphere_radius - size
 	var travel_progress := clampf(distance / contact_distance, 0.0, 1.0)
-	var decay := pow(1.0 - travel_progress, deceleration)
-	var speed_factor := lerpf(minimum_speed_ratio, 1.0, decay)
+	var deceleration_progress := pow(travel_progress, deceleration_exponent)
+	var speed_factor := lerpf(1.0, minimum_speed_ratio, deceleration_progress)
 	var current_speed := initial_speed * speed_factor
 	distance += current_speed * delta
 
@@ -76,12 +78,13 @@ func _impact(delta: float) -> void:
 	impact_time += delta
 
 	var impact_progress := clampf(impact_time / impact_duration, 0.0, 1.0)
-	var smooth_impact := impact_progress * impact_progress * (3.0 - 2.0 * impact_progress)
+	var ease_out_impact := 1.0 - pow(1.0 - impact_progress, 3.0)
 	var radial_scale := lerpf(1.0, IMPACT_RADIAL_SCALE, impact_strength)
-	distance = sphere_radius - size * lerpf(1.0, radial_scale, smooth_impact)
+	distance = sphere_radius - size * lerpf(1.0, radial_scale, ease_out_impact)
 
 	var material := mesh.material_override as ShaderMaterial
-	material.set_shader_parameter("deform", smooth_impact)
+	material.set_shader_parameter("deform", ease_out_impact)
+	_fade(delta)
 
 	if impact_progress >= 1.0:
 		state = State.FADING
@@ -107,15 +110,17 @@ func _update_visual_orientation() -> void:
 	mesh.look_at(camera.global_position)
 	mesh.scale = Vector3.ONE * size
 
+	var mesh_right := mesh.global_transform.basis.x.normalized()
+	var mesh_up := mesh.global_transform.basis.y.normalized()
 	var surface_normal := (mesh.global_position - sphere_center).normalized()
 	var camera_direction := (camera.global_position - mesh.global_position).normalized()
 	var projected_normal := surface_normal - camera_direction * surface_normal.dot(camera_direction)
-	var radial_axis := Vector2.RIGHT
+	var impact_axis := Vector2.RIGHT
+	var impact_visibility := clampf(projected_normal.length(), 0.0, 1.0)
 
 	if projected_normal.length_squared() > 0.00000001:
-		var mesh_right := mesh.global_transform.basis.x.normalized()
-		var mesh_up := mesh.global_transform.basis.y.normalized()
-		radial_axis = Vector2(projected_normal.dot(mesh_right), projected_normal.dot(mesh_up)).normalized()
+		impact_axis = Vector2(projected_normal.dot(mesh_right), projected_normal.dot(mesh_up)).normalized()
 
 	var material := mesh.material_override as ShaderMaterial
-	material.set_shader_parameter("radial_axis", radial_axis)
+	material.set_shader_parameter("impact_axis", impact_axis)
+	material.set_shader_parameter("impact_visibility", impact_visibility)

@@ -45,7 +45,6 @@ volumetric_fog_sky_affect = 0.8
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
-size = Vector3(2, 2, 2)
 
 [node name="Orb" type="Node3D" unique_id=252090666]
 

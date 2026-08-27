@@ -13,7 +13,7 @@ const ENERGY_MOTE_SCENE := preload("res://orb/energy_emission/energy_mote.tscn")
 @export_group("Motion")
 @export_range(0.1, 30.0, 0.1) var speed := 10.0
 @export_range(0.0, 10.0, 0.1) var speed_variation := 2.0
-@export_range(0.1, 10.0, 0.1) var deceleration := 2.0
+@export_range(0.1, 10.0, 0.1) var deceleration_exponent := 2.0
 @export_range(0.05, 1.0, 0.05) var minimum_speed_ratio := 0.25
 
 @export_group("Appearance")
@@ -59,7 +59,7 @@ func _spawn_energy_mote() -> void:
 	energy_mote.sphere_radius = collision_radius
 	energy_mote.size = maxf(size + randf_range(-size_variation, size_variation), 0.005)
 	energy_mote.initial_speed = maxf(speed + randf_range(-speed_variation, speed_variation), 0.05)
-	energy_mote.deceleration = deceleration
+	energy_mote.deceleration_exponent = deceleration_exponent
 	energy_mote.minimum_speed_ratio = minimum_speed_ratio
 	energy_mote.impact_strength = impact_strength
 	energy_mote.impact_duration = impact_duration
@@ -67,6 +67,7 @@ func _spawn_energy_mote() -> void:
 	energy_mote.color = color
 	energy_mote.emission = emission
 	energy_mote.direction = _random_direction()
+	energy_mote.shape_seed = randf()
 	add_child(energy_mote)
 
 
