@@ -1,0 +1,156 @@
+[gd_resource type="VisualShader" format=3 uid="uid://cjb43jt6fl1p2"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_nemol"]
+parameter_name = "core_size"
+hint = 2
+max = 0.5
+step = 0.01
+default_value_enabled = true
+default_value = 0.3
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_7o0jg"]
+size = Vector2(780, 1280)
+expression = "const int STEPS = 128;
+const float STEP_SIZE = 0.03;
+
+vec3 p = ray_position + ray_direction * 0.001;
+float light_sum = 0.0;
+
+for (int i = 0; i < STEPS; i++) {
+	if (max(max(abs(p.x), abs(p.y)), abs(p.z)) > 1.001) {
+		break;
+	}
+
+	float d2 = dot(p, p);
+	float density = exp(-d2 / (core_size * core_size));
+
+	light_sum += density * STEP_SIZE;
+	p += ray_direction * STEP_SIZE;
+}
+
+float brightness = light_sum * intensity;
+
+ray_color = vec3(brightness);
+ray_alpha = clamp(brightness, 0.0, 1.0);"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_yq81w"]
+linked_parent_graph_frame = 24
+input_name = "view"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ksgqk"]
+input_name = "inv_view_matrix"
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_rmaqe"]
+linked_parent_graph_frame = 24
+operator = 2
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_kdths"]
+linked_parent_graph_frame = 24
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorFunc" id="VisualShaderNodeVectorFunc_c541f"]
+linked_parent_graph_frame = 24
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_nemol"]
+linked_parent_graph_frame = 25
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_7o0jg"]
+linked_parent_graph_frame = 25
+
+[sub_resource type="VisualShaderNodeVectorFunc" id="VisualShaderNodeVectorFunc_yq81w"]
+linked_parent_graph_frame = 24
+function = 2
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_vdtut"]
+size = Vector2(1418.0002, 230)
+title = "Ray方向"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(14, 23, 18, 19, 20)
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_n51ng"]
+size = Vector2(911.0001, 406.00006)
+title = "Ray開始位置"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(21, 22, 6, 8, 9)
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_7o0jg"]
+parameter_name = "intensity"
+hint = 2
+min = 1.0
+max = 16.0
+default_value_enabled = true
+default_value = 4.0
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_a0r7s"]
+linked_parent_graph_frame = 25
+input_name = "model_matrix"
+
+[sub_resource type="VisualShaderNodeTransformFunc" id="VisualShaderNodeTransformFunc_4nwr5"]
+linked_parent_graph_frame = 25
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_tp27t"]
+linked_parent_graph_frame = 25
+
+[resource]
+flags/unshaded = true
+flags/fog_disabled = true
+nodes/fragment/0/position = Vector2(1040, -180)
+nodes/fragment/3/node = SubResource("VisualShaderNodeFloatParameter_7o0jg")
+nodes/fragment/3/position = Vector2(-320, 980)
+nodes/fragment/6/node = SubResource("VisualShaderNodeInput_a0r7s")
+nodes/fragment/6/position = Vector2(-920, 100)
+nodes/fragment/8/node = SubResource("VisualShaderNodeTransformFunc_4nwr5")
+nodes/fragment/8/position = Vector2(-540, 100)
+nodes/fragment/9/node = SubResource("VisualShaderNodeTransformVecMult_tp27t")
+nodes/fragment/9/position = Vector2(-280, 160)
+nodes/fragment/12/node = SubResource("VisualShaderNodeFloatParameter_nemol")
+nodes/fragment/12/position = Vector2(-320, 600)
+nodes/fragment/13/node = SubResource("VisualShaderNodeExpression_7o0jg")
+nodes/fragment/13/position = Vector2(100, 0)
+nodes/fragment/13/size = Vector2(780, 1280)
+nodes/fragment/13/input_ports = "0,4,ray_direction;1,4,ray_position;2,0,core_size;3,0,intensity;"
+nodes/fragment/13/output_ports = "0,4,ray_color;1,0,ray_alpha;"
+nodes/fragment/13/expression = "const int STEPS = 128;
+const float STEP_SIZE = 0.03;
+
+vec3 p = ray_position + ray_direction * 0.001;
+float light_sum = 0.0;
+
+for (int i = 0; i < STEPS; i++) {
+	if (max(max(abs(p.x), abs(p.y)), abs(p.z)) > 1.001) {
+		break;
+	}
+
+	float d2 = dot(p, p);
+	float density = exp(-d2 / (core_size * core_size));
+
+	light_sum += density * STEP_SIZE;
+	p += ray_direction * STEP_SIZE;
+}
+
+float brightness = light_sum * intensity;
+
+ray_color = vec3(brightness);
+ray_alpha = clamp(brightness, 0.0, 1.0);"
+nodes/fragment/14/node = SubResource("VisualShaderNodeInput_yq81w")
+nodes/fragment/14/position = Vector2(-1120, -220)
+nodes/fragment/17/node = SubResource("VisualShaderNodeInput_ksgqk")
+nodes/fragment/17/position = Vector2(-1460, 20)
+nodes/fragment/18/node = SubResource("VisualShaderNodeTransformVecMult_rmaqe")
+nodes/fragment/18/position = Vector2(-480, -260)
+nodes/fragment/19/node = SubResource("VisualShaderNodeTransformVecMult_kdths")
+nodes/fragment/19/position = Vector2(-220, -260)
+nodes/fragment/20/node = SubResource("VisualShaderNodeVectorFunc_c541f")
+nodes/fragment/20/position = Vector2(40, -260)
+nodes/fragment/21/node = SubResource("VisualShaderNodeInput_nemol")
+nodes/fragment/21/position = Vector2(-940, 340)
+nodes/fragment/22/node = SubResource("VisualShaderNodeTransformVecMult_7o0jg")
+nodes/fragment/22/position = Vector2(-560, 240)
+nodes/fragment/23/node = SubResource("VisualShaderNodeVectorFunc_yq81w")
+nodes/fragment/23/position = Vector2(-720, -260)
+nodes/fragment/24/node = SubResource("VisualShaderNodeFrame_vdtut")
+nodes/fragment/24/position = Vector2(-1160, -300)
+nodes/fragment/25/node = SubResource("VisualShaderNodeFrame_n51ng")
+nodes/fragment/25/position = Vector2(-980, 60)
+nodes/fragment/connections = PackedInt32Array(6, 0, 8, 0, 8, 0, 9, 0, 12, 0, 13, 2, 3, 0, 13, 3, 13, 1, 0, 1, 17, 0, 18, 0, 8, 0, 19, 0, 18, 0, 19, 1, 19, 0, 20, 0, 21, 0, 22, 1, 17, 0, 22, 0, 14, 0, 23, 0, 23, 0, 18, 1, 22, 0, 9, 1, 9, 0, 13, 1, 20, 0, 13, 0, 13, 0, 0, 5)

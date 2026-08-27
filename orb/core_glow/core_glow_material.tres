@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cwni8o5bn1b1u"]
+
+[ext_resource type="Shader" uid="uid://cjb43jt6fl1p2" path="res://orb/core_glow/core_glow_shader.tres" id="1_g4en1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_g4en1")
+shader_parameter/core_size = 0.20999999530608
+shader_parameter/intensity = 4.0

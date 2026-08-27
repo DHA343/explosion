@@ -11,7 +11,7 @@ script = ExtResource("1_root")
 
 [node name="LocalLight" type="OmniLight3D" parent="." unique_id=1037628893]
 light_color = Color(1, 0.02, 0.01, 1)
-light_energy = 8.0
+light_energy = 12.0
 light_volumetric_fog_energy = 200.0
 omni_range = 300.0
 omni_attenuation = 1.1

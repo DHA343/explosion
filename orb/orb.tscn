@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://c0kne2q7bmeo4"]
+
+[ext_resource type="Shader" uid="uid://b144cgiqqdogf" path="res://main/night_sky.gdshader" id="1_q0apk"]
+[ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://orb/core_glow/core_glow_material.tres" id="2_nfcmq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
+shader = ExtResource("1_q0apk")
+shader_parameter/zenith_color = Color(0.003, 0.007, 0.025, 1)
+shader_parameter/horizon_color = Color(0.025, 0.045, 0.11, 1)
+shader_parameter/star_color = Color(0.72, 0.82, 1, 1)
+shader_parameter/star_density = 0.009
+shader_parameter/star_intensity = 2.2
+shader_parameter/milky_way_intensity = 0.12
+
+[sub_resource type="Sky" id="Sky_vlpcb"]
+sky_material = SubResource("ShaderMaterial_q0apk")
+process_mode = 2
+
+[sub_resource type="Environment" id="Environment_nfcmq"]
+background_mode = 2
+sky = SubResource("Sky_vlpcb")
+ambient_light_source = 2
+ambient_light_color = Color(0.065, 0.09, 0.18, 1)
+ambient_light_energy = 0.32
+reflected_light_source = 2
+tonemap_mode = 2
+glow_normalized = true
+fog_light_color = Color(0.018, 0.028, 0.065, 1)
+fog_light_energy = 0.35
+fog_density = 0.003
+fog_sky_affect = 0.35
+volumetric_fog_density = 0.0001
+volumetric_fog_albedo = Color(0.72, 0.76, 0.84, 1)
+volumetric_fog_emission_energy = 0.0
+volumetric_fog_length = 250.0
+volumetric_fog_sky_affect = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
+material = ExtResource("2_nfcmq")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
+
+[node name="Orb" type="Node3D" unique_id=252090666]
+
+[node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=904025280]
+environment = SubResource("Environment_nfcmq")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=740876973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.6866944)
+
+[node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
+mesh = SubResource("BoxMesh_ua4af")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2059376061]
+visible = false
+mesh = SubResource("SphereMesh_ua4af")
