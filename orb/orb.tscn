@@ -63,4 +63,4 @@ mesh = SubResource("BoxMesh_ua4af")
 
 [node name="EnergyEmission" parent="." unique_id=1084154656 instance=ExtResource("5_kxnac")]
 
-[node name="InwardMotes" parent="." unique_id=204577624 instance=ExtResource("6_inward_motes")]
+[node name="InwardMotes" parent="." unique_id=747450600 instance=ExtResource("6_inward_motes")]

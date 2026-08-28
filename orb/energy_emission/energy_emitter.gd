@@ -18,7 +18,7 @@ const ENERGY_MOTE_SCENE := preload("res://orb/energy_emission/energy_mote.tscn")
 
 @export_group("Appearance")
 @export_range(0.01, 0.3, 0.005) var size := 0.08
-@export_range(0.0, 0.03, 0.005) var size_variation := 0.01
+@export_range(0.0, 0.1, 0.005) var size_variation := 0.01
 
 @export_group("Impact")
 @export_range(0.0, 1.0, 0.05) var impact_strength := 0.7

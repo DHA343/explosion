@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://chsifes8x3256" path="res://orb/inward_motes/inward_motes_particle.gdshader" id="1_particle"]
 [ext_resource type="Material" uid="uid://ctjy6388oovh7" path="res://orb/inward_motes/inward_motes_material.tres" id="2_jkqf7"]
+[ext_resource type="Script" uid="uid://dnfykis6lxm6i" path="res://orb/inward_motes/inward_motes.gd" id="3_40wn3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_particle"]
 shader = ExtResource("1_particle")
@@ -16,13 +17,15 @@ shader_parameter/size_variation = 0.015
 
 [sub_resource type="QuadMesh" id="QuadMesh_blob"]
 material = ExtResource("2_jkqf7")
-size = Vector2(2, 2)
 
 [node name="InwardMotes" type="GPUParticles3D" unique_id=747450600]
-amount = 120
-lifetime = 0.21
+amount = 100
+lifetime = 0.23
 preprocess = 0.8
 visibility_aabb = AABB(-0.7, -0.7, -0.7, 1.4, 1.4, 1.4)
 local_coords = true
 process_material = SubResource("ShaderMaterial_particle")
 draw_pass_1 = SubResource("QuadMesh_blob")
+script = ExtResource("3_40wn3")
+size = 0.14
+size_randomness = 0.5

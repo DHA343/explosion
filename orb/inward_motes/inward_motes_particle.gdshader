@@ -10,31 +10,52 @@ uniform float absorb_end_ratio : hint_range(0.0, 1.0, 0.01) = 0.04;
 uniform float size : hint_range(0.005, 0.3, 0.005) = 0.06;
 uniform float size_variation : hint_range(0.0, 0.1, 0.005) = 0.015;
 
-float hash_value(float value) {
-	return fract(sin(value * 12.9898 + 78.233) * 43758.5453);
+float rand_from_seed(inout uint seed) {
+	int k;
+	int state = int(seed);
+	if (state == 0) {
+		state = 305420679;
+	}
+
+	k = state / 127773;
+	state = 16807 * (state - k * 127773) - 2836 * k;
+	if (state < 0) {
+		state += 2147483647;
+	}
+
+	seed = uint(state);
+	return float(seed % uint(65536)) / 65535.0;
 }
 
-vec3 direction_from_seed(float seed) {
-	float vertical = hash_value(seed * 101.3 + 1.73) * 2.0 - 1.0;
-	float azimuth = hash_value(seed * 173.9 + 3.19) * TAU;
+uint hash(uint value) {
+	value = ((value >> uint(16)) ^ value) * uint(73244475);
+	value = ((value >> uint(16)) ^ value) * uint(73244475);
+	value = (value >> uint(16)) ^ value;
+	return value;
+}
+
+vec3 direction_from_randoms(float vertical_random, float azimuth_random) {
+	float vertical = vertical_random * 2.0 - 1.0;
+	float azimuth = azimuth_random * TAU;
 	float horizontal = sqrt(max(1.0 - vertical * vertical, 0.0));
 	return vec3(cos(azimuth) * horizontal, vertical, sin(azimuth) * horizontal);
 }
 
 void process() {
 	if (RESTART) {
-		float random_base = float(INDEX) * 17.371 + float(NUMBER) * 0.173;
-		float particle_seed = hash_value(random_base + 0.37);
-		float spawn_random = hash_value(random_base + 5.41);
+		uint particle_seed = hash(NUMBER + uint(1) + RANDOM_SEED);
+		float spawn_random = rand_from_seed(particle_seed);
+		float vertical_random = rand_from_seed(particle_seed);
+		float azimuth_random = rand_from_seed(particle_seed);
 		float spawn_ratio = mix(spawn_radius_min_ratio, spawn_radius_max_ratio, spawn_random);
 
-		CUSTOM = vec4(orb_radius * spawn_ratio, particle_seed, 0.0, 0.0);
+		CUSTOM = vec4(orb_radius * spawn_ratio, vertical_random, 0.0, azimuth_random);
 		TRANSFORM = mat4(1.0);
-		TRANSFORM[3].xyz = direction_from_seed(CUSTOM.y) * CUSTOM.x;
+		TRANSFORM[3].xyz = direction_from_randoms(CUSTOM.y, CUSTOM.w) * CUSTOM.x;
 	}
 
 	CUSTOM.z += DELTA;
-	vec3 direction = direction_from_seed(CUSTOM.y);
+	vec3 direction = direction_from_randoms(CUSTOM.y, CUSTOM.w);
 	float progress = clamp(CUSTOM.z / LIFETIME, 0.0, 1.0);
 	float move_progress = pow(progress, acceleration_exponent);
 	float current_radius = mix(CUSTOM.x, 0.0, move_progress);
@@ -48,7 +69,9 @@ void process() {
 	);
 	absorb_progress = smoothstep(0.0, 1.0, absorb_progress);
 
-	float size_offset = (hash_value(CUSTOM.y * 41.17) * 2.0 - 1.0) * size_variation;
+	uint size_seed = hash(NUMBER + uint(1) + RANDOM_SEED);
+	float size_random = rand_from_seed(size_seed);
+	float size_offset = (size_random * 2.0 - 1.0) * size_variation;
 	float particle_size = max(size + size_offset, 0.0) * mix(1.0, 0.1, absorb_progress);
 	float particle_alpha = 1.0 - absorb_progress;
 
