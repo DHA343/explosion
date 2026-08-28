@@ -2,7 +2,7 @@
 extends GPUParticles2D
 
 const BASE_MATERIAL: ParticleProcessMaterial = preload(
-	"res://orb/inflow_streaks/inflow_streaks_process_material.tres"
+	"res://energy_sphere/inflow_streaks/inflow_streaks_process_material.tres"
 )
 
 @export_group("Motion Override")

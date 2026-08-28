@@ -1,8 +1,9 @@
 shader_type spatial;
 
-render_mode unshaded, blend_mix, cull_disabled, depth_draw_never;
+render_mode unshaded, blend_add, cull_disabled, depth_draw_never;
 
 uniform sampler2D streaks_texture : source_color;
+uniform vec4 streak_color : source_color = vec4(1.0);
 
 uniform float fade_inner_ratio : hint_range(0.0, 1.0, 0.01) = 0.75;
 uniform float fade_outer_ratio : hint_range(0.0, 1.0, 0.01) = 0.95;
@@ -43,6 +44,8 @@ void fragment() {
 		radial_ratio
 	);
 
-	EMISSION = streaks.rgb * radial_fade;
-	ALPHA = streaks.a * radial_fade;
+	vec3 tinted_streaks = streaks.rgb * streak_color.rgb;
+	ALBEDO = tinted_streaks;
+	EMISSION = tinted_streaks;
+	ALPHA = streaks.a * streak_color.a * radial_fade;
 }

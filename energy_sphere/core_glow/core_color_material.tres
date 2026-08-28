@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://1j4l2g57ssae"]
+
+[ext_resource type="Shader" uid="uid://cjb43jt6fl1p2" path="res://energy_sphere/core_glow/core_glow_shader.tres" id="1_s7slj"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_s7slj")
+shader_parameter/sphere_radius = 0.5
+shader_parameter/core_ratio = 0.42999999038864
+shader_parameter/intensity = 2.40000003576288
+shader_parameter/ColorParameter = Color(0, 0.8745043, 1.8247963, 1)
