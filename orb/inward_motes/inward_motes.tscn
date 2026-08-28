@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bs3ffr2vmlhes"]
 
-[ext_resource type="Shader" uid="uid://chsifes8x3256" path="res://orb/inward_motes/inward_motes_particle.gdshader" id="1_particle"]
-[ext_resource type="Material" uid="uid://ctjy6388oovh7" path="res://orb/inward_motes/inward_motes_material.tres" id="2_jkqf7"]
+[ext_resource type="Shader" uid="uid://chsifes8x3256" path="res://orb/inward_motes/inward_motes_process.gdshader" id="1_particle"]
+[ext_resource type="Material" uid="uid://ctjy6388oovh7" path="res://orb/inward_motes/inward_mote_material.tres" id="2_jkqf7"]
 [ext_resource type="Script" uid="uid://dnfykis6lxm6i" path="res://orb/inward_motes/inward_motes.gd" id="3_40wn3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_particle"]
@@ -12,14 +12,14 @@ shader_parameter/spawn_radius_max_ratio = 1.0
 shader_parameter/acceleration_exponent = 1.8
 shader_parameter/absorb_start_ratio = 0.18
 shader_parameter/absorb_end_ratio = 0.04
-shader_parameter/size = 0.06
-shader_parameter/size_variation = 0.015
+shader_parameter/size = 0.14
+shader_parameter/size_variation = 0.07
 
 [sub_resource type="QuadMesh" id="QuadMesh_blob"]
 material = ExtResource("2_jkqf7")
 
 [node name="InwardMotes" type="GPUParticles3D" unique_id=747450600]
-amount = 100
+amount = 50
 lifetime = 0.23
 preprocess = 0.8
 visibility_aabb = AABB(-0.7, -0.7, -0.7, 1.4, 1.4, 1.4)

@@ -1,4 +1,4 @@
-class_name EnergyMote
+class_name OutwardMote
 extends Node3D
 
 enum State {

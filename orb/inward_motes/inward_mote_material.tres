@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://ctjy6388oovh7"]
 
-[ext_resource type="Shader" uid="uid://rh0g8hw51w4n" path="res://orb/inward_motes/inward_motes_blob.gdshader" id="1_m1who"]
+[ext_resource type="Shader" uid="uid://rh0g8hw51w4n" path="res://orb/inward_motes/inward_mote.gdshader" id="1_m1who"]
 
 [resource]
 render_priority = 0

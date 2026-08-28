@@ -3,8 +3,9 @@
 [ext_resource type="Shader" uid="uid://b144cgiqqdogf" path="res://main/night_sky.gdshader" id="1_q0apk"]
 [ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://orb/core_glow/core_glow_material.tres" id="2_nfcmq"]
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://orb/orbit_camera.gd" id="2_womfm"]
-[ext_resource type="PackedScene" uid="uid://dai3wvh3arh42" path="res://orb/energy_emission/energy_emission.tscn" id="5_kxnac"]
+[ext_resource type="PackedScene" uid="uid://dai3wvh3arh42" path="res://orb/outward_motes/outward_motes.tscn" id="5_kxnac"]
 [ext_resource type="PackedScene" uid="uid://bs3ffr2vmlhes" path="res://orb/inward_motes/inward_motes.tscn" id="6_inward_motes"]
+[ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://orb/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -47,6 +48,19 @@ volumetric_fog_sky_affect = 0.8
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_inflow_streaks"]
+viewport_path = NodePath("InflowStreaksViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_inflow_streaks"]
+resource_local_to_scene = true
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_inflow_streaks")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
+
 [node name="Orb" type="Node3D" unique_id=252090666]
 
 [node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=904025280]
@@ -58,9 +72,25 @@ script = ExtResource("2_womfm")
 [node name="Camera3D" type="Camera3D" parent="OrbitCamera" unique_id=740876973]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
 
+[node name="InflowStreaksViewport" type="SubViewport" parent="." unique_id=165995018]
+disable_3d = true
+transparent_bg = true
+use_hdr_2d = true
+size = Vector2i(1600, 1600)
+render_target_update_mode = 4
+
+[node name="Position" type="Node2D" parent="InflowStreaksViewport" unique_id=771168688]
+position = Vector2(800, 800)
+
+[node name="InflowStreaks" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
+
+[node name="InflowStreaksSurface" type="MeshInstance3D" parent="." unique_id=165995019]
+material_override = SubResource("StandardMaterial3D_inflow_streaks")
+mesh = SubResource("QuadMesh_inflow_streaks")
+
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
 mesh = SubResource("BoxMesh_ua4af")
 
-[node name="EnergyEmission" parent="." unique_id=1084154656 instance=ExtResource("5_kxnac")]
+[node name="OutwardMotes" parent="." unique_id=1084154656 instance=ExtResource("5_kxnac")]
 
 [node name="InwardMotes" parent="." unique_id=747450600 instance=ExtResource("6_inward_motes")]

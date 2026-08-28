@@ -1,7 +1,7 @@
-class_name EnergyEmitter
+class_name OutwardMotes
 extends Node3D
 
-const ENERGY_MOTE_SCENE := preload("res://orb/energy_emission/energy_mote.tscn")
+const OUTWARD_MOTE_SCENE := preload("res://orb/outward_motes/outward_mote.tscn")
 
 @export_group("Emission")
 @export_range(1.0, 200.0, 1.0, "suffix:particles/s") var spawn_rate := 100.0
@@ -35,7 +35,7 @@ var spawn_time_remaining := 0.0
 
 
 func _ready() -> void:
-	_spawn_energy_mote()
+	_spawn_outward_mote()
 	spawn_time_remaining = _next_spawn_interval()
 
 
@@ -43,32 +43,32 @@ func _process(delta: float) -> void:
 	spawn_time_remaining -= delta
 
 	while spawn_time_remaining <= 0.0:
-		_spawn_energy_mote()
+		_spawn_outward_mote()
 		spawn_time_remaining += _next_spawn_interval()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			_spawn_energy_mote()
+			_spawn_outward_mote()
 
 
-func _spawn_energy_mote() -> void:
-	var energy_mote := ENERGY_MOTE_SCENE.instantiate() as EnergyMote
-	energy_mote.sphere_center = global_position
-	energy_mote.sphere_radius = collision_radius
-	energy_mote.size = maxf(size + randf_range(-size_variation, size_variation), 0.005)
-	energy_mote.initial_speed = maxf(speed + randf_range(-speed_variation, speed_variation), 0.05)
-	energy_mote.deceleration_exponent = deceleration_exponent
-	energy_mote.minimum_speed_ratio = minimum_speed_ratio
-	energy_mote.impact_strength = impact_strength
-	energy_mote.impact_duration = impact_duration
-	energy_mote.fade_duration = fade_duration
-	energy_mote.color = color
-	energy_mote.emission = emission
-	energy_mote.direction = _random_direction()
-	energy_mote.shape_seed = randf()
-	add_child(energy_mote)
+func _spawn_outward_mote() -> void:
+	var outward_mote := OUTWARD_MOTE_SCENE.instantiate() as OutwardMote
+	outward_mote.sphere_center = global_position
+	outward_mote.sphere_radius = collision_radius
+	outward_mote.size = maxf(size + randf_range(-size_variation, size_variation), 0.005)
+	outward_mote.initial_speed = maxf(speed + randf_range(-speed_variation, speed_variation), 0.05)
+	outward_mote.deceleration_exponent = deceleration_exponent
+	outward_mote.minimum_speed_ratio = minimum_speed_ratio
+	outward_mote.impact_strength = impact_strength
+	outward_mote.impact_duration = impact_duration
+	outward_mote.fade_duration = fade_duration
+	outward_mote.color = color
+	outward_mote.emission = emission
+	outward_mote.direction = _random_direction()
+	outward_mote.shape_seed = randf()
+	add_child(outward_mote)
 
 
 func _next_spawn_interval() -> float:

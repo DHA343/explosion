@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dai3wvh3arh42"]
 
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://orb/orbit_camera.gd" id="3_8xi78"]
-[ext_resource type="Script" uid="uid://cxdj0ffff6rrs" path="res://orb/energy_emission/energy_emitter.gd" id="5_emitter"]
+[ext_resource type="Script" uid="uid://cxdj0ffff6rrs" path="res://orb/outward_motes/outward_motes.gd" id="5_emitter"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3xot"]
 transparency = 1
@@ -10,7 +10,7 @@ albedo_color = Color(0.116666794, 0, 1, 0.13725491)
 
 [sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
 
-[node name="EnergyEmission" type="Node3D" unique_id=1084154656]
+[node name="OutwardMotes" type="Node3D" unique_id=1084154656]
 script = ExtResource("5_emitter")
 spawn_rate = 77.0
 speed = 6.5

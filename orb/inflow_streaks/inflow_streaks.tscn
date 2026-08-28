@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b1sr5qiur6oiv"]
+
+[ext_resource type="Material" uid="uid://r8h1ahbjem4h" path="res://orb/inflow_streaks/inflow_streaks_process_material.tres" id="1_m0l2j"]
+
+[node name="InflowStreaks" type="GPUParticles2D" unique_id=165995017]
+amount = 400
+lifetime = 0.7
+preprocess = 1.0
+speed_scale = 6.0
+local_coords = true
+trail_enabled = true
+trail_lifetime = 0.4
+process_material = ExtResource("1_m0l2j")
