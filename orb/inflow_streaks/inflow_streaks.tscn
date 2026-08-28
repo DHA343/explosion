@@ -1,13 +1,31 @@
 [gd_scene format=3 uid="uid://b1sr5qiur6oiv"]
 
-[ext_resource type="Material" uid="uid://r8h1ahbjem4h" path="res://orb/inflow_streaks/inflow_streaks_process_material.tres" id="1_m0l2j"]
+[ext_resource type="Script" uid="uid://b43u6p56at2gx" path="res://orb/inflow_streaks/inflow_streaks.gd" id="2_inflow_streaks"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q8cps"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 650.0
+emission_ring_inner_radius = 300.0
+emission_ring_cone_angle = 90.0
+orbit_velocity_min = -0.39999992
+orbit_velocity_max = 0.1000001
+radial_velocity_min = -500.0
+radial_velocity_max = -200.00002
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+color = Color(1, 1, 1, 0.5803922)
 
 [node name="InflowStreaks" type="GPUParticles2D" unique_id=165995017]
-amount = 400
+amount = 300
 lifetime = 0.7
 preprocess = 1.0
 speed_scale = 6.0
 local_coords = true
 trail_enabled = true
 trail_lifetime = 0.4
-process_material = ExtResource("1_m0l2j")
+process_material = SubResource("ParticleProcessMaterial_q8cps")
+script = ExtResource("2_inflow_streaks")

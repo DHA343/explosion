@@ -32,7 +32,7 @@ expression = "vec3 p = fragment_position - center_position;
 float along = dot(p, view_direction);
 float d2 = max(dot(p, p) - along * along, 0.0);
 
-float core_size = radius * core_ratio;
+float core_size = orb_radius * core_ratio;
 float g = exp(-d2 / (core_size * core_size));
 
 emission = vec3(g * intensity);
@@ -42,7 +42,7 @@ alpha = g;"
 constant = Color(0, 0, 0, 1)
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_nemol"]
-parameter_name = "radius"
+parameter_name = "orb_radius"
 hint = 2
 min = 0.01
 step = 0.01
@@ -64,14 +64,14 @@ nodes/fragment/6/position = Vector2(-800, 1080)
 nodes/fragment/7/node = SubResource("VisualShaderNodeExpression_ksgqk")
 nodes/fragment/7/position = Vector2(-260, 0)
 nodes/fragment/7/size = Vector2(820, 600)
-nodes/fragment/7/input_ports = "0,4,fragment_position;1,4,center_position;2,4,view_direction;3,0,radius;4,0,core_ratio;5,0,intensity;"
+nodes/fragment/7/input_ports = "0,4,fragment_position;1,4,center_position;2,4,view_direction;3,0,orb_radius;4,0,core_ratio;5,0,intensity;"
 nodes/fragment/7/output_ports = "0,4,emission;1,0,alpha;"
 nodes/fragment/7/expression = "vec3 p = fragment_position - center_position;
 
 float along = dot(p, view_direction);
 float d2 = max(dot(p, p) - along * along, 0.0);
 
-float core_size = radius * core_ratio;
+float core_size = orb_radius * core_ratio;
 float g = exp(-d2 / (core_size * core_size));
 
 emission = vec3(g * intensity);

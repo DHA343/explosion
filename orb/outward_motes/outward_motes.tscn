@@ -12,13 +12,13 @@ albedo_color = Color(0.116666794, 0, 1, 0.13725491)
 
 [node name="OutwardMotes" type="Node3D" unique_id=1084154656]
 script = ExtResource("5_emitter")
-spawn_rate = 77.0
+spawn_rate = 50.0
 speed = 6.5
 speed_variation = 1.0
 deceleration_exponent = 1.7000000000000002
 minimum_speed_ratio = 0.1
-size = 0.06999999999999999
-size_variation = 0.04
+size = 0.065
+size_variation = 0.03
 impact_strength = 0.9
 impact_duration = 0.1
 fade_duration = 0.15000000000000002

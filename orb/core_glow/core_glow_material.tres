@@ -5,6 +5,6 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_g4en1")
-shader_parameter/radius = 0.499999988824
-shader_parameter/core_ratio = 0.3
+shader_parameter/orb_radius = 0.5
+shader_parameter/core_ratio = 0.39999999105920003
 shader_parameter/intensity = 3.0000000447036004

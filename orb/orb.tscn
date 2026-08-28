@@ -3,9 +3,11 @@
 [ext_resource type="Shader" uid="uid://b144cgiqqdogf" path="res://main/night_sky.gdshader" id="1_q0apk"]
 [ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://orb/core_glow/core_glow_material.tres" id="2_nfcmq"]
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://orb/orbit_camera.gd" id="2_womfm"]
+[ext_resource type="Shader" uid="uid://bp0e200yo130w" path="res://orb/inflow_streaks/inflow_streaks_surface.gdshader" id="4_j35yx"]
 [ext_resource type="PackedScene" uid="uid://dai3wvh3arh42" path="res://orb/outward_motes/outward_motes.tscn" id="5_kxnac"]
 [ext_resource type="PackedScene" uid="uid://bs3ffr2vmlhes" path="res://orb/inward_motes/inward_motes.tscn" id="6_inward_motes"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://orb/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
+[ext_resource type="Script" path="res://orb/inward_motes/inward_motes.gd" id="8_5nceb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -45,21 +47,55 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
-material = ExtResource("2_nfcmq")
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jhoxl"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 650.0
+emission_ring_inner_radius = 300.0
+emission_ring_cone_angle = 90.0
+orbit_velocity_min = -0.39999992
+orbit_velocity_max = 0.1000001
+radial_velocity_min = -500.0
+radial_velocity_max = -200.00002
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+color = Color(1, 1, 1, 0.5803922)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_inflow_streaks"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8p6yb"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 650.0
+emission_ring_inner_radius = 300.0
+emission_ring_cone_angle = 90.0
+orbit_velocity_min = 0.05
+orbit_velocity_max = 0.15
+radial_velocity_min = -500.0
+radial_velocity_max = -500.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+color = Color(1, 1, 1, 0.5803922)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jhoxl"]
 viewport_path = NodePath("InflowStreaksViewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_inflow_streaks"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pga01"]
 resource_local_to_scene = true
-transparency = 1
-blend_mode = 1
-shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_inflow_streaks")
-billboard_mode = 1
+render_priority = 0
+shader = ExtResource("4_j35yx")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_jhoxl")
+shader_parameter/fade_inner_ratio = 0.5999999865888
+shader_parameter/fade_outer_ratio = 0.8499999810008
 
 [sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
+material = ExtResource("2_nfcmq")
 
 [node name="Orb" type="Node3D" unique_id=252090666]
 
@@ -83,14 +119,28 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaks" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
+process_material = SubResource("ParticleProcessMaterial_jhoxl")
+
+[node name="InflowStreaks2" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
+process_material = SubResource("ParticleProcessMaterial_8p6yb")
+motion_override_enabled = true
+orbit_velocity_min = 0.05
+orbit_velocity_max = 0.15
+radial_velocity_min = -200.0
+radial_velocity_max = -500.0
 
 [node name="InflowStreaksSurface" type="MeshInstance3D" parent="." unique_id=165995019]
-material_override = SubResource("StandardMaterial3D_inflow_streaks")
+material_override = SubResource("ShaderMaterial_pga01")
 mesh = SubResource("QuadMesh_inflow_streaks")
 
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="OutwardMotes" parent="." unique_id=1084154656 instance=ExtResource("5_kxnac")]
+visible = false
 
 [node name="InwardMotes" parent="." unique_id=747450600 instance=ExtResource("6_inward_motes")]
+script = ExtResource("8_5nceb")
+size = 0.15
+size_randomness = 0.49
+fade_in_duration = 0.04
