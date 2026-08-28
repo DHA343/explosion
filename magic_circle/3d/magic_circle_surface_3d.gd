@@ -6,8 +6,7 @@ extends MeshInstance3D
 const BLEND_BALANCE_PARAMETER := &"blend_balance"
 const INTENSITY_PARAMETER := &"intensity"
 const OPACITY_PARAMETER := &"opacity"
-const ADD_SHADER: Shader = preload("res://magic_circle/3d/magic_circle_surface_add_3d.gdshader")
-const MIX_SHADER: Shader = preload("res://magic_circle/3d/magic_circle_surface_3d.gdshader")
+const SURFACE_SHADER: Shader = preload("res://magic_circle/3d/magic_circle_surface_3d.gdshader")
 const VIEWPORT_TEXTURE_PARAMETER := &"viewport_texture"
 
 ## 0.0でAdd寄り、1.0でMix寄りの合成になる。
@@ -22,8 +21,7 @@ const VIEWPORT_TEXTURE_PARAMETER := &"viewport_texture"
 		_update_runtime_intensity()
 
 var _viewport: SubViewport
-var _runtime_add_material: ShaderMaterial
-var _runtime_mix_material: ShaderMaterial
+var _runtime_material: ShaderMaterial
 var _is_bind_scheduled: bool = false
 var _opacity: float = 1.0
 
@@ -59,38 +57,30 @@ func _bind_viewport_texture() -> void:
 		return
 
 	var viewport_texture := _viewport.get_texture()
-	_runtime_mix_material = _create_runtime_material(MIX_SHADER, viewport_texture)
-	_runtime_add_material = _create_runtime_material(ADD_SHADER, viewport_texture)
-	_runtime_mix_material.next_pass = _runtime_add_material
-	material_override = _runtime_mix_material
+	_runtime_material = _create_runtime_material(viewport_texture)
+	material_override = _runtime_material
 	visible = true
 
 
 func _update_runtime_blend_balance() -> void:
-	if is_instance_valid(_runtime_mix_material):
-		_runtime_mix_material.set_shader_parameter(BLEND_BALANCE_PARAMETER, blend_balance)
-	if is_instance_valid(_runtime_add_material):
-		_runtime_add_material.set_shader_parameter(BLEND_BALANCE_PARAMETER, blend_balance)
+	if is_instance_valid(_runtime_material):
+		_runtime_material.set_shader_parameter(BLEND_BALANCE_PARAMETER, blend_balance)
 
 
 func _update_runtime_intensity() -> void:
-	if is_instance_valid(_runtime_mix_material):
-		_runtime_mix_material.set_shader_parameter(INTENSITY_PARAMETER, intensity)
-	if is_instance_valid(_runtime_add_material):
-		_runtime_add_material.set_shader_parameter(INTENSITY_PARAMETER, intensity)
+	if is_instance_valid(_runtime_material):
+		_runtime_material.set_shader_parameter(INTENSITY_PARAMETER, intensity)
 
 
 func _update_runtime_opacity() -> void:
-	if is_instance_valid(_runtime_mix_material):
-		_runtime_mix_material.set_shader_parameter(OPACITY_PARAMETER, _opacity)
-	if is_instance_valid(_runtime_add_material):
-		_runtime_add_material.set_shader_parameter(OPACITY_PARAMETER, _opacity)
+	if is_instance_valid(_runtime_material):
+		_runtime_material.set_shader_parameter(OPACITY_PARAMETER, _opacity)
 
 
-func _create_runtime_material(shader: Shader, viewport_texture: Texture2D) -> ShaderMaterial:
+func _create_runtime_material(viewport_texture: Texture2D) -> ShaderMaterial:
 	var runtime_material := ShaderMaterial.new()
 	runtime_material.resource_local_to_scene = true
-	runtime_material.shader = shader
+	runtime_material.shader = SURFACE_SHADER
 	runtime_material.set_shader_parameter(VIEWPORT_TEXTURE_PARAMETER, viewport_texture)
 	runtime_material.set_shader_parameter(BLEND_BALANCE_PARAMETER, blend_balance)
 	runtime_material.set_shader_parameter(INTENSITY_PARAMETER, intensity)
