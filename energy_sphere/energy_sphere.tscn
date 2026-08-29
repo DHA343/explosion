@@ -4,9 +4,10 @@
 [ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://energy_sphere/core_glow/core_glow_material.tres" id="2_nfcmq"]
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://energy_sphere/orbit_camera.gd" id="2_womfm"]
 [ext_resource type="Script" uid="uid://e7bnt7r8hg21" path="res://energy_sphere/energy_sphere.gd" id="3_energy_sphere"]
-[ext_resource type="Shader" uid="uid://bp0e200yo130w" path="res://energy_sphere/inflow_streaks/inflow_streaks_surface.gdshader" id="4_j35yx"]
+[ext_resource type="Shader" uid="uid://bp0e200yo130w" path="res://energy_sphere/inflow_streaks/inflow_streaks.gdshader" id="4_j35yx"]
 [ext_resource type="Material" uid="uid://1j4l2g57ssae" path="res://energy_sphere/core_glow/core_color_material.tres" id="6_h5tvb"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://energy_sphere/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
+[ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/energy_shell_material.tres" id="8_ulthd"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -46,7 +47,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_j35yx"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ulthd"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -62,7 +63,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5nceb"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_snrtx"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -78,14 +79,14 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_jhoxl"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_bnioy"]
 viewport_path = NodePath("InflowStreaksViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pga01"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_j35yx")
-shader_parameter/streaks_texture = SubResource("ViewportTexture_jhoxl")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_bnioy")
 shader_parameter/streak_color = Color(0.9160796, 1.415874, 1.8247963, 0.3019608)
 shader_parameter/fade_inner_ratio = 0.5999999865888
 shader_parameter/fade_outer_ratio = 0.8499999810008
@@ -94,6 +95,9 @@ shader_parameter/fade_outer_ratio = 0.8499999810008
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
+
+[sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
+material = ExtResource("8_ulthd")
 
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
@@ -118,23 +122,29 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_j35yx")
+process_material = SubResource("ParticleProcessMaterial_ulthd")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_5nceb")
+process_material = SubResource("ParticleProcessMaterial_snrtx")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
 radial_velocity_min = -200.0
 radial_velocity_max = -500.0
 
-[node name="InflowStreaksSurface" type="MeshInstance3D" parent="." unique_id=165995019]
+[node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
+visible = false
 material_override = SubResource("ShaderMaterial_pga01")
 mesh = SubResource("QuadMesh_inflow_streaks")
 
 [node name="CoreColor" type="MeshInstance3D" parent="." unique_id=854978960]
+visible = false
 material_override = ExtResource("6_h5tvb")
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
+visible = false
 mesh = SubResource("BoxMesh_ua4af")
+
+[node name="EnergyShell" type="MeshInstance3D" parent="." unique_id=347990059]
+mesh = SubResource("SphereMesh_ua4af")

@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c2g08h1qq33rr"]
+
+[ext_resource type="Shader" uid="uid://ci8wdc2tuo6or" path="res://energy_sphere/energy_shell/energy_shell_shader.tres" id="1_cj3qe"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_cj3qe")
+shader_parameter/edge_alpha_power = 3.0
+shader_parameter/edge_alpha = 0.25
+shader_parameter/base_alpha = 0.05
+shader_parameter/base_color = Color(0.26534668, 0.1288, 0.56, 1)
+shader_parameter/rim_soft_power = 2.0
+shader_parameter/rim_soft_intensity = 0.7
+shader_parameter/rim_soft_color = Color(0.470588, 0.25098, 0.909804, 1)
+shader_parameter/rim_medium_power = 5.0
+shader_parameter/rim_medium_intensity = 1.2
+shader_parameter/rim_medium_color = Color(0.784314, 0.286275, 0.94902, 1)
+shader_parameter/rim_sharp_power = 12.0
+shader_parameter/rim_sharp_intensity = 2.5
+shader_parameter/rim_sharp_color = Color(0.784314, 0.286275, 0.94902, 1)
+shader_parameter/spot_threshold = 0.7
+shader_parameter/spot_softness = 0.08
+shader_parameter/spot_edge_irregularity = 0.1
+shader_parameter/spot_intensity = 1.5
+shader_parameter/spot_color = Color(1, 1, 1, 1)

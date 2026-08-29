@@ -4,7 +4,7 @@ extends Node3D
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
-@onready var _streaks_surface: MeshInstance3D = $InflowStreaksSurface
+@onready var _streaks_surface: MeshInstance3D = $InflowStreaks
 
 
 func _ready() -> void:
