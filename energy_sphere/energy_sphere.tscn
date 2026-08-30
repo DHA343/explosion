@@ -99,6 +99,8 @@ material = ExtResource("2_nfcmq")
 
 [sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
 material = ExtResource("8_ulthd")
+radius = 0.5
+height = 1.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ua4af"]
 material = ExtResource("9_snrtx")
@@ -108,6 +110,7 @@ subdivide_depth = 4
 
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
+radius = 0.5
 
 [node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=904025280]
 environment = SubResource("Environment_nfcmq")
@@ -156,7 +159,10 @@ mesh = SubResource("BoxMesh_ua4af")
 [node name="EnergyShell" type="MeshInstance3D" parent="." unique_id=347990059]
 mesh = SubResource("SphereMesh_ua4af")
 
-[node name="Patches" type="Node3D" parent="EnergyShell" unique_id=1708681012]
+[node name="EnergyShellPatches" type="Node3D" parent="." unique_id=1708681012]
 
-[node name="PatchPrototype" type="MeshInstance3D" parent="EnergyShell/Patches" unique_id=978627495]
+[node name="PatchAnchor" type="Node3D" parent="EnergyShellPatches" unique_id=211206945]
+
+[node name="PatchPrototype" type="MeshInstance3D" parent="EnergyShellPatches/PatchAnchor" unique_id=978627495]
+transform = Transform3D(0.25, 0, 0, 0, 1, 0, 0, 0, 0.25, 0, 0.5, 0)
 mesh = SubResource("PlaneMesh_ua4af")

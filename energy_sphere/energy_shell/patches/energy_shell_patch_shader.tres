@@ -1,26 +1,57 @@
 [gd_resource type="VisualShader" format=3 uid="uid://bn1j0f8gf6xny"]
 
+[sub_resource type="VisualShaderNodeVectorLen" id="VisualShaderNodeVectorLen_qbr37"]
+output_port_for_preview = 0
+default_input_values = [0, Vector2(0, 0)]
+linked_parent_graph_frame = 16
+op_type = 0
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_eb8qc"]
+output_port_for_preview = 0
+linked_parent_graph_frame = 16
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_dsaua"]
+linked_parent_graph_frame = 16
+operator = 1
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_v61iy"]
+output_port_for_preview = 0
+linked_parent_graph_frame = 16
+function = 31
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_7uddb"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeMultiplyAdd" id="VisualShaderNodeMultiplyAdd_ui74p"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(2, 2), 2, Vector2(-1, -1)]
+linked_parent_graph_frame = 16
+op_type = 1
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_1yjn1"]
+size = Vector2(1461, 1061)
+title = "円マスク"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(4, 13, 12, 5, 11, 15, 10, 8)
+
 [sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_qbr37"]
 constant = Color(0, 0, 0, 1)
 
-[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_eb8qc"]
-
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_dsaua"]
+linked_parent_graph_frame = 16
 parameter_name = "patch_radius"
 hint = 2
 min = 0.01
-max = 0.5
 step = 0.01
 default_value_enabled = true
-default_value = 0.35
+default_value = 0.8
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_v61iy"]
+linked_parent_graph_frame = 16
 parameter_name = "patch_softness"
 hint = 2
-max = 0.5
 step = 0.01
 default_value_enabled = true
-default_value = 0.05
+default_value = 0.1
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_7uddb"]
 parameter_name = "patch_intensity"
@@ -31,19 +62,38 @@ default_value = 1.0
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ui74p"]
 parameter_name = "patch_color"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_misos"]
+linked_parent_graph_frame = 16
+input_name = "uv"
 
 [resource]
 nodes/fragment/0/position = Vector2(420, 180)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_qbr37")
 nodes/fragment/2/position = Vector2(181, 185)
-nodes/fragment/3/node = SubResource("VisualShaderNodeColorConstant_eb8qc")
-nodes/fragment/3/position = Vector2(152.8, 376.1)
 nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_dsaua")
-nodes/fragment/4/position = Vector2(-440, 80)
+nodes/fragment/4/position = Vector2(-1540, -300)
 nodes/fragment/5/node = SubResource("VisualShaderNodeFloatParameter_v61iy")
-nodes/fragment/5/position = Vector2(-500, 540)
+nodes/fragment/5/position = Vector2(-1540, 80)
 nodes/fragment/6/node = SubResource("VisualShaderNodeFloatParameter_7uddb")
-nodes/fragment/6/position = Vector2(-100, 640)
+nodes/fragment/6/position = Vector2(-260, 1080)
 nodes/fragment/7/node = SubResource("VisualShaderNodeColorParameter_ui74p")
-nodes/fragment/7/position = Vector2(-385.463, 1009.74817)
-nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 3, 0, 0, 5)
+nodes/fragment/7/position = Vector2(-240, 820)
+nodes/fragment/8/node = SubResource("VisualShaderNodeInput_misos")
+nodes/fragment/8/position = Vector2(-1880, 480)
+nodes/fragment/10/node = SubResource("VisualShaderNodeVectorLen_qbr37")
+nodes/fragment/10/position = Vector2(-1180, 400)
+nodes/fragment/11/node = SubResource("VisualShaderNodeSmoothStep_eb8qc")
+nodes/fragment/11/position = Vector2(-920, 40)
+nodes/fragment/12/node = SubResource("VisualShaderNodeFloatOp_dsaua")
+nodes/fragment/12/position = Vector2(-1140, 40)
+nodes/fragment/13/node = SubResource("VisualShaderNodeFloatFunc_v61iy")
+nodes/fragment/13/position = Vector2(-700, 60)
+nodes/fragment/14/node = SubResource("VisualShaderNodeVectorOp_7uddb")
+nodes/fragment/14/position = Vector2(120, 800)
+nodes/fragment/15/node = SubResource("VisualShaderNodeMultiplyAdd_ui74p")
+nodes/fragment/15/position = Vector2(-1460, 480)
+nodes/fragment/16/node = SubResource("VisualShaderNodeFrame_1yjn1")
+nodes/fragment/16/position = Vector2(-1920, -340)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 4, 0, 12, 0, 5, 0, 12, 1, 12, 0, 11, 0, 4, 0, 11, 1, 10, 0, 11, 2, 11, 0, 13, 0, 13, 0, 0, 1, 7, 0, 14, 0, 6, 0, 14, 1, 14, 0, 0, 5, 8, 0, 15, 0, 15, 0, 10, 0)
