@@ -38,13 +38,10 @@ default_value = 2.0
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ksgqk"]
 size = Vector2(820, 600)
 expression = "vec3 p = fragment_position - center_position;
-
 float along = dot(p, view_direction);
 float d2 = max(dot(p, p) - along * along, 0.0);
-
 float core_radius = sphere_radius * core_ratio;
 float g = exp(-d2 / (core_radius * core_radius));
-
 emission = vec3(g * intensity);
 alpha = g;"
 
@@ -75,13 +72,10 @@ nodes/fragment/7/size = Vector2(820, 600)
 nodes/fragment/7/input_ports = "0,4,fragment_position;1,4,center_position;2,4,view_direction;3,0,sphere_radius;4,0,core_ratio;5,0,intensity;"
 nodes/fragment/7/output_ports = "0,4,emission;1,0,alpha;"
 nodes/fragment/7/expression = "vec3 p = fragment_position - center_position;
-
 float along = dot(p, view_direction);
 float d2 = max(dot(p, p) - along * along, 0.0);
-
 float core_radius = sphere_radius * core_ratio;
 float g = exp(-d2 / (core_radius * core_radius));
-
 emission = vec3(g * intensity);
 alpha = g;"
 nodes/fragment/9/node = SubResource("VisualShaderNodeFloatParameter_nemol")

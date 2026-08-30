@@ -8,7 +8,6 @@ uniform vec4 streak_color : source_color = vec4(1.0);
 uniform float fade_inner_ratio : hint_range(0.0, 1.0, 0.01) = 0.75;
 uniform float fade_outer_ratio : hint_range(0.0, 1.0, 0.01) = 0.95;
 
-
 void vertex() {
 	mat4 billboard_world = mat4(
 		vec4(
@@ -31,7 +30,6 @@ void vertex() {
 
 	MODELVIEW_MATRIX = VIEW_MATRIX * billboard_world;
 }
-
 
 void fragment() {
 	vec4 streaks = texture(streaks_texture, UV);

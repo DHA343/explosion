@@ -14,7 +14,6 @@ float hash_21(vec2 value) {
 	return fract((value_3.x + value_3.y) * value_3.z);
 }
 
-
 float value_noise(vec2 position) {
 	vec2 cell = floor(position);
 	vec2 local_position = fract(position);
@@ -23,7 +22,6 @@ float value_noise(vec2 position) {
 	float top = mix(hash_21(cell + vec2(0.0, 1.0)), hash_21(cell + vec2(1.0, 1.0)), smooth_position.x);
 	return mix(bottom, top, smooth_position.y);
 }
-
 
 void sky() {
 	vec3 direction = normalize(EYEDIR);

@@ -8,6 +8,7 @@
 [ext_resource type="Material" uid="uid://1j4l2g57ssae" path="res://energy_sphere/core_glow/core_color_material.tres" id="6_h5tvb"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://energy_sphere/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
 [ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/energy_shell_material.tres" id="8_ulthd"]
+[ext_resource type="Script" uid="uid://dgskhxipcwkvq" path="res://energy_sphere/energy_shell_patches.gd" id="9_bnioy"]
 [ext_resource type="Material" uid="uid://bbsrr2yxopfrt" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_material.tres" id="9_snrtx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
@@ -48,7 +49,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_snrtx"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bnioy"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -64,7 +65,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bnioy"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_unqks"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -80,14 +81,14 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_unqks"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1g8yp"]
 viewport_path = NodePath("InflowStreaksViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pga01"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_j35yx")
-shader_parameter/streaks_texture = SubResource("ViewportTexture_unqks")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_1g8yp")
 shader_parameter/streak_color = Color(0.9160796, 1.415874, 1.8247963, 0.3019608)
 shader_parameter/fade_inner_ratio = 0.5999999865888
 shader_parameter/fade_outer_ratio = 0.8499999810008
@@ -129,10 +130,10 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_snrtx")
+process_material = SubResource("ParticleProcessMaterial_bnioy")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_bnioy")
+process_material = SubResource("ParticleProcessMaterial_unqks")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -154,9 +155,10 @@ mesh = SubResource("BoxMesh_ua4af")
 mesh = SubResource("SphereMesh_ua4af")
 
 [node name="EnergyShellPatches" type="Node3D" parent="." unique_id=1708681012]
+script = ExtResource("9_bnioy")
 
 [node name="PatchAnchor" type="Node3D" parent="EnergyShellPatches" unique_id=211206945]
 
 [node name="PatchPrototype" type="MeshInstance3D" parent="EnergyShellPatches/PatchAnchor" unique_id=978627495]
-transform = Transform3D(0.25, 0, 0, 0, 1, 0, 0, 0, 0.25, 0, 0, 0)
+instance_shader_parameters/sphere_radius = 0.5
 mesh = SubResource("PlaneMesh_ua4af")

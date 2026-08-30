@@ -9,7 +9,6 @@ uniform float major_grid_size : hint_range(10.0, 200.0, 5.0) = 50.0;
 
 varying vec3 world_position;
 
-
 float grid_line(vec2 position, float cell_size, float line_width) {
 	vec2 coordinate = position / cell_size;
 	vec2 derivative_width = max(fwidth(coordinate) * line_width, vec2(0.00001));
@@ -17,11 +16,9 @@ float grid_line(vec2 position, float cell_size, float line_width) {
 	return 1.0 - min(min(distance_to_line.x, distance_to_line.y), 1.0);
 }
 
-
 void vertex() {
 	world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
-
 
 void fragment() {
 	float minor_grid = grid_line(world_position.xz, minor_grid_size, 0.8);
