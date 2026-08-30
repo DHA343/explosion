@@ -1,0 +1,49 @@
+[gd_resource type="VisualShader" format=3 uid="uid://bn1j0f8gf6xny"]
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_qbr37"]
+constant = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_eb8qc"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_dsaua"]
+parameter_name = "patch_radius"
+hint = 2
+min = 0.01
+max = 0.5
+step = 0.01
+default_value_enabled = true
+default_value = 0.35
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_v61iy"]
+parameter_name = "patch_softness"
+hint = 2
+max = 0.5
+step = 0.01
+default_value_enabled = true
+default_value = 0.05
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_7uddb"]
+parameter_name = "patch_intensity"
+hint = 2
+max = 8.0
+default_value_enabled = true
+default_value = 1.0
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ui74p"]
+parameter_name = "patch_color"
+
+[resource]
+nodes/fragment/0/position = Vector2(420, 180)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_qbr37")
+nodes/fragment/2/position = Vector2(181, 185)
+nodes/fragment/3/node = SubResource("VisualShaderNodeColorConstant_eb8qc")
+nodes/fragment/3/position = Vector2(152.8, 376.1)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_dsaua")
+nodes/fragment/4/position = Vector2(-440, 80)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFloatParameter_v61iy")
+nodes/fragment/5/position = Vector2(-500, 540)
+nodes/fragment/6/node = SubResource("VisualShaderNodeFloatParameter_7uddb")
+nodes/fragment/6/position = Vector2(-100, 640)
+nodes/fragment/7/node = SubResource("VisualShaderNodeColorParameter_ui74p")
+nodes/fragment/7/position = Vector2(-385.463, 1009.74817)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 3, 0, 0, 5)

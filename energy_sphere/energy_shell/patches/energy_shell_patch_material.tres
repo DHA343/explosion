@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bbsrr2yxopfrt"]
+
+[ext_resource type="Shader" uid="uid://bn1j0f8gf6xny" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_shader.tres" id="1_rc683"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_rc683")

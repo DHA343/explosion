@@ -8,6 +8,7 @@
 [ext_resource type="Material" uid="uid://1j4l2g57ssae" path="res://energy_sphere/core_glow/core_color_material.tres" id="6_h5tvb"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://energy_sphere/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
 [ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/energy_shell_material.tres" id="8_ulthd"]
+[ext_resource type="Material" uid="uid://bbsrr2yxopfrt" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_material.tres" id="9_snrtx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -99,6 +100,12 @@ material = ExtResource("2_nfcmq")
 [sub_resource type="SphereMesh" id="SphereMesh_ua4af"]
 material = ExtResource("8_ulthd")
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_ua4af"]
+material = ExtResource("9_snrtx")
+size = Vector2(1, 1)
+subdivide_width = 4
+subdivide_depth = 4
+
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
 
@@ -148,3 +155,8 @@ mesh = SubResource("BoxMesh_ua4af")
 
 [node name="EnergyShell" type="MeshInstance3D" parent="." unique_id=347990059]
 mesh = SubResource("SphereMesh_ua4af")
+
+[node name="Patches" type="Node3D" parent="EnergyShell" unique_id=1708681012]
+
+[node name="PatchPrototype" type="MeshInstance3D" parent="EnergyShell/Patches" unique_id=978627495]
+mesh = SubResource("PlaneMesh_ua4af")
