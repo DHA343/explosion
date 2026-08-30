@@ -2,11 +2,13 @@
 extends Node3D
 
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
+const PATCH_SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 
 @export var radius: float = 0.5:
 	set(value):
 		radius = value
 		_update_energy_shell_size()
+		_update_patch_sphere_radius()
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
@@ -14,6 +16,7 @@ const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 
 func _ready() -> void:
 	_update_energy_shell_size()
+	_update_patch_sphere_radius()
 
 	var material := _streaks_surface.material_override as ShaderMaterial
 	assert(material != null, "InflowStreaksSurface requires a ShaderMaterial override.")
@@ -34,3 +37,17 @@ func _update_energy_shell_size() -> void:
 
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
+
+
+func _update_patch_sphere_radius() -> void:
+	var patch := get_node_or_null(
+		^"EnergyShellPatches/PatchAnchor/PatchPrototype"
+	) as MeshInstance3D
+
+	if patch == null:
+		return
+
+	patch.set_instance_shader_parameter(
+		PATCH_SPHERE_RADIUS_PARAMETER,
+		radius
+	)
