@@ -1,12 +1,16 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bbsrr2yxopfrt"]
 
 [ext_resource type="Shader" uid="uid://bn1j0f8gf6xny" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_shader.tres" id="1_rc683"]
+[ext_resource type="Texture2D" uid="uid://4s0omonge5jc" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_edge_noise.tres" id="2_dorgv"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_rc683")
 shader_parameter/patch_surface_offset_ratio = -0.002
 shader_parameter/patch_radius = 0.8
+shader_parameter/patch_edge_noise = ExtResource("2_dorgv")
+shader_parameter/patch_edge_irregularity_ratio = 0.1
 shader_parameter/patch_softness = 0.1
+shader_parameter/patch_fade_out_ratio = 0.1
 shader_parameter/patch_color = Color(1, 1, 1, 1)
 shader_parameter/patch_intensity = 1.0
