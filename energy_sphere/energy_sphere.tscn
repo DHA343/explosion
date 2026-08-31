@@ -50,7 +50,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bnioy"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_unqks"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -66,7 +66,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_unqks"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1g8yp"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -82,14 +82,14 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_1g8yp"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_aap2g"]
 viewport_path = NodePath("InflowStreaksViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pga01"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_j35yx")
-shader_parameter/streaks_texture = SubResource("ViewportTexture_1g8yp")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_aap2g")
 shader_parameter/streak_color = Color(0.9160796, 1.415874, 1.8247963, 0.3019608)
 shader_parameter/fade_inner_ratio = 0.5999999865888
 shader_parameter/fade_outer_ratio = 0.8499999810008
@@ -131,10 +131,10 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_bnioy")
+process_material = SubResource("ParticleProcessMaterial_unqks")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_unqks")
+process_material = SubResource("ParticleProcessMaterial_1g8yp")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -157,7 +157,7 @@ mesh = SubResource("SphereMesh_ua4af")
 
 [node name="EnergyShellPatches" type="Node3D" parent="." unique_id=1708681012]
 script = ExtResource("9_bnioy")
-patch_count = 200
+patch_count = 150
 patch_color_gradient = ExtResource("10_unqks")
 
 [node name="PatchInstances" type="MultiMeshInstance3D" parent="EnergyShellPatches" unique_id=969384425]
