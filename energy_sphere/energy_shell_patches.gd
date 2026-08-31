@@ -43,10 +43,14 @@ func _populate_patches() -> void:
 func _reset_patch(index: int, patch_life: float = 0.0) -> void:
 	var multimesh := _patch_instances.multimesh
 	var patch_size_ratio := randf_range(patch_size_min_ratio, patch_size_max_ratio)
+	var noise_offset := Vector2(randf(), randf())
 
 	_patch_lifetimes[index] = randf_range(patch_lifetime_min, patch_lifetime_max)
 	multimesh.set_instance_transform(index, _random_patch_transform())
-	multimesh.set_instance_custom_data(index, Color(patch_size_ratio, patch_life, 0.0, 0.0))
+	multimesh.set_instance_custom_data(
+		index,
+		Color(patch_size_ratio, patch_life, noise_offset.x, noise_offset.y)
+	)
 
 
 func _random_patch_transform() -> Transform3D:
