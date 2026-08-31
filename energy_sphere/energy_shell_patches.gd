@@ -1,6 +1,8 @@
 extends Node3D
 
 @export_range(1, 32, 1) var patch_count: int = 12
+@export_range(0.05, 0.8, 0.01) var patch_size_min_ratio: float = 0.18
+@export_range(0.05, 0.8, 0.01) var patch_size_max_ratio: float = 0.45
 
 @onready var _patch_instances: MultiMeshInstance3D = $PatchInstances
 
@@ -15,8 +17,9 @@ func _populate_patches() -> void:
 	multimesh.instance_count = patch_count
 
 	for index in range(patch_count):
+		var patch_size_ratio := randf_range(patch_size_min_ratio, patch_size_max_ratio)
 		multimesh.set_instance_transform(index, _random_patch_transform())
-
+		multimesh.set_instance_custom_data(index, Color(patch_size_ratio, 0.0, 0.0, 0.0))
 
 func _random_patch_transform() -> Transform3D:
 	var surface_direction := _random_sphere_direction()

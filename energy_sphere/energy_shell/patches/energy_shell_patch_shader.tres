@@ -28,7 +28,7 @@ linked_parent_graph_frame = 16
 op_type = 1
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_1yjn1"]
-size = Vector2(1461, 1061)
+size = Vector2(1461.0001, 1061.0001)
 title = "円マスク"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(4, 13, 12, 5, 11, 15, 10, 8)
@@ -74,14 +74,6 @@ qualifier = 2
 default_value_enabled = true
 default_value = 0.5
 
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_eb8qc"]
-parameter_name = "patch_size_ratio"
-hint = 2
-min = 0.01
-step = 0.01
-default_value_enabled = true
-default_value = 0.5
-
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ui74p"]
 parameter_name = "patch_surface_offset_ratio"
 hint = 2
@@ -102,12 +94,17 @@ vec3 direction = normalize(
 );
 vertex_position = direction * surface_radius;"
 
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_qbr37"]
+input_name = "instance_custom"
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_eb8qc"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+op_type = 2
+
 [resource]
 nodes/vertex/0/position = Vector2(1080, 1200)
 nodes/vertex/2/node = SubResource("VisualShaderNodeFloatParameter_qbr37")
-nodes/vertex/2/position = Vector2(-280, 1300)
-nodes/vertex/3/node = SubResource("VisualShaderNodeFloatParameter_eb8qc")
-nodes/vertex/3/position = Vector2(-280, 1580)
+nodes/vertex/2/position = Vector2(-480, 1300)
 nodes/vertex/4/node = SubResource("VisualShaderNodeFloatParameter_ui74p")
 nodes/vertex/4/position = Vector2(-280, 1960)
 nodes/vertex/5/node = SubResource("VisualShaderNodeInput_1yjn1")
@@ -122,7 +119,11 @@ vec3 direction = normalize(
 	vec3(vertex.x * patch_size_ratio, 1.0, vertex.z * patch_size_ratio)
 );
 vertex_position = direction * surface_radius;"
-nodes/vertex/connections = PackedInt32Array(4, 0, 6, 3, 3, 0, 6, 2, 2, 0, 6, 1, 5, 0, 6, 0, 6, 0, 0, 0)
+nodes/vertex/7/node = SubResource("VisualShaderNodeInput_qbr37")
+nodes/vertex/7/position = Vector2(-300, 1580)
+nodes/vertex/8/node = SubResource("VisualShaderNodeVectorDecompose_eb8qc")
+nodes/vertex/8/position = Vector2(-80, 1300)
+nodes/vertex/connections = PackedInt32Array(4, 0, 6, 3, 5, 0, 6, 0, 6, 0, 0, 0, 7, 0, 6, 2, 2, 0, 8, 0, 8, 0, 6, 1)
 nodes/fragment/0/position = Vector2(420, 180)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_qbr37")
 nodes/fragment/2/position = Vector2(181, 185)
