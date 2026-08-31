@@ -13,7 +13,7 @@ const PATCH_SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
 @onready var _energy_shell: MeshInstance3D = $EnergyShell
-@onready var _patch_instances: MultiMeshInstance3D = $EnergyShellPatches/PatchInstances
+@onready var _patch_instances: MultiMeshInstance3D = %PatchInstances
 
 
 func _ready() -> void:
