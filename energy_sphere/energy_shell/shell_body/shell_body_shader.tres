@@ -6,7 +6,7 @@ operator = 2
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_8fmj5"]
 linked_parent_graph_frame = 18
-parameter_name = "fresnel_alpha_strength"
+parameter_name = "fresnel_opacity"
 hint = 2
 step = 0.01
 default_value_enabled = true
@@ -17,7 +17,7 @@ linked_parent_graph_frame = 18
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_v3x68"]
 size = Vector2(644.0001, 734)
-title = "Alpha"
+title = "Opacity"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(3, 13, 17)
 
@@ -41,7 +41,7 @@ default_value = Color(0.11045332, 0.0912, 0.38, 1)
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_0du6v"]
 linked_parent_graph_frame = 18
-parameter_name = "base_alpha"
+parameter_name = "base_opacity"
 hint = 2
 step = 0.01
 default_value_enabled = true
@@ -76,7 +76,6 @@ default_value_enabled = true
 default_value = 1.0
 
 [resource]
-nodes/fragment/-1/position = Vector2(0, 0)
 nodes/fragment/0/position = Vector2(2040, 260)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_83let")
 nodes/fragment/2/position = Vector2(960, 640)
