@@ -13,7 +13,7 @@ const PATCH_SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
 @onready var _energy_shell: MeshInstance3D = $EnergyShell
-@onready var _patch_prototype: MeshInstance3D = $EnergyShellPatches/PatchAnchor/PatchPrototype
+@onready var _patch_instances: MultiMeshInstance3D = $EnergyShellPatches/PatchInstances
 
 
 func _ready() -> void:
@@ -33,4 +33,4 @@ func _update_radius() -> void:
 
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
-	_patch_prototype.set_instance_shader_parameter(PATCH_SPHERE_RADIUS_PARAMETER, radius)
+	_patch_instances.set_instance_shader_parameter(PATCH_SPHERE_RADIUS_PARAMETER, radius)
