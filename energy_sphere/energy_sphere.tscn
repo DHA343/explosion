@@ -8,7 +8,7 @@
 [ext_resource type="Material" uid="uid://1j4l2g57ssae" path="res://energy_sphere/core_glow/core_color_material.tres" id="6_h5tvb"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://energy_sphere/inflow_streaks/inflow_streaks.tscn" id="7_inflow_streaks"]
 [ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/shell_body/shell_body_material.tres" id="8_1g8yp"]
-[ext_resource type="SphereMesh" uid="uid://d3ovpsnatm2bp" path="res://energy_sphere/energy_shell/shell_body/shell_body_mesh.tres" id="8_unqks"]
+[ext_resource type="SphereMesh" uid="uid://d3ovpsnatm2bp" path="res://energy_sphere/energy_shell/shell_mesh.tres" id="8_unqks"]
 [ext_resource type="Script" uid="uid://dgskhxipcwkvq" path="res://energy_sphere/energy_shell/shell_patches/shell_patches.gd" id="9_bnioy"]
 [ext_resource type="Material" uid="uid://dds1hn8hdcyar" path="res://energy_sphere/energy_shell/shell_optics/shell_optics_material.tres" id="10_aap2g"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
@@ -158,6 +158,7 @@ mesh = SubResource("BoxMesh_ua4af")
 
 [node name="ShellBody" type="MeshInstance3D" parent="EnergyShell" unique_id=347990059]
 unique_name_in_owner = true
+visible = false
 material_override = ExtResource("8_1g8yp")
 mesh = ExtResource("8_unqks")
 
