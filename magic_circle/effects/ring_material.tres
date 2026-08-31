@@ -30,6 +30,6 @@ shader_parameter/move_speed = Vector2(0.29, 0.295)
 shader_parameter/move_noise = ExtResource("2_3qw4k")
 shader_parameter/move_texture_strength = 0.1550000073625
 shader_parameter/color_gradient = SubResource("GradientTexture1D_57g53")
-shader_parameter/pulse_speed = 1.8
+shader_parameter/pulse_speed = 2.4
 shader_parameter/pulse_dark_intensity = 1.0
 shader_parameter/pulse_bright_intensity = 3.5

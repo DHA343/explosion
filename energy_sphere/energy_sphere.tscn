@@ -10,6 +10,7 @@
 [ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/energy_shell_material.tres" id="8_ulthd"]
 [ext_resource type="Script" uid="uid://dgskhxipcwkvq" path="res://energy_sphere/energy_shell_patches.gd" id="9_bnioy"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_mesh.tres" id="10_bnioy"]
+[ext_resource type="Gradient" uid="uid://ctjn4i857x130" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_color_gradient.tres" id="10_unqks"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -103,6 +104,7 @@ material = ExtResource("8_ulthd")
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
+use_colors = true
 use_custom_data = true
 mesh = ExtResource("10_bnioy")
 
@@ -155,6 +157,8 @@ mesh = SubResource("SphereMesh_ua4af")
 
 [node name="EnergyShellPatches" type="Node3D" parent="." unique_id=1708681012]
 script = ExtResource("9_bnioy")
+patch_count = 200
+patch_color_gradient = ExtResource("10_unqks")
 
 [node name="PatchInstances" type="MultiMeshInstance3D" parent="EnergyShellPatches" unique_id=969384425]
 instance_shader_parameters/sphere_radius = 0.5

@@ -1,10 +1,11 @@
 extends Node3D
 
-@export_range(1, 32, 1) var patch_count: int = 12
-@export_range(0.05, 0.8, 0.01) var patch_size_min_ratio: float = 0.18
-@export_range(0.05, 0.8, 0.01) var patch_size_max_ratio: float = 0.45
-@export_range(0.2, 3.0, 0.05, "suffix:s") var patch_lifetime_min: float = 0.6
-@export_range(0.2, 3.0, 0.05, "suffix:s") var patch_lifetime_max: float = 1.4
+@export_range(1, 300, 1) var patch_count: int = 100
+@export var patch_color_gradient: Gradient
+@export_range(0.05, 0.8, 0.01) var patch_size_min_ratio: float = 0.4
+@export_range(0.05, 0.8, 0.01) var patch_size_max_ratio: float = 0.8
+@export_range(0.1, 2.0, 0.05, "suffix:s") var patch_lifetime_min: float = 0.3
+@export_range(0.1, 2.0, 0.05, "suffix:s") var patch_lifetime_max: float = 0.8
 
 var _patch_lifetimes: PackedFloat32Array
 
@@ -43,14 +44,15 @@ func _populate_patches() -> void:
 func _reset_patch(index: int, patch_life: float = 0.0) -> void:
 	var multimesh := _patch_instances.multimesh
 	var patch_size_ratio := randf_range(patch_size_min_ratio, patch_size_max_ratio)
-	var noise_offset := Vector2(randf(), randf())
+	var patch_color:Color = patch_color_gradient.sample(randf())
 
 	_patch_lifetimes[index] = randf_range(patch_lifetime_min, patch_lifetime_max)
 	multimesh.set_instance_transform(index, _random_patch_transform())
 	multimesh.set_instance_custom_data(
 		index,
-		Color(patch_size_ratio, patch_life, noise_offset.x, noise_offset.y)
+		Color(patch_size_ratio, patch_life, randf(), randf())
 	)
+	multimesh.set_instance_color(index, patch_color)
 
 
 func _random_patch_transform() -> Transform3D:

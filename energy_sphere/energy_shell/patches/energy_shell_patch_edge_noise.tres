@@ -8,4 +8,5 @@ fractal_octaves = 2
 width = 128
 height = 128
 noise = SubResource("FastNoiseLite_unqks")
-seamless_blend_skirt = 0.33
+seamless = true
+seamless_blend_skirt = 0.325
