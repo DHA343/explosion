@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c2g08h1qq33rr"]
 
-[ext_resource type="Shader" uid="uid://ci8wdc2tuo6or" path="res://energy_sphere/energy_shell/energy_shell_shader.tres" id="1_cj3qe"]
+[ext_resource type="Shader" uid="uid://ci8wdc2tuo6or" path="res://energy_sphere/energy_shell/shell_body_shader.tres" id="1_cj3qe"]
 
 [resource]
 render_priority = 0

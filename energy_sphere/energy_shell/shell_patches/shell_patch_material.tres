@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bbsrr2yxopfrt"]
 
-[ext_resource type="Shader" uid="uid://bn1j0f8gf6xny" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_shader.tres" id="1_rc683"]
-[ext_resource type="Texture2D" uid="uid://4s0omonge5jc" path="res://energy_sphere/energy_shell/patches/energy_shell_patch_edge_noise.tres" id="2_dorgv"]
+[ext_resource type="Shader" uid="uid://bn1j0f8gf6xny" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_shader.tres" id="1_rc683"]
+[ext_resource type="Texture2D" uid="uid://4s0omonge5jc" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_edge_noise.tres" id="2_dorgv"]
 
 [resource]
 render_priority = 0
