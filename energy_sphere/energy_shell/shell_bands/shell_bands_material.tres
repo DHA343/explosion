@@ -5,13 +5,14 @@
 [resource]
 render_priority = 1
 shader = ExtResource("1_xq1nw")
-shader_parameter/inner_band_inner_width = 0.010000000475
-shader_parameter/inner_band_outer_width = 0.010000000475
-shader_parameter/inner_band_opacity = 0.4
-shader_parameter/inner_band_color = Color(0.06, 0.06, 0.06, 1)
-shader_parameter/chromatic_band_outer_fade_width = 0.09
+shader_parameter/inner_band_inner_width = 0.02
+shader_parameter/inner_band_outer_width = 0.050000002375
+shader_parameter/inner_band_opacity = 0.6
+shader_parameter/inner_band_color = Color(0, 0, 0, 1)
+shader_parameter/chromatic_outer_boundary_coordinate = 0.3
+shader_parameter/chromatic_outer_boundary_width = 0.20000000298023
 shader_parameter/chromatic_band_opacity = 0.6
 shader_parameter/chromatic_band_color = Color(1, 0.513726, 1, 1)
 shader_parameter/chromatic_band_intensity = 2.0
 shader_parameter/outer_band_opacity = 0.8
-shader_parameter/outer_band_color = Color(0.17, 0.17, 0.17, 1)
+shader_parameter/outer_band_color = Color(0.04, 0.05600002, 0.2, 1)
