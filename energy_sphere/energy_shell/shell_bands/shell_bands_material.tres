@@ -1,28 +1,18 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://dds1hn8hdcyar"]
 
 [ext_resource type="Shader" uid="uid://dmrdfmkunidpa" path="res://energy_sphere/energy_shell/shell_bands/shell_bands_shader.tres" id="1_xq1nw"]
-[ext_resource type="Texture2D" uid="uid://cof0uw6vef68d" path="res://energy_sphere/energy_shell/shell_bands/chromatic_band_color_gradient.tres" id="2_chromatic_gradient"]
-[ext_resource type="Texture2D" uid="uid://b04vukwd3v78m" path="res://energy_sphere/energy_shell/shell_bands/chromatic_noise_main.tres" id="3_chromatic_noise_main"]
-[ext_resource type="Texture2D" uid="uid://cj77xjfup4jm4" path="res://energy_sphere/energy_shell/shell_bands/chromatic_noise_detail.tres" id="4_chromatic_noise_detail"]
 
 [resource]
 render_priority = 1
 shader = ExtResource("1_xq1nw")
-shader_parameter/inner_band_inner_width = 0.02
-shader_parameter/inner_band_outer_width = 0.050000002375
+shader_parameter/rim_start = 0.65
+shader_parameter/inner_band_width = 0.15
+shader_parameter/chromatic_band_width = 0.25
+shader_parameter/band_softness = 0.05
 shader_parameter/inner_band_opacity = 0.6
 shader_parameter/inner_band_color = Color(0, 0, 0, 1)
-shader_parameter/chromatic_outer_boundary_coordinate = 0.3
-shader_parameter/chromatic_outer_boundary_width = 0.20000000298023
 shader_parameter/chromatic_band_opacity = 0.6
-shader_parameter/chromatic_noise_main_scale = 0.6
-shader_parameter/chromatic_noise_main_speed = 0.65
-shader_parameter/chromatic_noise_detail_scale = 1.4
-shader_parameter/chromatic_noise_detail_speed = 0.95
-shader_parameter/chromatic_noise_main = ExtResource("3_chromatic_noise_main")
-shader_parameter/chromatic_noise_detail = ExtResource("4_chromatic_noise_detail")
-shader_parameter/chromatic_noise_warp_strength = 0.05
-shader_parameter/chromatic_color_gradient = ExtResource("2_chromatic_gradient")
+shader_parameter/chromatic_band_color = Color(0.708667, 0.24, 1, 1)
 shader_parameter/chromatic_band_intensity = 2.0
 shader_parameter/outer_band_opacity = 0.8
 shader_parameter/outer_band_color = Color(0.04, 0.05600002, 0.2, 1)
