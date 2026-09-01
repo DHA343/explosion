@@ -1,16 +1,10 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://dds1hn8hdcyar"]
 
-[ext_resource type="Shader" uid="uid://dmrdfmkunidpa" path="res://energy_sphere/energy_shell/shell_optics/shell_optics_shader.tres" id="1_xq1nw"]
+[ext_resource type="Shader" uid="uid://dmrdfmkunidpa" path="res://energy_sphere/energy_shell/shell_bands/shell_bands_shader.tres" id="1_xq1nw"]
 
 [resource]
 render_priority = 1
 shader = ExtResource("1_xq1nw")
-shader_parameter/refraction_band_inner_start = 0.4
-shader_parameter/refraction_band_inner_end = 0.8
-shader_parameter/refraction_band_outer_start = 0.9
-shader_parameter/refraction_band_outer_end = 0.97
-shader_parameter/refraction_mix_strength = 0.3
-shader_parameter/refraction_strength = 32.0
 shader_parameter/inner_band_opacity = 0.4
 shader_parameter/inner_band_color = Color(0, 0, 0, 1)
 shader_parameter/chromatic_band_opacity = 0.6

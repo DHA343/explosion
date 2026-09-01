@@ -2,9 +2,9 @@
 class_name EnergyShell
 extends Node3D
 
-const PATCH_SURFACE_RADIUS_PARAMETER: StringName = &"surface_radius"
+const PATCH_INNER_RADIUS_PARAMETER: StringName = &"inner_radius"
 
-@export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.1:
+@export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.05:
 	set(value):
 		thickness_ratio = value
 		if is_node_ready():
@@ -34,4 +34,4 @@ func _update_shell() -> void:
 
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
-	_patch_instances.set_instance_shader_parameter(PATCH_SURFACE_RADIUS_PARAMETER, inner_radius)
+	_patch_instances.set_instance_shader_parameter(PATCH_INNER_RADIUS_PARAMETER, inner_radius)
