@@ -16,13 +16,13 @@ default_value = 0.2
 linked_parent_graph_frame = 18
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_v3x68"]
-size = Vector2(644.0001, 734)
+size = Vector2(644, 734.00006)
 title = "Opacity"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(3, 13, 17)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_khxy6"]
-size = Vector2(644.00024, 894.0002)
+size = Vector2(644, 893.99994)
 title = "Color"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(2, 10, 9, 44, 22, 45)
@@ -45,7 +45,7 @@ parameter_name = "base_opacity"
 hint = 2
 step = 0.01
 default_value_enabled = true
-default_value = 0.05
+default_value = 0.1
 
 [sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_h0o84"]
 
