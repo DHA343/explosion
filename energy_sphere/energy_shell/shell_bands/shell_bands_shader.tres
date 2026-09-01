@@ -8,7 +8,7 @@ function = 31
 size = Vector2(912, 1014)
 title = "Chromatic Band"
 tint_color_enabled = true
-attached_nodes = PackedInt32Array(14, 15, 13, 12, 25, 31, 27, 29)
+attached_nodes = PackedInt32Array(14, 15, 13, 12, 25, 31, 27, 29, 47, 48)
 
 [sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_swkv6"]
 linked_parent_graph_frame = 11
@@ -19,11 +19,11 @@ linked_parent_graph_frame = 11
 operator = 2
 
 [sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_jvljw"]
-default_input_values = [0, 0.8, 1, 0.86, 2, 0.5]
+default_input_values = [0, 0.0, 1, 0.01, 2, 0.5]
 linked_parent_graph_frame = 11
 
 [sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_xbp5s"]
-default_input_values = [0, 0.91, 1, 0.96, 2, 0.5]
+default_input_values = [0, 0.91, 1, 1.0, 2, 0.5]
 linked_parent_graph_frame = 11
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_14qpx"]
@@ -75,6 +75,7 @@ default_value_enabled = true
 default_value = 2.0
 
 [sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_18mgt"]
+linked_parent_graph_frame = 44
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_1wnwx"]
 linked_parent_graph_frame = 11
@@ -104,7 +105,7 @@ emission = premultiplied / max(alpha, 0.0001);"
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_oi4gk"]
 linked_parent_graph_frame = 6
-parameter_name = "inner_band_position"
+parameter_name = "inner_band_coordinate"
 qualifier = 2
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_xp8tk"]
@@ -131,6 +132,37 @@ operator = 1
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_vi25r"]
 linked_parent_graph_frame = 6
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_fresnel_coordinate"]
+size = Vector2(360, 300)
+title = "Fresnel Coordinate"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(3)
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_shell_coordinate"]
+size = Vector2(1040, 420)
+title = "Shell Coordinate"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(46)
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_shell_coordinate"]
+linked_parent_graph_frame = 45
+size = Vector2(960, 340)
+expression = "float shell_range = max(1.0 - inner_band_coordinate, 0.0001);
+shell_coordinate = clamp((fresnel_coordinate - inner_band_coordinate) / shell_range, 0.0, 1.0);
+inner_transition_coordinate = clamp(inner_band_outer_width / shell_range, 0.0, 1.0);"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_outer_fade"]
+linked_parent_graph_frame = 11
+parameter_name = "chromatic_band_outer_fade_width"
+hint = 2
+step = 0.01
+default_value_enabled = true
+default_value = 0.09
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_chromatic_outer_start"]
+linked_parent_graph_frame = 11
+function = 31
 
 [sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_ao0lt"]
 constant = Color(0, 0, 0, 1)
@@ -223,4 +255,20 @@ nodes/fragment/42/node = SubResource("VisualShaderNodeFloatOp_3eif7")
 nodes/fragment/42/position = Vector2(560, 260)
 nodes/fragment/43/node = SubResource("VisualShaderNodeFloatOp_vi25r")
 nodes/fragment/43/position = Vector2(560, 580)
-nodes/fragment/connections = PackedInt32Array(3, 0, 7, 2, 7, 0, 9, 0, 3, 0, 8, 2, 8, 0, 10, 0, 10, 0, 9, 1, 14, 0, 13, 0, 15, 0, 12, 0, 12, 0, 13, 1, 3, 0, 14, 2, 3, 0, 15, 2, 3, 0, 17, 2, 25, 0, 31, 0, 29, 0, 31, 1, 5, 0, 0, 0, 9, 0, 38, 0, 26, 0, 38, 1, 37, 0, 38, 2, 13, 0, 38, 3, 27, 0, 38, 4, 31, 0, 38, 5, 17, 0, 38, 6, 28, 0, 38, 7, 36, 0, 38, 8, 38, 0, 0, 1, 38, 1, 0, 5, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 7, 0, 39, 0, 7, 1, 41, 0, 43, 1, 39, 0, 43, 0, 43, 0, 8, 1, 39, 0, 8, 0)
+nodes/fragment/44/node = SubResource("VisualShaderNodeFrame_fresnel_coordinate")
+nodes/fragment/44/position = Vector2(-180, 1240)
+nodes/fragment/45/node = SubResource("VisualShaderNodeFrame_shell_coordinate")
+nodes/fragment/45/position = Vector2(220, 920)
+nodes/fragment/46/node = SubResource("VisualShaderNodeExpression_shell_coordinate")
+nodes/fragment/46/position = Vector2(260, 960)
+nodes/fragment/46/size = Vector2(960, 340)
+nodes/fragment/46/input_ports = "0,0,fresnel_coordinate;1,0,inner_band_coordinate;2,0,inner_band_outer_width;"
+nodes/fragment/46/output_ports = "0,0,shell_coordinate;1,0,inner_transition_coordinate;"
+nodes/fragment/46/expression = "float shell_range = max(1.0 - inner_band_coordinate, 0.0001);
+shell_coordinate = clamp((fresnel_coordinate - inner_band_coordinate) / shell_range, 0.0, 1.0);
+inner_transition_coordinate = clamp(inner_band_outer_width / shell_range, 0.0, 1.0);"
+nodes/fragment/47/node = SubResource("VisualShaderNodeFloatParameter_chromatic_outer_fade")
+nodes/fragment/47/position = Vector2(400, 1880)
+nodes/fragment/48/node = SubResource("VisualShaderNodeFloatFunc_chromatic_outer_start")
+nodes/fragment/48/position = Vector2(660, 1880)
+nodes/fragment/connections = PackedInt32Array(3, 0, 7, 2, 7, 0, 9, 0, 3, 0, 8, 2, 8, 0, 10, 0, 10, 0, 9, 1, 14, 0, 13, 0, 15, 0, 12, 0, 12, 0, 13, 1, 3, 0, 17, 2, 25, 0, 31, 0, 29, 0, 31, 1, 5, 0, 0, 0, 9, 0, 38, 0, 26, 0, 38, 1, 37, 0, 38, 2, 13, 0, 38, 3, 27, 0, 38, 4, 31, 0, 38, 5, 17, 0, 38, 6, 28, 0, 38, 7, 36, 0, 38, 8, 38, 0, 0, 1, 38, 1, 0, 5, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 7, 0, 39, 0, 7, 1, 41, 0, 43, 1, 39, 0, 43, 0, 43, 0, 8, 1, 39, 0, 8, 0, 3, 0, 46, 0, 39, 0, 46, 1, 41, 0, 46, 2, 46, 0, 14, 2, 46, 1, 14, 1, 46, 0, 15, 2, 47, 0, 48, 0, 48, 0, 15, 0)

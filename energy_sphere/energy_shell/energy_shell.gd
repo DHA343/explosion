@@ -2,7 +2,7 @@
 class_name EnergyShell
 extends Node3D
 
-const BANDS_INNER_BAND_POSITION_PARAMETER: StringName = &"inner_band_position"
+const BANDS_INNER_BAND_COORDINATE_PARAMETER: StringName = &"inner_band_coordinate"
 const PATCH_INNER_RADIUS_PARAMETER: StringName = &"inner_radius"
 
 @export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.05:
@@ -21,7 +21,7 @@ var inner_radius: float:
 	get:
 		return radius * (1.0 - thickness_ratio)
 
-var inner_band_position: float:
+var inner_band_coordinate: float:
 	get:
 		var inner_radius_ratio := 1.0 - thickness_ratio
 		return 1.0 - sqrt(max(0.0, 1.0 - inner_radius_ratio * inner_radius_ratio))
@@ -42,4 +42,7 @@ func _update_shell() -> void:
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
 	_patch_instances.set_instance_shader_parameter(PATCH_INNER_RADIUS_PARAMETER, inner_radius)
-	_shell_bands.set_instance_shader_parameter(BANDS_INNER_BAND_POSITION_PARAMETER, inner_band_position)
+	_shell_bands.set_instance_shader_parameter(
+		BANDS_INNER_BAND_COORDINATE_PARAMETER,
+		inner_band_coordinate
+	)
