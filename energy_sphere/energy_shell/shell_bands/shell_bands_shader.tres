@@ -5,7 +5,7 @@ linked_parent_graph_frame = 6
 function = 31
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_0ico4"]
-size = Vector2(912.00037, 1014.0005)
+size = Vector2(912.00024, 1014.0003)
 title = "Chromatic Band"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(14, 13, 12, 31, 27, 29)
@@ -23,7 +23,7 @@ default_input_values = [0, 0.0, 1, 0.01, 2, 0.5]
 linked_parent_graph_frame = 11
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_14qpx"]
-size = Vector2(392.0004, 619.0005)
+size = Vector2(392.00037, 619.0002)
 title = "Outer Band"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(28, 36)
@@ -122,13 +122,13 @@ operator = 1
 linked_parent_graph_frame = 6
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_fresnel_coordinate"]
-size = Vector2(341, 268)
+size = Vector2(341, 268.00012)
 title = "Fresnel Coordinate"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(3)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_shell_coordinate"]
-size = Vector2(1040.0015, 421.00024)
+size = Vector2(1039.9998, 420.99973)
 title = "Shell Coordinate"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(46)
@@ -169,32 +169,16 @@ boundary_end = chromatic_outer_boundary_coordinate + boundary_half_width;"
 constant = Color(0, 0, 0, 1)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_outer_boundary"]
-size = Vector2(1300.0004, 801.0002)
+size = Vector2(1300.0004, 800.99976)
 title = "Chromatic / Outer Boundary"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(49, 47, 48)
 
-[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_flrei"]
-size = Vector2(1592.0002, 974.0002)
-title = "Inner Band"
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_noise_coordinate"]
+size = Vector2(1939.9996, 1094.0004)
+title = "Chromatic Noise Coordinate"
 tint_color_enabled = true
-attached_nodes = PackedInt32Array(7, 8, 9, 10, 26, 37, 39, 43, 42, 41, 40)
-
-[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_q3i30"]
-linked_parent_graph_frame = 6
-
-[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_0y6gk"]
-linked_parent_graph_frame = 6
-
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_emx2v"]
-linked_parent_graph_frame = 6
-operator = 2
-
-[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_color_coordinate"]
-size = Vector2(1760, 1500)
-title = "Chromatic Color Coordinate"
-tint_color_enabled = true
-attached_nodes = PackedInt32Array(52, 53, 54, 55, 56, 57, 58, 59, 60, 61)
+attached_nodes = PackedInt32Array(52, 53, 54, 55, 56, 57, 58)
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_chromatic_view_normal"]
 linked_parent_graph_frame = 51
@@ -204,109 +188,68 @@ input_name = "normal"
 linked_parent_graph_frame = 51
 input_name = "time"
 
-[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_chromatic_color_coordinate"]
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_chromatic_noise_coordinate"]
 linked_parent_graph_frame = 51
-size = Vector2(1200, 1340)
-expression = "float angle = atan(view_normal.y, view_normal.x);
-float ring_coordinate = fract(angle / 6.28318530718 + 0.5);
+size = Vector2(1000, 600)
+expression = "vec2 ring_xy = view_normal.xy;
+vec2 circle_direction = ring_xy / max(length(ring_xy), 0.0001);
+noise_uv_main = vec2(0.5) + circle_direction * chromatic_noise_main_scale + time * vec2(0.73, 1.0) * chromatic_noise_main_speed;
+noise_uv_detail_a = vec2(0.5) + circle_direction * chromatic_noise_detail_scale + time * vec2(-1.0, 0.37) * chromatic_noise_detail_speed;
+noise_uv_detail_b = noise_uv_detail_a + vec2(0.37, 0.61);"
 
-float phase_a = (
-	ring_coordinate * chromatic_warp_frequency_a
-	+ time * chromatic_warp_speed_a
-) * 6.28318530718;
-float warp_a = sin(phase_a) * chromatic_warp_strength_a;
-
-float warped_coordinate_a = ring_coordinate + warp_a;
-
-float phase_b = (
-	warped_coordinate_a * chromatic_warp_frequency_b
-	+ time * chromatic_warp_speed_b
-) * 6.28318530718;
-float warp_b = sin(phase_b) * chromatic_warp_strength_b;
-
-chromatic_color_coordinate = fract(
-	ring_coordinate
-	+ time * chromatic_color_speed
-	+ warp_a
-	+ warp_b
-);"
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_color_speed"]
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_noise_main_scale"]
 linked_parent_graph_frame = 51
-parameter_name = "chromatic_color_speed"
+parameter_name = "chromatic_noise_main_scale"
+hint = 2
+max = 4.0
+step = 0.01
+default_value_enabled = true
+default_value = 0.6
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_noise_main_speed"]
+linked_parent_graph_frame = 51
+parameter_name = "chromatic_noise_main_speed"
 hint = 2
 min = -1.0
-max = 1.0
 step = 0.001
 default_value_enabled = true
-default_value = 0.03
+default_value = 0.65
 
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_frequency_a"]
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_noise_detail_scale"]
 linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_frequency_a"
+parameter_name = "chromatic_noise_detail_scale"
 hint = 2
-min = 1.0
-max = 8.0
-step = 1.0
+max = 4.0
+step = 0.01
 default_value_enabled = true
-default_value = 2.0
+default_value = 1.4
 
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_speed_a"]
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_noise_detail_speed"]
 linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_speed_a"
+parameter_name = "chromatic_noise_detail_speed"
 hint = 2
 min = -1.0
-max = 1.0
 step = 0.001
+default_value_enabled = true
+default_value = 0.95
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_noise_warp_strength"]
+linked_parent_graph_frame = 74
+parameter_name = "chromatic_noise_warp_strength"
+hint = 2
+max = 1.0
+step = 0.01
 default_value_enabled = true
 default_value = 0.05
 
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_strength_a"]
-linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_strength_a"
-hint = 2
-max = 0.25
-step = 0.001
-default_value_enabled = true
-default_value = 0.05
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_frequency_b"]
-linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_frequency_b"
-hint = 2
-min = 1.0
-max = 12.0
-step = 1.0
-default_value_enabled = true
-default_value = 5.0
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_speed_b"]
-linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_speed_b"
-hint = 2
-min = -1.0
-max = 1.0
-step = 0.001
-default_value_enabled = true
-default_value = -0.08
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_chromatic_warp_strength_b"]
-linked_parent_graph_frame = 51
-parameter_name = "chromatic_warp_strength_b"
-hint = 2
-max = 0.2
-step = 0.001
-default_value_enabled = true
-default_value = 0.025
-
-[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_color_gradient"]
-size = Vector2(1000, 700)
-title = "Chromatic Color Gradient"
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_flrei"]
+size = Vector2(1592.0002, 974)
+title = "Inner Band"
 tint_color_enabled = true
-attached_nodes = PackedInt32Array(62, 63, 64)
+attached_nodes = PackedInt32Array(7, 8, 9, 10, 26, 37, 39, 43, 42, 41, 40)
 
 [sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_chromatic_gradient_uv"]
-default_input_values = [0, 0.0, 1, 0.5]
+default_input_values = [0, 0.0, 1, 0.5, 2, 0.0]
 linked_parent_graph_frame = 65
 op_type = 0
 
@@ -320,6 +263,88 @@ texture_repeat = 2
 linked_parent_graph_frame = 65
 source = 5
 texture_type = 1
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_color_gradient"]
+size = Vector2(613, 671)
+title = "Chromatic Color Gradient"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(62, 63, 64)
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_noise_main"]
+size = Vector2(844, 671.00024)
+title = "Chromatic Main Noise"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(67, 68, 69)
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_chromatic_noise_main"]
+linked_parent_graph_frame = 66
+parameter_name = "chromatic_noise_main"
+texture_type = 1
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_chromatic_noise_main"]
+linked_parent_graph_frame = 66
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_chromatic_noise_main"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+linked_parent_graph_frame = 66
+op_type = 2
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_q3i30"]
+linked_parent_graph_frame = 6
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_noise_detail"]
+size = Vector2(844, 950)
+title = "Chromatic Detail Noise"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(71, 72, 73, 76, 77)
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_chromatic_noise_detail"]
+linked_parent_graph_frame = 70
+parameter_name = "chromatic_noise_detail"
+texture_type = 1
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_chromatic_noise_detail"]
+linked_parent_graph_frame = 70
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_chromatic_noise_detail"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+linked_parent_graph_frame = 70
+op_type = 2
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_chromatic_noise_detail_b"]
+linked_parent_graph_frame = 70
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_chromatic_noise_detail_b"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+linked_parent_graph_frame = 70
+op_type = 2
+
+[sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_chromatic_domain_warp"]
+size = Vector2(900, 854)
+title = "Chromatic Domain Warp"
+tint_color_enabled = true
+attached_nodes = PackedInt32Array(59, 75)
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_chromatic_domain_warp"]
+linked_parent_graph_frame = 74
+size = Vector2(760, 360)
+expression = "vec2 warp_vector = vec2(detail_noise_a, detail_noise_b) * 2.0 - 1.0;
+warped_noise_uv_main = noise_uv_main + warp_vector * chromatic_noise_warp_strength;"
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_0y6gk"]
+linked_parent_graph_frame = 6
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_emx2v"]
+linked_parent_graph_frame = 6
+operator = 2
 
 [resource]
 nodes/fragment/0/position = Vector2(2580, 320)
@@ -392,9 +417,9 @@ nodes/fragment/43/position = Vector2(-720, 420)
 nodes/fragment/44/node = SubResource("VisualShaderNodeFrame_fresnel_coordinate")
 nodes/fragment/44/position = Vector2(-1680, 900)
 nodes/fragment/45/node = SubResource("VisualShaderNodeFrame_shell_coordinate")
-nodes/fragment/45/position = Vector2(-920, 880)
+nodes/fragment/45/position = Vector2(-820, 880)
 nodes/fragment/46/node = SubResource("VisualShaderNodeExpression_shell_coordinate")
-nodes/fragment/46/position = Vector2(-880, 940)
+nodes/fragment/46/position = Vector2(-780, 920)
 nodes/fragment/46/size = Vector2(960, 340)
 nodes/fragment/46/input_ports = "0,0,fresnel_coordinate;1,0,inner_band_coordinate;2,0,inner_band_outer_width;"
 nodes/fragment/46/output_ports = "0,0,shell_coordinate;1,0,inner_transition_width;"
@@ -415,60 +440,67 @@ boundary_start = chromatic_outer_boundary_coordinate - boundary_half_width;
 boundary_end = chromatic_outer_boundary_coordinate + boundary_half_width;"
 nodes/fragment/50/node = SubResource("VisualShaderNodeFrame_chromatic_outer_boundary")
 nodes/fragment/50/position = Vector2(-1140, 1360)
-nodes/fragment/51/node = SubResource("VisualShaderNodeFrame_chromatic_color_coordinate")
-nodes/fragment/51/position = Vector2(-1200, 2600)
+nodes/fragment/51/node = SubResource("VisualShaderNodeFrame_chromatic_noise_coordinate")
+nodes/fragment/51/position = Vector2(-1600, 2600)
 nodes/fragment/52/node = SubResource("VisualShaderNodeInput_chromatic_view_normal")
-nodes/fragment/52/position = Vector2(-1160, 2660)
+nodes/fragment/52/position = Vector2(-1560, 2660)
 nodes/fragment/53/node = SubResource("VisualShaderNodeInput_chromatic_time")
-nodes/fragment/53/position = Vector2(-1160, 2840)
-nodes/fragment/54/node = SubResource("VisualShaderNodeExpression_chromatic_color_coordinate")
-nodes/fragment/54/position = Vector2(-700, 2660)
-nodes/fragment/54/size = Vector2(1200, 1340)
-nodes/fragment/54/input_ports = "0,4,view_normal;1,0,time;2,0,chromatic_color_speed;3,0,chromatic_warp_frequency_a;4,0,chromatic_warp_speed_a;5,0,chromatic_warp_strength_a;6,0,chromatic_warp_frequency_b;7,0,chromatic_warp_speed_b;8,0,chromatic_warp_strength_b;"
-nodes/fragment/54/output_ports = "0,0,chromatic_color_coordinate;"
-nodes/fragment/54/expression = "float angle = atan(view_normal.y, view_normal.x);
-float ring_coordinate = fract(angle / 6.28318530718 + 0.5);
-
-float phase_a = (
-	ring_coordinate * chromatic_warp_frequency_a
-	+ time * chromatic_warp_speed_a
-) * 6.28318530718;
-float warp_a = sin(phase_a) * chromatic_warp_strength_a;
-
-float warped_coordinate_a = ring_coordinate + warp_a;
-
-float phase_b = (
-	warped_coordinate_a * chromatic_warp_frequency_b
-	+ time * chromatic_warp_speed_b
-) * 6.28318530718;
-float warp_b = sin(phase_b) * chromatic_warp_strength_b;
-
-chromatic_color_coordinate = fract(
-	ring_coordinate
-	+ time * chromatic_color_speed
-	+ warp_a
-	+ warp_b
-);"
-nodes/fragment/55/node = SubResource("VisualShaderNodeFloatParameter_chromatic_color_speed")
-nodes/fragment/55/position = Vector2(-1160, 3020)
-nodes/fragment/56/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_frequency_a")
-nodes/fragment/56/position = Vector2(-1160, 3180)
-nodes/fragment/57/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_speed_a")
-nodes/fragment/57/position = Vector2(-1160, 3340)
-nodes/fragment/58/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_strength_a")
-nodes/fragment/58/position = Vector2(-1160, 3500)
-nodes/fragment/59/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_frequency_b")
-nodes/fragment/59/position = Vector2(-1160, 3660)
-nodes/fragment/60/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_speed_b")
-nodes/fragment/60/position = Vector2(-1160, 3820)
-nodes/fragment/61/node = SubResource("VisualShaderNodeFloatParameter_chromatic_warp_strength_b")
-nodes/fragment/61/position = Vector2(-1160, 3980)
+nodes/fragment/53/position = Vector2(-1560, 2820)
+nodes/fragment/54/node = SubResource("VisualShaderNodeExpression_chromatic_noise_coordinate")
+nodes/fragment/54/position = Vector2(-1100, 2660)
+nodes/fragment/54/size = Vector2(1000, 600)
+nodes/fragment/54/input_ports = "0,4,view_normal;1,0,time;2,0,chromatic_noise_main_scale;3,0,chromatic_noise_main_speed;4,0,chromatic_noise_detail_scale;5,0,chromatic_noise_detail_speed;"
+nodes/fragment/54/output_ports = "0,3,noise_uv_main;1,3,noise_uv_detail_a;2,3,noise_uv_detail_b;"
+nodes/fragment/54/expression = "vec2 ring_xy = view_normal.xy;
+vec2 circle_direction = ring_xy / max(length(ring_xy), 0.0001);
+noise_uv_main = vec2(0.5) + circle_direction * chromatic_noise_main_scale + time * vec2(0.73, 1.0) * chromatic_noise_main_speed;
+noise_uv_detail_a = vec2(0.5) + circle_direction * chromatic_noise_detail_scale + time * vec2(-1.0, 0.37) * chromatic_noise_detail_speed;
+noise_uv_detail_b = noise_uv_detail_a + vec2(0.37, 0.61);"
+nodes/fragment/55/node = SubResource("VisualShaderNodeFloatParameter_chromatic_noise_main_scale")
+nodes/fragment/55/position = Vector2(-1960, 2680)
+nodes/fragment/56/node = SubResource("VisualShaderNodeFloatParameter_chromatic_noise_main_speed")
+nodes/fragment/56/position = Vector2(-1960, 3060)
+nodes/fragment/57/node = SubResource("VisualShaderNodeFloatParameter_chromatic_noise_detail_scale")
+nodes/fragment/57/position = Vector2(-1560, 2980)
+nodes/fragment/58/node = SubResource("VisualShaderNodeFloatParameter_chromatic_noise_detail_speed")
+nodes/fragment/58/position = Vector2(-1560, 3360)
+nodes/fragment/59/node = SubResource("VisualShaderNodeFloatParameter_chromatic_noise_warp_strength")
+nodes/fragment/59/position = Vector2(1080, 3420)
 nodes/fragment/62/node = SubResource("VisualShaderNodeVectorCompose_chromatic_gradient_uv")
-nodes/fragment/62/position = Vector2(640, 2960)
+nodes/fragment/62/position = Vector2(3080, 2820)
 nodes/fragment/63/node = SubResource("VisualShaderNodeTexture2DParameter_chromatic_gradient")
-nodes/fragment/63/position = Vector2(640, 3260)
+nodes/fragment/63/position = Vector2(3080, 3100)
 nodes/fragment/64/node = SubResource("VisualShaderNodeTexture_chromatic_gradient")
-nodes/fragment/64/position = Vector2(1080, 3040)
+nodes/fragment/64/position = Vector2(3420, 2880)
 nodes/fragment/65/node = SubResource("VisualShaderNodeFrame_chromatic_color_gradient")
-nodes/fragment/65/position = Vector2(600, 2900)
-nodes/fragment/connections = PackedInt32Array(3, 0, 7, 2, 7, 0, 9, 0, 3, 0, 8, 2, 8, 0, 10, 0, 10, 0, 9, 1, 14, 0, 13, 0, 17, 0, 12, 0, 12, 0, 13, 1, 64, 0, 31, 0, 29, 0, 31, 1, 5, 0, 0, 0, 9, 0, 38, 0, 26, 0, 38, 1, 37, 0, 38, 2, 13, 0, 38, 3, 27, 0, 38, 4, 31, 0, 38, 5, 17, 0, 38, 6, 28, 0, 38, 7, 36, 0, 38, 8, 38, 0, 0, 1, 38, 1, 0, 5, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 7, 0, 39, 0, 7, 1, 41, 0, 43, 1, 39, 0, 43, 0, 43, 0, 8, 1, 39, 0, 8, 0, 3, 0, 46, 0, 39, 0, 46, 1, 41, 0, 46, 2, 46, 0, 14, 2, 46, 1, 14, 1, 46, 0, 17, 2, 47, 0, 49, 0, 48, 0, 49, 1, 49, 0, 17, 0, 49, 1, 17, 1, 52, 0, 54, 0, 53, 0, 54, 1, 55, 0, 54, 2, 56, 0, 54, 3, 57, 0, 54, 4, 58, 0, 54, 5, 59, 0, 54, 6, 60, 0, 54, 7, 61, 0, 54, 8, 54, 0, 62, 0, 62, 0, 64, 0, 63, 0, 64, 2)
+nodes/fragment/65/position = Vector2(3040, 2780)
+nodes/fragment/66/node = SubResource("VisualShaderNodeFrame_chromatic_noise_main")
+nodes/fragment/66/position = Vector2(2080, 2600)
+nodes/fragment/67/node = SubResource("VisualShaderNodeTexture2DParameter_chromatic_noise_main")
+nodes/fragment/67/position = Vector2(2120, 2940)
+nodes/fragment/68/node = SubResource("VisualShaderNodeTexture_chromatic_noise_main")
+nodes/fragment/68/position = Vector2(2420, 2660)
+nodes/fragment/69/node = SubResource("VisualShaderNodeVectorDecompose_chromatic_noise_main")
+nodes/fragment/69/position = Vector2(2720, 2700)
+nodes/fragment/70/node = SubResource("VisualShaderNodeFrame_chromatic_noise_detail")
+nodes/fragment/70/position = Vector2(0, 3400)
+nodes/fragment/71/node = SubResource("VisualShaderNodeTexture2DParameter_chromatic_noise_detail")
+nodes/fragment/71/position = Vector2(40, 3740)
+nodes/fragment/72/node = SubResource("VisualShaderNodeTexture_chromatic_noise_detail")
+nodes/fragment/72/position = Vector2(340, 3460)
+nodes/fragment/73/node = SubResource("VisualShaderNodeVectorDecompose_chromatic_noise_detail")
+nodes/fragment/73/position = Vector2(640, 3500)
+nodes/fragment/74/node = SubResource("VisualShaderNodeFrame_chromatic_domain_warp")
+nodes/fragment/74/position = Vector2(1040, 2880)
+nodes/fragment/75/node = SubResource("VisualShaderNodeExpression_chromatic_domain_warp")
+nodes/fragment/75/position = Vector2(1080, 2960)
+nodes/fragment/75/size = Vector2(760, 360)
+nodes/fragment/75/input_ports = "0,3,noise_uv_main;1,0,detail_noise_a;2,0,detail_noise_b;3,0,chromatic_noise_warp_strength;"
+nodes/fragment/75/output_ports = "0,3,warped_noise_uv_main;"
+nodes/fragment/75/expression = "vec2 warp_vector = vec2(detail_noise_a, detail_noise_b) * 2.0 - 1.0;
+warped_noise_uv_main = noise_uv_main + warp_vector * chromatic_noise_warp_strength;"
+nodes/fragment/76/node = SubResource("VisualShaderNodeTexture_chromatic_noise_detail_b")
+nodes/fragment/76/position = Vector2(340, 3860)
+nodes/fragment/77/node = SubResource("VisualShaderNodeVectorDecompose_chromatic_noise_detail_b")
+nodes/fragment/77/position = Vector2(640, 3900)
+nodes/fragment/connections = PackedInt32Array(3, 0, 7, 2, 7, 0, 9, 0, 3, 0, 8, 2, 8, 0, 10, 0, 10, 0, 9, 1, 14, 0, 13, 0, 17, 0, 12, 0, 12, 0, 13, 1, 64, 0, 31, 0, 29, 0, 31, 1, 5, 0, 0, 0, 9, 0, 38, 0, 26, 0, 38, 1, 37, 0, 38, 2, 13, 0, 38, 3, 27, 0, 38, 4, 31, 0, 38, 5, 17, 0, 38, 6, 28, 0, 38, 7, 36, 0, 38, 8, 38, 0, 0, 1, 38, 1, 0, 5, 39, 0, 42, 0, 40, 0, 42, 1, 42, 0, 7, 0, 39, 0, 7, 1, 41, 0, 43, 1, 39, 0, 43, 0, 43, 0, 8, 1, 39, 0, 8, 0, 3, 0, 46, 0, 39, 0, 46, 1, 41, 0, 46, 2, 46, 0, 14, 2, 46, 1, 14, 1, 46, 0, 17, 2, 47, 0, 49, 0, 48, 0, 49, 1, 49, 0, 17, 0, 49, 1, 17, 1, 52, 0, 54, 0, 53, 0, 54, 1, 55, 0, 54, 2, 56, 0, 54, 3, 57, 0, 54, 4, 58, 0, 54, 5, 54, 1, 72, 0, 54, 2, 76, 0, 71, 0, 72, 2, 71, 0, 76, 2, 72, 0, 73, 0, 76, 0, 77, 0, 54, 0, 75, 0, 73, 0, 75, 1, 77, 0, 75, 2, 59, 0, 75, 3, 75, 0, 68, 0, 67, 0, 68, 2, 68, 0, 69, 0, 69, 0, 62, 0, 62, 0, 64, 0, 63, 0, 64, 2)

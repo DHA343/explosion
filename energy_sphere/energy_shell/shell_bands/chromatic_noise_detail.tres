@@ -1,0 +1,13 @@
+[gd_resource type="NoiseTexture2D" format=3 uid="uid://cj77xjfup4jm4"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_chromatic_detail"]
+seed = 271828
+frequency = 0.045
+fractal_octaves = 2
+
+[resource]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_chromatic_detail")
+seamless = true
+seamless_blend_skirt = 0.2
