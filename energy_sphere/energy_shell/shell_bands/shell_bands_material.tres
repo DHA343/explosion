@@ -1,6 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://dds1hn8hdcyar"]
 
 [ext_resource type="Shader" uid="uid://dmrdfmkunidpa" path="res://energy_sphere/energy_shell/shell_bands/shell_bands_shader.tres" id="1_xq1nw"]
+[ext_resource type="Texture2D" path="res://energy_sphere/energy_shell/shell_bands/chromatic_band_color_gradient.tres" id="2_chromatic_gradient"]
 
 [resource]
 render_priority = 1
@@ -11,8 +12,15 @@ shader_parameter/inner_band_opacity = 0.6
 shader_parameter/inner_band_color = Color(0, 0, 0, 1)
 shader_parameter/chromatic_outer_boundary_coordinate = 0.3
 shader_parameter/chromatic_outer_boundary_width = 0.20000000298023
+shader_parameter/chromatic_color_gradient = ExtResource("2_chromatic_gradient")
+shader_parameter/chromatic_color_speed = 0.03
+shader_parameter/chromatic_warp_frequency_a = 2.0
+shader_parameter/chromatic_warp_speed_a = 0.05
+shader_parameter/chromatic_warp_strength_a = 0.05
+shader_parameter/chromatic_warp_frequency_b = 5.0
+shader_parameter/chromatic_warp_speed_b = -0.08
+shader_parameter/chromatic_warp_strength_b = 0.025
 shader_parameter/chromatic_band_opacity = 0.6
-shader_parameter/chromatic_band_color = Color(1, 0.513726, 1, 1)
 shader_parameter/chromatic_band_intensity = 2.0
 shader_parameter/outer_band_opacity = 0.8
 shader_parameter/outer_band_color = Color(0.04, 0.05600002, 0.2, 1)
