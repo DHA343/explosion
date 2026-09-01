@@ -2,7 +2,6 @@
 extends Node3D
 
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
-const PATCH_SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 
 @export var radius: float = 0.5:
 	set(value):
@@ -12,9 +11,7 @@ const PATCH_SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
-@onready var _shell_body: MeshInstance3D = %ShellBody
-@onready var _patch_instances: MultiMeshInstance3D = %PatchInstances
-
+@onready var _energy_shell: EnergyShell = $EnergyShell
 
 func _ready() -> void:
 	_update_radius()
@@ -28,9 +25,4 @@ func _ready() -> void:
 
 
 func _update_radius() -> void:
-	var sphere_mesh := _shell_body.mesh as SphereMesh
-	assert(sphere_mesh != null, "EnergyShell requires a SphereMesh.")
-
-	sphere_mesh.radius = radius
-	sphere_mesh.height = radius * 2.0
-	_patch_instances.set_instance_shader_parameter(PATCH_SPHERE_RADIUS_PARAMETER, radius)
+	_energy_shell.radius = radius
