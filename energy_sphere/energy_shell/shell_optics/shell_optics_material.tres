@@ -3,5 +3,10 @@
 [ext_resource type="Shader" uid="uid://dmrdfmkunidpa" path="res://energy_sphere/energy_shell/shell_optics/shell_optics_shader.tres" id="1_xq1nw"]
 
 [resource]
-render_priority = 0
+render_priority = 1
 shader = ExtResource("1_xq1nw")
+shader_parameter/refraction_band_inner_start = 0.4
+shader_parameter/refraction_band_inner_end = 0.8
+shader_parameter/refraction_band_outer_start = 0.9
+shader_parameter/refraction_band_outer_end = 0.97
+shader_parameter/refraction_strength = 8.0

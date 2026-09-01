@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://b144cgiqqdogf" path="res://main/night_sky.gdshader" id="1_q0apk"]
 [ext_resource type="Material" uid="uid://cwni8o5bn1b1u" path="res://energy_sphere/core_glow/core_glow_material.tres" id="2_nfcmq"]
+[ext_resource type="Texture2D" uid="uid://c5d44042kkau0" path="res://_temp/single_stripe.webp" id="2_tak2u"]
 [ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://energy_sphere/orbit_camera.gd" id="2_womfm"]
 [ext_resource type="Script" uid="uid://e7bnt7r8hg21" path="res://energy_sphere/energy_sphere.gd" id="3_energy_sphere"]
 [ext_resource type="Shader" uid="uid://bp0e200yo130w" path="res://energy_sphere/inflow_streaks/inflow_streaks.gdshader" id="4_j35yx"]
@@ -110,6 +111,10 @@ mesh = ExtResource("10_bnioy")
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
 
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=1669164124]
+transform = Transform3D(0.88212687, -0.47101188, 0, 0.47101188, 0.88212687, 0, 0, 0, 1, 0, 0, -1.24)
+texture = ExtResource("2_tak2u")
+
 [node name="NightEnvironment" type="WorldEnvironment" parent="." unique_id=904025280]
 environment = SubResource("Environment_nfcmq")
 
@@ -164,7 +169,6 @@ mesh = ExtResource("8_unqks")
 
 [node name="ShellOptics" type="MeshInstance3D" parent="EnergyShell" unique_id=176171643]
 unique_name_in_owner = true
-transform = Transform3D(1.001, 0, 0, 0, 1.001, 0, 0, 0, 1.001, 0, 0, 0)
 material_override = ExtResource("10_aap2g")
 mesh = ExtResource("8_unqks")
 
@@ -172,6 +176,7 @@ mesh = ExtResource("8_unqks")
 script = ExtResource("9_bnioy")
 patch_count = 150
 patch_color_gradient = ExtResource("10_unqks")
+patch_size_min_ratio = 0.2
 
 [node name="PatchInstances" type="MultiMeshInstance3D" parent="EnergyShell/ShellPatches" unique_id=969384425]
 unique_name_in_owner = true
