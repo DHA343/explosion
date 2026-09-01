@@ -166,7 +166,6 @@ mesh = ExtResource("8_unqks")
 
 [node name="ShellBands" type="MeshInstance3D" parent="EnergyShell" unique_id=176171643]
 material_override = ExtResource("10_aap2g")
-instance_shader_parameters/inner_band_coordinate = 0.6877501000800801
 mesh = ExtResource("8_unqks")
 
 [node name="ShellPatches" type="Node3D" parent="EnergyShell" unique_id=1708681012]

@@ -29,14 +29,14 @@ default_value_enabled = true
 default_value = 2.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_dpcei"]
-size = Vector2(804, 515)
+size = Vector2(804, 342)
 title = "明滅"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(99, 98, 97, 96)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_noise_offset"]
 linked_parent_graph_frame = 25
-size = Vector2(484, 563)
+size = Vector2(484, 422)
 title = "ライン別ノイズ座標オフセット"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(106, 107, 108)
@@ -103,7 +103,7 @@ default_value_enabled = true
 default_value = 1.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_5vn82"]
-size = Vector2(3305.9998, 1995.0001)
+size = Vector2(3304, 1782)
 title = "ノイズ大"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(156, 152, 165, 149, 148, 155, 145, 144, 161, 158, 164, 159, 157, 160, 166, 167, 168, 169, 170, 174, 172, 175, 176, 177, 178, 182, 180, 181, 183, 184, 185, 186, 187, 188, 189, 190)
@@ -318,7 +318,7 @@ linked_parent_graph_frame = 25
 function = 17
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_fsi7p"]
-size = Vector2(2466, 1063)
+size = Vector2(2464, 923)
 title = "ノイズ"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(11, 10, 17, 12, 13, 18, 14, 22, 23, 19, 20, 21, 15, 28, 65, 70, 71, 151)
@@ -375,13 +375,13 @@ default_input_values = [0, 1.0, 1, 0.0]
 operator = 2
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_thickness"]
-size = Vector2(910, 710.00006)
+size = Vector2(904, 602)
 title = "線幅方向の透明度グラデーション"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(26, 27, 28, 29, 45, 47, 46, 48, 49)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_endpoint"]
-size = Vector2(850.00006, 670.0001)
+size = Vector2(844, 562)
 title = "先端・末端の透明度グラデーション"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(32, 33, 34, 35, 36, 37)
@@ -421,7 +421,7 @@ default_input_values = [0, 1.0, 1, 0.0]
 operator = 2
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_color_gradient"]
-size = Vector2(1553, 751)
+size = Vector2(1524, 482)
 title = "線幅方向"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(61, 69, 63, 76, 66, 67, 68)
@@ -584,7 +584,7 @@ default_value_enabled = true
 default_value = 1.0
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_mdpp1"]
-size = Vector2(1944, 1171)
+size = Vector2(1944, 902)
 title = "動くテクスチャ"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(94, 93, 82, 92, 91, 90, 89, 88, 87, 86, 84, 83, 81, 79, 78)
