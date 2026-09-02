@@ -15,7 +15,9 @@ func rebuild(events: Array[ShellContactEvent], camera_position: Vector3, inner_r
 		view_direction = Vector3.BACK
 
 	for event in events:
-		if not event.is_active or event.contact_visibility() <= 0.001:
+		if not event.is_active or not event.has_contact():
+			continue
+		if event.contact_visibility() <= 0.001:
 			continue
 		_append_patch(event, view_direction, inner_radius, vertices, colors, uvs, indices)
 

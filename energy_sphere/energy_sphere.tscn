@@ -155,6 +155,8 @@ mesh = SubResource("BoxMesh_ua4af")
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="ShellContacts" parent="." unique_id=1878641850 instance=ExtResource("10_shell_contacts")]
+radius = 0.45
+inner_radius = 0.423
 
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
 script = ExtResource("9_ocr5p")

@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3]
 
-[ext_resource type="Shader" path="res://energy_sphere/shell_contacts/filament_3d.gdshader" id="1_shader"]
+[ext_resource type="Shader" path="res://energy_sphere/shell_contacts/filament_splat_3d.gdshader" id="1_shader"]
 
 [resource]
 resource_local_to_scene = true

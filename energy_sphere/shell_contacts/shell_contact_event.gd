@@ -8,12 +8,21 @@ enum Phase {
 	RESIDUE,
 }
 
+enum ReachType {
+	FULL_CONTACT,
+	NEAR_SURFACE,
+	SHORT_BURST,
+	CONTACT_FIRST,
+}
+
 var phase: Phase = Phase.GROWTH
 var elapsed: float = 0.0
 var lifetime: float = 0.2
 var direction: Vector3 = Vector3.RIGHT
 var start_position: Vector3 = Vector3.ZERO
+var end_position: Vector3 = Vector3.RIGHT
 var contact_position: Vector3 = Vector3.RIGHT
+var reach_type: ReachType = ReachType.FULL_CONTACT
 var width_class: int = 0
 var body_width: float = 0.05
 var hot_core_width: float = 0.03
@@ -25,6 +34,7 @@ var growth_duration: float = 0.07
 var contact_duration: float = 0.04
 var detach_duration: float = 0.06
 var residue_duration: float = 0.0
+var contact_lead_time: float = 0.0
 var random_seed: float = 0.0
 var is_active: bool = false
 
@@ -36,6 +46,10 @@ func advance(delta: float) -> void:
 
 func growth_progress() -> float:
 	return clampf(elapsed / growth_duration, 0.0, 1.0)
+
+
+func has_contact() -> bool:
+	return reach_type == ReachType.FULL_CONTACT or reach_type == ReachType.CONTACT_FIRST
 
 
 func detach_progress() -> float:
@@ -53,7 +67,10 @@ func filament_visibility() -> float:
 
 
 func contact_visibility() -> float:
-	var contact_start := growth_duration * 0.82
+	if not has_contact():
+		return 0.0
+
+	var contact_start := growth_duration - contact_lead_time
 	if elapsed < contact_start:
 		return 0.0
 	if elapsed < growth_duration:
