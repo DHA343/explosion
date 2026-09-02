@@ -3,7 +3,7 @@
 [ext_resource type="Shader" uid="uid://cjb43jt6fl1p2" path="res://energy_sphere/core_glow/core_glow_shader.tres" id="1_g4en1"]
 
 [resource]
-render_priority = 1
+render_priority = 0
 shader = ExtResource("1_g4en1")
 shader_parameter/sphere_radius = 0.5
 shader_parameter/core_ratio = 0.249999994412

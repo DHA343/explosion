@@ -1,0 +1,50 @@
+[gd_resource type="VisualShader" format=3 uid="uid://bdkuyvvt87xp6"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_power"]
+parameter_name = "fresnel_power"
+hint = 2
+min = 0.1
+max = 16.0
+default_value_enabled = true
+default_value = 2.0
+
+[sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_inner"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_opacity"]
+parameter_name = "opacity"
+hint = 2
+step = 0.01
+default_value_enabled = true
+default_value = 0.75
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_color"]
+parameter_name = "color"
+default_value_enabled = true
+default_value = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_alpha"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_emission"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_black"]
+constant = Color(0, 0, 0, 1)
+
+[resource]
+nodes/fragment/0/position = Vector2(1100, 40)
+nodes/fragment/2/node = SubResource("VisualShaderNodeFloatParameter_power")
+nodes/fragment/2/position = Vector2(-440, 160)
+nodes/fragment/3/node = SubResource("VisualShaderNodeFresnel_inner")
+nodes/fragment/3/position = Vector2(-40, 240)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_opacity")
+nodes/fragment/4/position = Vector2(320, 20)
+nodes/fragment/5/node = SubResource("VisualShaderNodeColorParameter_color")
+nodes/fragment/5/position = Vector2(300, 460)
+nodes/fragment/6/node = SubResource("VisualShaderNodeFloatOp_alpha")
+nodes/fragment/6/position = Vector2(720, 220)
+nodes/fragment/7/node = SubResource("VisualShaderNodeVectorOp_emission")
+nodes/fragment/7/position = Vector2(720, 480)
+nodes/fragment/8/node = SubResource("VisualShaderNodeColorConstant_black")
+nodes/fragment/8/position = Vector2(760, 0)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 3, 5, 0, 7, 0, 3, 0, 7, 1, 8, 0, 0, 0, 6, 0, 0, 1, 7, 0, 0, 5, 4, 0, 6, 0, 3, 0, 6, 1)

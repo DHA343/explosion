@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://4s0omonge5jc" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_edge_noise.tres" id="2_dorgv"]
 
 [resource]
-render_priority = -1
+render_priority = -2
 shader = ExtResource("1_rc683")
 shader_parameter/fresnel_power = 0.80000001192096
 shader_parameter/circle_mask_radius = 0.8

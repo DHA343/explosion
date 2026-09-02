@@ -3,6 +3,6 @@
 [ext_resource type="Shader" uid="uid://cx86nvndue53p" path="res://energy_sphere/energy_shell/shell_backdrop/shell_backdrop_shader.tres" id="1_hqv7l"]
 
 [resource]
-render_priority = 0
+render_priority = -5
 shader = ExtResource("1_hqv7l")
-shader_parameter/ColorParameter = Color(0, 0, 0, 1)
+shader_parameter/ColorParameter = Color(0.091900006, 0.062000003, 0.2, 1)

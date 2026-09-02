@@ -4,7 +4,7 @@ extends Node3D
 
 const PATCH_INNER_RADIUS_PARAMETER: StringName = &"inner_radius"
 
-@export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.05:
+@export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.06:
 	set(value):
 		thickness_ratio = value
 		if is_node_ready():
@@ -20,7 +20,8 @@ var inner_radius: float:
 	get:
 		return radius * (1.0 - thickness_ratio)
 
-@onready var _shell_body: MeshInstance3D = $ShellBody
+@onready var _outer_surface: MeshInstance3D = $OuterSurface
+@onready var _inner_surface: MeshInstance3D = $InnerSurface
 @onready var _patch_instances: MultiMeshInstance3D = $ShellPatches/PatchInstances
 
 
@@ -29,9 +30,10 @@ func _ready() -> void:
 
 
 func _update_shell() -> void:
-	var sphere_mesh := _shell_body.mesh as SphereMesh
-	assert(sphere_mesh != null, "ShellBody requires a SphereMesh.")
+	var sphere_mesh := _outer_surface.mesh as SphereMesh
+	assert(sphere_mesh != null, "OuterSurface requires a SphereMesh.")
 
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
+	_inner_surface.scale = Vector3.ONE * (1.0 - thickness_ratio)
 	_patch_instances.set_instance_shader_parameter(PATCH_INNER_RADIUS_PARAMETER, inner_radius)
