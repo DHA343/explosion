@@ -1,13 +1,27 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://energy_sphere/shell_contacts/shell_contacts.gd" id="1_script"]
-[ext_resource type="Material" path="res://energy_sphere/shell_contacts/shell_contacts_material.tres" id="2_material"]
-[ext_resource type="QuadMesh" path="res://energy_sphere/shell_contacts/shell_contacts_mesh.tres" id="3_mesh"]
+[ext_resource type="Script" path="res://energy_sphere/shell_contacts/filament_batch_3d.gd" id="2_filament_script"]
+[ext_resource type="Material" path="res://energy_sphere/shell_contacts/filament_3d_material.tres" id="3_filament_material"]
+[ext_resource type="Script" path="res://energy_sphere/shell_contacts/contact_patch_batch_3d.gd" id="4_patch_script"]
+[ext_resource type="Material" path="res://energy_sphere/shell_contacts/contact_patch_3d_material.tres" id="5_patch_material"]
+[ext_resource type="Material" path="res://energy_sphere/shell_contacts/interaction_halo_material.tres" id="6_halo_material"]
+[ext_resource type="QuadMesh" path="res://energy_sphere/shell_contacts/interaction_halo_mesh.tres" id="7_halo_mesh"]
 
 [node name="ShellContacts" type="Node3D"]
 script = ExtResource("1_script")
 
-[node name="ContactField" type="MeshInstance3D" parent="."]
-material_override = ExtResource("2_material")
+[node name="FilamentBatch3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("3_filament_material")
 cast_shadow = 0
-mesh = ExtResource("3_mesh")
+script = ExtResource("2_filament_script")
+
+[node name="ContactPatchBatch3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("5_patch_material")
+cast_shadow = 0
+script = ExtResource("4_patch_script")
+
+[node name="InteractionHalo" type="MeshInstance3D" parent="."]
+material_override = ExtResource("6_halo_material")
+cast_shadow = 0
+mesh = ExtResource("7_halo_mesh")

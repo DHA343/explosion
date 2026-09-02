@@ -15,6 +15,7 @@ const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 @onready var _energy_shell: EnergyShell = $EnergyShell
 
 func _ready() -> void:
+	_energy_shell.inner_radius_changed.connect(_on_inner_radius_changed)
 	_update_radius()
 
 	var material := _streaks_surface.material_override as ShaderMaterial
@@ -26,5 +27,10 @@ func _ready() -> void:
 
 
 func _update_radius() -> void:
-	_shell_contacts.radius = radius
 	_energy_shell.radius = radius
+	_shell_contacts.radius = radius
+	_shell_contacts.inner_radius = _energy_shell.inner_radius
+
+
+func _on_inner_radius_changed(value: float) -> void:
+	_shell_contacts.inner_radius = value
