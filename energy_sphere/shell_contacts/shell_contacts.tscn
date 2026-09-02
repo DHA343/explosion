@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://energy_sphere/shell_contacts/shell_contacts.gd" id="1_script"]
+[ext_resource type="Material" path="res://energy_sphere/shell_contacts/shell_contacts_material.tres" id="2_material"]
+[ext_resource type="QuadMesh" path="res://energy_sphere/shell_contacts/shell_contacts_mesh.tres" id="3_mesh"]
+
+[node name="ShellContacts" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="ContactField" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_material")
+cast_shadow = 0
+mesh = ExtResource("3_mesh")

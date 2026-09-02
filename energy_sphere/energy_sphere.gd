@@ -11,6 +11,7 @@ const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
+@onready var _shell_contacts: ShellContacts = $ShellContacts
 @onready var _energy_shell: EnergyShell = $EnergyShell
 
 func _ready() -> void:
@@ -25,4 +26,5 @@ func _ready() -> void:
 
 
 func _update_radius() -> void:
+	_shell_contacts.radius = radius
 	_energy_shell.radius = radius

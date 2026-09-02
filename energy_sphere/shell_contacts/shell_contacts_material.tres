@@ -1,0 +1,49 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://0olhv124equ7"]
+
+[ext_resource type="Shader" uid="uid://c8oul8b4cb4cs" path="res://energy_sphere/shell_contacts/shell_contacts.gdshader" id="1_shader"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = -3
+shader = ExtResource("1_shader")
+shader_parameter/core_radius = 0.20000000298023
+shader_parameter/surface_radius = 0.94
+shader_parameter/filament_count = 16
+shader_parameter/filament_body_width = 0.06499999761581
+shader_parameter/filament_core_width = 0.03500000014901
+shader_parameter/filament_softness = 0.014
+shader_parameter/bend_strength = 0.045
+shader_parameter/tip_bulge = 0.7
+shader_parameter/width_variation = 1.0
+shader_parameter/source_lobe_size = 0.09
+shader_parameter/source_lobe_strength = 0.8
+shader_parameter/interaction_distance = 0.15
+shader_parameter/contact_tangent_size = 0.12
+shader_parameter/contact_radial_size = 0.045
+shader_parameter/contact_softness = 0.025
+shader_parameter/bridge_width = 0.032
+shader_parameter/bridge_softness = 0.03
+shader_parameter/bridge_strength = 1.0
+shader_parameter/contact_color_mix = 0.65
+shader_parameter/contact_emission_gain = 2.6
+shader_parameter/effect_time = 77.82378588889665
+shader_parameter/animation_speed = 5.8
+shader_parameter/growth_ratio = 0.42
+shader_parameter/contact_ratio = 0.45
+shader_parameter/dissolve_ratio = 0.8
+shader_parameter/centerline_motion_strength = 0.012
+shader_parameter/centerline_motion_speed = 0.9
+shader_parameter/shape_instability_strength = 0.22
+shader_parameter/shape_instability_speed = 1.15
+shader_parameter/breakup_strength = 0.62
+shader_parameter/breakup_scale = 5.0
+shader_parameter/breakup_speed = 0.95
+shader_parameter/random_seed = 17.0
+shader_parameter/reach_variation = 0.15
+shader_parameter/lifetime_variation = 0.25
+shader_parameter/contact_onset_variation = 0.12
+shader_parameter/filament_body_color = Color(0.25, 0.7, 1, 1)
+shader_parameter/filament_core_color = Color(1, 1, 1, 1)
+shader_parameter/contact_color = Color(0.85, 0.92, 1.2, 1)
+shader_parameter/filament_body_emission = 2.5
+shader_parameter/filament_core_emission = 5.0
