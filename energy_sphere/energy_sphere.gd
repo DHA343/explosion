@@ -11,7 +11,7 @@ const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _streaks_surface: MeshInstance3D = $InflowStreaks
-@onready var _radial_energy_volumes: RadialEnergyVolumes = $RadialEnergyVolumes
+@onready var _radial_energy: RadialEnergy = $RadialEnergy
 @onready var _energy_shell: EnergyShell = $EnergyShell
 
 func _ready() -> void:
@@ -28,9 +28,9 @@ func _ready() -> void:
 
 func _update_radius() -> void:
 	_energy_shell.radius = radius
-	_radial_energy_volumes.radius = radius
-	_radial_energy_volumes.inner_radius = _energy_shell.inner_radius
+	_radial_energy.radius = radius
+	_radial_energy.inner_radius = _energy_shell.inner_radius
 
 
 func _on_inner_radius_changed(value: float) -> void:
-	_radial_energy_volumes.inner_radius = value
+	_radial_energy.inner_radius = value

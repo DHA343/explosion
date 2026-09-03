@@ -1,5 +1,5 @@
 @tool
-class_name EnergyVolumeBatch
+class_name RadialEnergyMesh
 extends MeshInstance3D
 
 const RADIAL_SEGMENTS := 16
@@ -9,17 +9,17 @@ const MEDIUM_DIAMETER_RATIO := 0.11
 const THICK_DIAMETER_RATIO := 0.17
 
 
-func rebuild(events: Array[EnergyVolumeEvent], sphere_radius: float) -> void:
+func rebuild(rays: Array[RadialEnergyRay], sphere_radius: float) -> void:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
 	var uvs := PackedVector2Array()
 	var indices := PackedInt32Array()
 
-	for event in events:
-		if event.current_length <= 0.0001 or event.visibility() <= 0.001:
+	for ray in rays:
+		if ray.current_length <= 0.0001 or ray.visibility() <= 0.001:
 			continue
-		_append_volume(event, sphere_radius, vertices, normals, colors, uvs, indices)
+		_append_ray(ray, sphere_radius, vertices, normals, colors, uvs, indices)
 
 	var array_mesh := ArrayMesh.new()
 	if not vertices.is_empty():
@@ -34,8 +34,8 @@ func rebuild(events: Array[EnergyVolumeEvent], sphere_radius: float) -> void:
 	mesh = array_mesh
 
 
-func _append_volume(
-	event: EnergyVolumeEvent,
+func _append_ray(
+	ray: RadialEnergyRay,
 	sphere_radius: float,
 	vertices: PackedVector3Array,
 	normals: PackedVector3Array,
@@ -43,12 +43,12 @@ func _append_volume(
 	uvs: PackedVector2Array,
 	indices: PackedInt32Array
 ) -> void:
-	var direction := event.direction.normalized()
-	var length := event.current_length
-	var diameter := sphere_radius * _diameter_ratio(event.diameter_class)
+	var direction := ray.direction.normalized()
+	var length := ray.current_length
+	var diameter := sphere_radius * _diameter_ratio(ray.thickness_class)
 	var capsule_radius := minf(diameter * 0.5, length * 0.5)
 	var body_half_length := maxf(0.0, length * 0.5 - capsule_radius)
-	var center := event.start_position + direction * length * 0.5
+	var center := ray.start_position + direction * length * 0.5
 	var frame := _basis_for_direction(direction)
 	var ring_radii := PackedFloat32Array()
 	var ring_heights := PackedFloat32Array()
@@ -74,7 +74,7 @@ func _append_volume(
 		ring_normal_heights.append(sin(angle))
 
 	var base_vertex := vertices.size()
-	var event_color := Color(event.brightness, event.visibility(), event.seed, 1.0)
+	var ray_data := Color(ray.brightness, ray.visibility(), ray.seed, 1.0)
 	for ring_index in range(ring_radii.size()):
 		var height: float = ring_heights[ring_index]
 		var uv_y := clampf((height + length * 0.5) / length, 0.0, 1.0)
@@ -88,7 +88,7 @@ func _append_volume(
 
 			vertices.append(center + frame * local_position)
 			normals.append((frame * local_normal).normalized())
-			colors.append(event_color)
+			colors.append(ray_data)
 			uvs.append(Vector2(float(segment_index) / float(RADIAL_SEGMENTS), uv_y))
 
 	var ring_stride := RADIAL_SEGMENTS + 1
@@ -106,11 +106,11 @@ func _append_volume(
 			indices.append(upper_right)
 
 
-func _diameter_ratio(diameter_class: EnergyVolumeEvent.DiameterClass) -> float:
-	match diameter_class:
-		EnergyVolumeEvent.DiameterClass.THIN:
+func _diameter_ratio(thickness_class: RadialEnergyRay.ThicknessClass) -> float:
+	match thickness_class:
+		RadialEnergyRay.ThicknessClass.THIN:
 			return THIN_DIAMETER_RATIO
-		EnergyVolumeEvent.DiameterClass.THICK:
+		RadialEnergyRay.ThicknessClass.THICK:
 			return THICK_DIAMETER_RATIO
 		_:
 			return MEDIUM_DIAMETER_RATIO

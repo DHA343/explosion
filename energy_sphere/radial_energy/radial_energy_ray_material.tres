@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b4m3gcl5bl8ik"]
+
+[ext_resource type="Shader" uid="uid://cecmvyuqyd5s0" path="res://energy_sphere/radial_energy/radial_energy_ray.gdshader" id="1_shader"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = -1
+shader = ExtResource("1_shader")
+shader_parameter/emission_energy = 2.6
+shader_parameter/density_power = 1.25
+shader_parameter/opacity = 0.6000000285

@@ -1,7 +1,7 @@
-class_name EnergyVolumeEvent
+class_name RadialEnergyRay
 extends RefCounted
 
-enum DiameterClass {
+enum ThicknessClass {
 	THIN,
 	MEDIUM,
 	THICK,
@@ -14,7 +14,7 @@ var start_position: Vector3 = Vector3.ZERO
 var direction: Vector3 = Vector3.RIGHT
 var max_length: float = 0.0
 var current_length: float = 0.0
-var diameter_class: DiameterClass = DiameterClass.MEDIUM
+var thickness_class: ThicknessClass = ThicknessClass.MEDIUM
 var brightness: float = 1.0
 var lifetime: float = 1.0
 var age: float = 0.0

@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
-
-[ext_resource type="Shader" path="res://energy_sphere/radial_energy_volumes/energy_volume.gdshader" id="1_shader"]
-
-[resource]
-resource_local_to_scene = true
-render_priority = -1
-shader = ExtResource("1_shader")
