@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biuoc1wmvqhfl" path="res://energy_sphere/radial_energy/radial_energy.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://ciyeplv23wouj" path="res://energy_sphere/radial_energy/radial_energy_rays.gd" id="2_rays"]
-[ext_resource type="ArrayMesh" path="res://energy_sphere/radial_energy/radial_energy_ray_carrier_mesh.tres" id="3_carrier"]
+[ext_resource type="ArrayMesh" uid="uid://cj8e688ybg51a" path="res://energy_sphere/radial_energy/radial_energy_ray_carrier_mesh.tres" id="3_carrier"]
 [ext_resource type="Material" uid="uid://b4m3gcl5bl8ik" path="res://energy_sphere/radial_energy/radial_energy_ray_material.tres" id="4_material"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_rays"]
@@ -13,6 +13,9 @@ mesh = ExtResource("3_carrier")
 
 [node name="RadialEnergy" type="Node3D" unique_id=1603433325]
 script = ExtResource("1_controller")
+ray_count = 44
+thickness_scale = 1.3
+animation_speed = 3.5
 
 [node name="Rays" type="MultiMeshInstance3D" parent="." unique_id=708258604]
 material_override = ExtResource("4_material")

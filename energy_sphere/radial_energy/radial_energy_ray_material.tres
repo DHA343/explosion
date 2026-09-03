@@ -6,7 +6,6 @@
 resource_local_to_scene = true
 render_priority = -1
 shader = ExtResource("1_shader")
-shader_parameter/emission_energy = 2.6
+shader_parameter/emission_energy = 1.1950000567625
 shader_parameter/density_power = 1.25
 shader_parameter/opacity = 0.6000000285
-shader_parameter/tip_softness = 0.1
