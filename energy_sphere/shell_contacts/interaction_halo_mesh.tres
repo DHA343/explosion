@@ -1,4 +1,5 @@
-[gd_resource type="QuadMesh" format=3]
+[gd_resource type="QuadMesh" format=3 uid="uid://5up2tql4qek6"]
 
 [resource]
 resource_local_to_scene = true
+size = Vector2(1.075, 1.075)

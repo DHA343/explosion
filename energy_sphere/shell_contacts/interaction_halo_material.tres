@@ -1,8 +1,11 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://lt6177ngxicr"]
 
-[ext_resource type="Shader" path="res://energy_sphere/shell_contacts/interaction_halo.gdshader" id="1_shader"]
+[ext_resource type="Shader" uid="uid://cj72tq4m02ete" path="res://energy_sphere/shell_contacts/interaction_halo.gdshader" id="1_shader"]
 
 [resource]
 resource_local_to_scene = true
 render_priority = -3
 shader = ExtResource("1_shader")
+shader_parameter/effect_time = 56.140352666666246
+shader_parameter/halo_color = Color(0.22, 0.68, 1, 1)
+shader_parameter/halo_emission = 1.25

@@ -1,8 +1,13 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bxvbqsi3tw6wy"]
 
-[ext_resource type="Shader" path="res://energy_sphere/shell_contacts/contact_patch_3d.gdshader" id="1_shader"]
+[ext_resource type="Shader" uid="uid://dr5va6dyanqi7" path="res://energy_sphere/shell_contacts/contact_patch_3d.gdshader" id="1_shader"]
 
 [resource]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_shader")
+shader_parameter/edge_color = Color(0.3, 0.75, 1, 1)
+shader_parameter/contact_color = Color(1, 1, 1, 1)
+shader_parameter/shell_mix_color = Color(1, 0.35, 0.85, 1)
+shader_parameter/edge_emission = 3.2
+shader_parameter/core_emission = 5.4
