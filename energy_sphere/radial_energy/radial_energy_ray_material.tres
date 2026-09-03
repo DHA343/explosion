@@ -9,3 +9,4 @@ shader = ExtResource("1_shader")
 shader_parameter/emission_energy = 2.6
 shader_parameter/density_power = 1.25
 shader_parameter/opacity = 0.6000000285
+shader_parameter/tip_softness = 0.1

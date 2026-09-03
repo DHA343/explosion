@@ -1,4 +1,3 @@
-@tool
 class_name RadialEnergy
 extends Node3D
 
@@ -9,13 +8,13 @@ const MAX_DIRECTION_DOT := 0.94
 	set(value):
 		radius = value
 		if is_node_ready():
-			_reset_rays()
+			_update_ray_layout()
 
 @export_range(0.05, 10.0, 0.01, "suffix:m") var inner_radius: float = 0.47:
 	set(value):
 		inner_radius = value
 		if is_node_ready():
-			_reset_rays()
+			_update_ray_layout()
 
 @export_range(1, 100, 1) var ray_count: int = 24:
 	set(value):
@@ -23,12 +22,20 @@ const MAX_DIRECTION_DOT := 0.94
 		if is_node_ready():
 			_reset_rays()
 
+@export_range(0.1, 2.0, 0.01) var thickness_scale: float = 1.0:
+	set(value):
+		thickness_scale = value
+		if is_node_ready():
+			_rays_view.update_thickness(_rays, thickness_scale)
+
+@export_range(0.1, 5.0, 0.05) var animation_speed: float = 1.0
+
 @export var random_seed: int = 72819
 
 var _rays: Array[RadialEnergyRay] = []
 var _rng := RandomNumberGenerator.new()
 
-@onready var _ray_mesh: RadialEnergyMesh = $RayMesh
+@onready var _rays_view: RadialEnergyRays = $Rays
 
 
 func _ready() -> void:
@@ -38,11 +45,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	for ray_index in range(_rays.size()):
 		var ray := _rays[ray_index]
-		ray.advance(delta)
+		ray.advance(delta * animation_speed)
 		if ray.is_expired():
 			_spawn_ray(ray, ray_index)
+			_rays_view.update_ray(ray, ray_index, thickness_scale)
 
-	_ray_mesh.rebuild(_rays, radius)
+	_rays_view.update_dynamic_data(_rays, thickness_scale)
 
 
 func _reset_rays() -> void:
@@ -53,10 +61,8 @@ func _reset_rays() -> void:
 		_rays.append(ray)
 		_spawn_ray(ray, ray_index)
 		ray.age = _rng.randf_range(0.0, ray.lifetime * 0.9)
-		ray.current_length = ray.max_length * ray.growth_progress()
 
-	if is_node_ready():
-		_ray_mesh.rebuild(_rays, radius)
+	_rays_view.synchronize(_rays, radius, thickness_scale)
 
 
 func _spawn_ray(ray: RadialEnergyRay, ray_index: int) -> void:
@@ -67,7 +73,6 @@ func _spawn_ray(ray: RadialEnergyRay, ray_index: int) -> void:
 	ray.start_position = direction * start_distance
 	ray.direction = direction
 	ray.max_length = maxf(outer_distance - start_distance, radius * 0.2)
-	ray.current_length = 0.0
 	ray.thickness_class = (
 		ray_index % RadialEnergyRay.ThicknessClass.size()
 	) as RadialEnergyRay.ThicknessClass
@@ -75,6 +80,13 @@ func _spawn_ray(ray: RadialEnergyRay, ray_index: int) -> void:
 	ray.lifetime = _rng.randf_range(0.65, 0.95)
 	ray.age = 0.0
 	ray.seed = _rng.randf()
+
+
+func _update_ray_layout() -> void:
+	for ray_index in range(_rays.size()):
+		_spawn_ray(_rays[ray_index], ray_index)
+
+	_rays_view.synchronize(_rays, radius, thickness_scale)
 
 
 func _random_direction() -> Vector3:

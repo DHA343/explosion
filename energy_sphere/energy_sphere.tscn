@@ -14,7 +14,7 @@
 [ext_resource type="Material" uid="uid://bhdgdsgqklj3y" path="res://energy_sphere/energy_shell/shell_surface/inner_surface_material.tres" id="9_inner_surface"]
 [ext_resource type="Script" uid="uid://dbtn2y65qrow0" path="res://energy_sphere/energy_shell/energy_shell.gd" id="9_ocr5p"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
-[ext_resource type="PackedScene" path="res://energy_sphere/radial_energy/radial_energy.tscn" id="10_radial_energy"]
+[ext_resource type="PackedScene" uid="uid://bv5jgryj5ec6y" path="res://energy_sphere/radial_energy/radial_energy.tscn" id="10_radial_energy"]
 [ext_resource type="Gradient" uid="uid://ctjn4i857x130" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_color_gradient.tres" id="10_unqks"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
