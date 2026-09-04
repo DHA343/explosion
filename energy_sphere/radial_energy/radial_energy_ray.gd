@@ -43,5 +43,13 @@ func visibility() -> float:
 	return 1.0 - smoothstep(FADE_START, 1.0, normalized_age)
 
 
+func retract_thickness_scale() -> float:
+	var normalized_age := clampf(age / lifetime, 0.0, 1.0)
+	if normalized_age <= RETRACT_START:
+		return 1.0
+
+	return 1.0 - smoothstep(RETRACT_START, 1.0, normalized_age)
+
+
 func is_expired() -> bool:
 	return age >= lifetime

@@ -1,15 +1,15 @@
 class_name RadialEnergyRays
 extends MultiMeshInstance3D
 
-const THIN_THICKNESS := 0.30
-const MEDIUM_THICKNESS := 0.60
-const THICK_THICKNESS := 1.00
+var _thickness_ratios: PackedFloat32Array = PackedFloat32Array()
 
 
 func synchronize(
-	rays: Array[RadialEnergyRay], sphere_radius: float, thickness_scale: float
+	rays: Array[RadialEnergyRay], sphere_radius: float, thickness_scale: float,
+	thickness_ratios: PackedFloat32Array
 ) -> void:
 	assert(multimesh != null, "Rays requires a MultiMesh resource.")
+	_thickness_ratios = thickness_ratios
 	if multimesh.instance_count != rays.size():
 		multimesh.instance_count = rays.size()
 
@@ -34,7 +34,10 @@ func update_dynamic_data(rays: Array[RadialEnergyRay], thickness_scale: float) -
 		)
 
 
-func update_thickness(rays: Array[RadialEnergyRay], thickness_scale: float) -> void:
+func update_thickness(
+	rays: Array[RadialEnergyRay], thickness_scale: float, thickness_ratios: PackedFloat32Array
+) -> void:
+	_thickness_ratios = thickness_ratios
 	update_dynamic_data(rays, thickness_scale)
 
 
@@ -50,16 +53,11 @@ func _transform_for(ray: RadialEnergyRay) -> Transform3D:
 
 func _custom_data_for(ray: RadialEnergyRay, thickness_scale: float) -> Color:
 	return Color(
-		ray.length_progress(), _thickness_for(ray.thickness_class) * thickness_scale,
+		ray.length_progress(),
+		_thickness_for(ray.thickness_class) * thickness_scale * ray.retract_thickness_scale(),
 		ray.visibility(), ray.seed
 	)
 
 
 func _thickness_for(thickness_class: RadialEnergyRay.ThicknessClass) -> float:
-	match thickness_class:
-		RadialEnergyRay.ThicknessClass.THIN:
-			return THIN_THICKNESS
-		RadialEnergyRay.ThicknessClass.THICK:
-			return THICK_THICKNESS
-		_:
-			return MEDIUM_THICKNESS
+	return _thickness_ratios[thickness_class]

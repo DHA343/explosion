@@ -14,8 +14,11 @@
 [ext_resource type="Material" uid="uid://bhdgdsgqklj3y" path="res://energy_sphere/energy_shell/shell_surface/inner_surface_material.tres" id="9_inner_surface"]
 [ext_resource type="Script" uid="uid://dbtn2y65qrow0" path="res://energy_sphere/energy_shell/energy_shell.gd" id="9_ocr5p"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
-[ext_resource type="PackedScene" uid="uid://bv5jgryj5ec6y" path="res://energy_sphere/radial_energy/radial_energy.tscn" id="10_radial_energy"]
+[ext_resource type="Script" uid="uid://biuoc1wmvqhfl" path="res://energy_sphere/radial_energy/radial_energy.gd" id="10_radial_energy"]
 [ext_resource type="Gradient" uid="uid://ctjn4i857x130" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_color_gradient.tres" id="10_unqks"]
+[ext_resource type="Script" uid="uid://ciyeplv23wouj" path="res://energy_sphere/radial_energy/radial_energy_rays.gd" id="11_radial_rays"]
+[ext_resource type="ArrayMesh" uid="uid://cj8e688ybg51a" path="res://energy_sphere/radial_energy/radial_energy_ray_carrier_mesh.tres" id="12_radial_carrier"]
+[ext_resource type="Material" uid="uid://b4m3gcl5bl8ik" path="res://energy_sphere/radial_energy/radial_energy_ray_material.tres" id="13_radial_material"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -55,7 +58,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0rfsn"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2y8p8"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -71,7 +74,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4dqqp"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -87,14 +90,14 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_gl07y"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_b0480"]
 viewport_path = NodePath("InflowStreaksViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pga01"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_j35yx")
-shader_parameter/streaks_texture = SubResource("ViewportTexture_gl07y")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_b0480")
 shader_parameter/streak_color = Color(0.9160796, 1.415874, 1.8247963, 0.3019608)
 shader_parameter/fade_inner_ratio = 0.2999999932944
 shader_parameter/fade_outer_ratio = 0.999999977648
@@ -103,6 +106,12 @@ shader_parameter/fade_outer_ratio = 0.999999977648
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
+
+[sub_resource type="MultiMesh" id="MultiMesh_radial_energy"]
+transform_format = 1
+use_colors = true
+use_custom_data = true
+mesh = ExtResource("12_radial_carrier")
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
@@ -133,10 +142,10 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_0rfsn")
+process_material = SubResource("ParticleProcessMaterial_2y8p8")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
-process_material = SubResource("ParticleProcessMaterial_4dqqp")
+process_material = SubResource("ParticleProcessMaterial_tknrg")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -154,7 +163,17 @@ mesh = SubResource("BoxMesh_ua4af")
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
 mesh = SubResource("BoxMesh_ua4af")
 
-[node name="RadialEnergy" parent="." unique_id=790397916 instance=ExtResource("10_radial_energy")]
+[node name="RadialEnergy" type="Node3D" parent="." unique_id=790397916]
+script = ExtResource("10_radial_energy")
+ray_count = 10
+animation_speed = 0.44999999999999996
+thickness_scale = 1.3
+
+[node name="Rays" type="MultiMeshInstance3D" parent="RadialEnergy" unique_id=708258604]
+material_override = ExtResource("13_radial_material")
+cast_shadow = 0
+multimesh = SubResource("MultiMesh_radial_energy")
+script = ExtResource("11_radial_rays")
 
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
 script = ExtResource("9_ocr5p")
