@@ -22,8 +22,8 @@ var inner_radius: float:
 	get:
 		return radius * (1.0 - thickness_ratio)
 
-@onready var _outer_surface: MeshInstance3D = $OuterSurface
-@onready var _inner_surface: MeshInstance3D = $InnerSurface
+@onready var _outer_rim: MeshInstance3D = $OuterRim
+@onready var _inner_rim: MeshInstance3D = $InnerRim
 @onready var _patch_instances: MultiMeshInstance3D = $ShellPatches/PatchInstances
 
 
@@ -32,11 +32,11 @@ func _ready() -> void:
 
 
 func _update_shell() -> void:
-	var sphere_mesh := _outer_surface.mesh as SphereMesh
-	assert(sphere_mesh != null, "OuterSurface requires a SphereMesh.")
+	var sphere_mesh := _outer_rim.mesh as SphereMesh
+	assert(sphere_mesh != null, "OuterRim requires a SphereMesh.")
 
 	sphere_mesh.radius = radius
 	sphere_mesh.height = radius * 2.0
-	_inner_surface.scale = Vector3.ONE * (1.0 - thickness_ratio)
+	_inner_rim.scale = Vector3.ONE * (1.0 - thickness_ratio)
 	_patch_instances.set_instance_shader_parameter(PATCH_INNER_RADIUS_PARAMETER, inner_radius)
 	inner_radius_changed.emit(inner_radius)

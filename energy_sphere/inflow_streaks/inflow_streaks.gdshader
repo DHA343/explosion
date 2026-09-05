@@ -1,6 +1,6 @@
 shader_type spatial;
 
-render_mode unshaded, blend_add, cull_disabled, depth_draw_never;
+render_mode unshaded, blend_mix, cull_disabled, depth_draw_never;
 
 uniform sampler2D streaks_texture : source_color;
 uniform vec4 streak_color : source_color = vec4(1.0);

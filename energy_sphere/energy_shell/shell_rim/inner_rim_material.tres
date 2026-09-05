@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bhdgdsgqklj3y"]
+
+[ext_resource type="Shader" uid="uid://bdkuyvvt87xp6" path="res://energy_sphere/energy_shell/shell_rim/inner_rim_shader.tres" id="1_surface"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_surface")
+shader_parameter/opacity = 0.86999998055376
+shader_parameter/fresnel_power = 1.0000000149012
+shader_parameter/color = Color(0.08448668, 0.0037999963, 0.19, 1)

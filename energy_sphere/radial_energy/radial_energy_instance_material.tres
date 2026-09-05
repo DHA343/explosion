@@ -6,5 +6,5 @@
 resource_name = "RadialEnergyInstanceMaterial"
 render_priority = -3
 shader = ExtResource("1_shader")
-shader_parameter/intensity = 1.0
-shader_parameter/edge_softness = 0.999999977648
+shader_parameter/intensity = 8.0
+shader_parameter/edge_softness = 0.6999999843536

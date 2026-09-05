@@ -13,9 +13,9 @@ default_value = 2.0
 linked_parent_graph_frame = 42
 input_name = "time"
 
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_hue_speed"]
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_hue_cycle_speed"]
 linked_parent_graph_frame = 42
-parameter_name = "hue_speed"
+parameter_name = "hue_cycle_speed"
 hint = 2
 max = 8.0
 default_value_enabled = true
@@ -59,7 +59,7 @@ linked_parent_graph_frame = 70
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_l2lc2"]
 linked_parent_graph_frame = 70
-parameter_name = "edge_opacity"
+parameter_name = "rim_opacity"
 hint = 2
 step = 0.01
 default_value_enabled = true
@@ -67,7 +67,7 @@ default_value = 0.5
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_84gyk"]
 linked_parent_graph_frame = 70
-parameter_name = "edge_width"
+parameter_name = "rim_width"
 hint = 2
 min = 0.01
 max = 0.5
@@ -77,7 +77,7 @@ default_value = 0.1
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_60bcf"]
 linked_parent_graph_frame = 70
-parameter_name = "edge_softness"
+parameter_name = "rim_softness"
 hint = 2
 min = 0.01
 max = 0.5
@@ -120,7 +120,7 @@ linked_parent_graph_frame = 69
 operator = 2
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_rri4a"]
-parameter_name = "edge_color"
+parameter_name = "rim_color"
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_5bytv"]
 
@@ -135,7 +135,7 @@ attached_nodes = PackedInt32Array(2, 54, 6, 57, 52, 3)
 
 [sub_resource type="VisualShaderNodeFrame" id="VisualShaderNodeFrame_60bcf"]
 size = Vector2(1444.0002, 754.0001)
-title = "Edge Mask"
+title = "Rim Mask"
 tint_color_enabled = true
 attached_nodes = PackedInt32Array(55, 51, 45, 68, 50, 46, 49, 48)
 
@@ -149,7 +149,7 @@ nodes/fragment/6/node = SubResource("VisualShaderNodeFresnel_soft")
 nodes/fragment/6/position = Vector2(-240, -160)
 nodes/fragment/22/node = SubResource("VisualShaderNodeInput_time")
 nodes/fragment/22/position = Vector2(960, -180)
-nodes/fragment/23/node = SubResource("VisualShaderNodeFloatParameter_hue_speed")
+nodes/fragment/23/node = SubResource("VisualShaderNodeFloatParameter_hue_cycle_speed")
 nodes/fragment/23/position = Vector2(960, -20)
 nodes/fragment/24/node = SubResource("VisualShaderNodeFloatOp_hue_time")
 nodes/fragment/24/position = Vector2(1340, -180)

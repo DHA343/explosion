@@ -6,6 +6,6 @@
 render_priority = -1
 shader = ExtResource("1_s7slj")
 shader_parameter/sphere_radius = 0.5
-shader_parameter/core_ratio = 0.42999999038864
-shader_parameter/intensity = 2.40000003576288
+shader_parameter/core_ratio = 0.46999998949456
+shader_parameter/intensity = 3.0000000447036004
 shader_parameter/ColorParameter = Color(0, 0.8745043, 1.8247963, 1)

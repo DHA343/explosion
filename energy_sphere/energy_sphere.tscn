@@ -8,11 +8,11 @@
 [ext_resource type="Material" uid="uid://1j4l2g57ssae" path="res://energy_sphere/core_glow/core_color_material.tres" id="6_h5tvb"]
 [ext_resource type="Script" uid="uid://byybh5vfd750i" path="res://energy_sphere/inflow_streaks/inflow_streaks.gd" id="6_tknrg"]
 [ext_resource type="PackedScene" uid="uid://b1sr5qiur6oiv" path="res://energy_sphere/inflow_streaks/inflow_streaks_2d.tscn" id="7_inflow_streaks"]
-[ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/shell_surface/outer_surface_material.tres" id="8_1g8yp"]
+[ext_resource type="Material" uid="uid://c2g08h1qq33rr" path="res://energy_sphere/energy_shell/shell_rim/outer_rim_material.tres" id="8_1g8yp"]
 [ext_resource type="SphereMesh" uid="uid://d3ovpsnatm2bp" path="res://energy_sphere/energy_shell/shell_mesh.tres" id="8_unqks"]
 [ext_resource type="Material" uid="uid://dqqvueg5466ir" path="res://energy_sphere/energy_shell/shell_backdrop/shell_backdrop_material.tres" id="9_0rfsn"]
 [ext_resource type="Script" uid="uid://dgskhxipcwkvq" path="res://energy_sphere/energy_shell/shell_patches/shell_patches.gd" id="9_bnioy"]
-[ext_resource type="Material" uid="uid://bhdgdsgqklj3y" path="res://energy_sphere/energy_shell/shell_surface/inner_surface_material.tres" id="9_inner_surface"]
+[ext_resource type="Material" uid="uid://bhdgdsgqklj3y" path="res://energy_sphere/energy_shell/shell_rim/inner_rim_material.tres" id="9_inner_rim"]
 [ext_resource type="Script" uid="uid://dbtn2y65qrow0" path="res://energy_sphere/energy_shell/energy_shell.gd" id="9_ocr5p"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
 [ext_resource type="Script" uid="uid://biuoc1wmvqhfl" path="res://energy_sphere/radial_energy/radial_energy.gd" id="10_radial_energy"]
@@ -161,8 +161,9 @@ mesh = SubResource("BoxMesh_ua4af")
 
 [node name="RadialEnergy" type="Node3D" parent="." unique_id=790397916]
 script = ExtResource("10_radial_energy")
-lifetime = 0.56
-lifetime_variation = 0.06
+instance_count = 24
+lifetime = 0.26
+lifetime_variation = 0.05
 deceleration_power = 1.8
 length_shrink_start_ratio = 0.6
 length_shrink_power = 1.2
@@ -186,13 +187,13 @@ material_override = ExtResource("9_0rfsn")
 cast_shadow = 0
 mesh = ExtResource("8_unqks")
 
-[node name="OuterSurface" type="MeshInstance3D" parent="EnergyShell" unique_id=347990059]
+[node name="OuterRim" type="MeshInstance3D" parent="EnergyShell" unique_id=347990059]
 material_override = ExtResource("8_1g8yp")
 mesh = ExtResource("8_unqks")
 
-[node name="InnerSurface" type="MeshInstance3D" parent="EnergyShell" unique_id=1475531302]
+[node name="InnerRim" type="MeshInstance3D" parent="EnergyShell" unique_id=1475531302]
 transform = Transform3D(0.93, 0, 0, 0, 0.93, 0, 0, 0, 0.93, 0, 0, 0)
-material_override = ExtResource("9_inner_surface")
+material_override = ExtResource("9_inner_rim")
 mesh = ExtResource("8_unqks")
 
 [node name="ShellPatches" type="Node3D" parent="EnergyShell" unique_id=1708681012]
