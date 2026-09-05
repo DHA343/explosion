@@ -6,5 +6,5 @@
 render_priority = -1
 shader = ExtResource("1_surface")
 shader_parameter/opacity = 0.75
-shader_parameter/fresnel_power = 1.5000000223518
+shader_parameter/fresnel_power = 1.3000000193715602
 shader_parameter/color = Color(0, 0, 0, 1)

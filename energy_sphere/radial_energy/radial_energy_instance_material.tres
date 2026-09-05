@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b4m3gcl5bl8ik"]
+
+[ext_resource type="Shader" uid="uid://cecmvyuqyd5s0" path="res://energy_sphere/radial_energy/radial_energy_instance.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "RadialEnergyInstanceMaterial"
+render_priority = -3
+shader = ExtResource("1_shader")
+shader_parameter/intensity = 1.0
+shader_parameter/edge_softness = 0.9999999776480001

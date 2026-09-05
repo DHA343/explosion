@@ -6,13 +6,13 @@
 [resource]
 render_priority = -2
 shader = ExtResource("1_rc683")
-shader_parameter/fresnel_power = 0.80000001192096
-shader_parameter/circle_mask_radius = 0.8
+shader_parameter/fresnel_power = 0.70000001043084
+shader_parameter/circle_mask_radius = 0.7999999821184001
 shader_parameter/edge_noise_speed = 2.49999994412
 shader_parameter/edge_noise_direction = Vector2(0.73, 1)
 shader_parameter/edge_noise = ExtResource("2_dorgv")
 shader_parameter/edge_irregularity_ratio = 0.3499999921768
 shader_parameter/edge_softness = 0.4499999899416
-shader_parameter/opacity = 1.0
+shader_parameter/opacity = 0.2999999932944
 shader_parameter/backface_opacity = 0.3
-shader_parameter/intensity = 0.40000000596048
+shader_parameter/intensity = 1.0

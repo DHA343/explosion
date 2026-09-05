@@ -54,7 +54,6 @@ default_value_enabled = true
 default_value = 0.5
 
 [resource]
-modes/blend = 1
 nodes/fragment/0/position = Vector2(920, -140)
 nodes/fragment/2/node = SubResource("VisualShaderNodeInput_nemol")
 nodes/fragment/2/position = Vector2(-800, 0)

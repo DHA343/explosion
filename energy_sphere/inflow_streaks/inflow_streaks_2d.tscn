@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://b1sr5qiur6oiv"]
 
-[ext_resource type="Script" uid="uid://b43u6p56at2gx" path="res://energy_sphere/inflow_streaks/inflow_streaks.gd" id="2_inflow_streaks"]
+[ext_resource type="Script" uid="uid://b43u6p56at2gx" path="res://energy_sphere/inflow_streaks/inflow_streaks_2d.gd" id="1_k2spl"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q8cps"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gt5th"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
 emission_ring_height = 1.0
 emission_ring_radius = 750.0
-emission_ring_inner_radius = 200.0
+emission_ring_inner_radius = 400.0
 emission_ring_cone_angle = 90.0
 orbit_velocity_min = -0.39999992
 orbit_velocity_max = 0.1000001
@@ -18,12 +18,12 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[node name="InflowStreaks" type="GPUParticles2D" unique_id=165995017]
+[node name="InflowStreaks2D" type="GPUParticles2D" unique_id=165995017]
 amount = 400
 preprocess = 1.0
 speed_scale = 6.0
 local_coords = true
 trail_enabled = true
 trail_lifetime = 0.4
-process_material = SubResource("ParticleProcessMaterial_q8cps")
-script = ExtResource("2_inflow_streaks")
+process_material = SubResource("ParticleProcessMaterial_gt5th")
+script = ExtResource("1_k2spl")
