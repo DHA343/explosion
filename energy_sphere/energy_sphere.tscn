@@ -92,6 +92,7 @@ scale_min = 2.0
 scale_max = 2.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
+size = Vector2(1.05, 1.05)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
@@ -130,9 +131,14 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
+lifetime = 1.2
+trail_lifetime = 0.35000000000000003
 process_material = SubResource("ParticleProcessMaterial_tknrg")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
+amount = 200
+lifetime = 1.2
+trail_lifetime = 0.35000000000000003
 process_material = SubResource("ParticleProcessMaterial_b0480")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
@@ -144,6 +150,7 @@ radial_velocity_max = -500.0
 material_override = ExtResource("5_2y8p8")
 mesh = SubResource("QuadMesh_inflow_streaks")
 script = ExtResource("6_tknrg")
+radius_ratio = 1.05
 
 [node name="CoreColor" type="MeshInstance3D" parent="." unique_id=854978960]
 material_override = ExtResource("6_h5tvb")

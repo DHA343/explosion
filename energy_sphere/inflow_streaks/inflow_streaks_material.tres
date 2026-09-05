@@ -2,14 +2,14 @@
 
 [ext_resource type="Shader" uid="uid://bp0e200yo130w" path="res://energy_sphere/inflow_streaks/inflow_streaks.gdshader" id="1_qat0i"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_b0480"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_qat0i"]
 viewport_path = NodePath("InflowStreaksViewport")
 
 [resource]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_qat0i")
-shader_parameter/streaks_texture = SubResource("ViewportTexture_b0480")
+shader_parameter/streaks_texture = SubResource("ViewportTexture_qat0i")
 shader_parameter/streak_color = Color(0.9160796, 1.415874, 1.8247963, 0.3019608)
 shader_parameter/fade_inner_ratio = 0.499999988824
 shader_parameter/fade_outer_ratio = 0.9499999787656

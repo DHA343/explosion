@@ -14,5 +14,5 @@ shader_parameter/edge_noise = ExtResource("2_dorgv")
 shader_parameter/edge_irregularity_ratio = 0.3499999921768
 shader_parameter/edge_softness = 0.4499999899416
 shader_parameter/opacity = 0.2999999932944
-shader_parameter/backface_opacity = 0.3
+shader_parameter/backface_opacity_ratio = 0.3
 shader_parameter/intensity = 1.0
