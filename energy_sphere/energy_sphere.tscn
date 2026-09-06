@@ -128,6 +128,7 @@ script = ExtResource("11_refraction_capture")
 disable_3d = false
 transparent_bg = true
 own_world_3d = false
+use_hdr_2d = true
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
