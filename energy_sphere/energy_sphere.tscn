@@ -19,7 +19,6 @@
 [ext_resource type="Script" uid="uid://dt3srp08ap6oj" path="res://energy_sphere/distortion/distortion_capture.gd" id="11_distortion_capture"]
 [ext_resource type="Material" uid="uid://bhc1yajk6ihms" path="res://energy_sphere/distortion/distortion_material.tres" id="12_distortion_material"]
 [ext_resource type="Script" uid="uid://7h3q133c87fq" path="res://energy_sphere/distortion/distortion_shell.gd" id="13_distortion_shell"]
-[ext_resource type="PackedScene" path="res://energy_sphere/flow_particles/flow_particles.tscn" id="14_flow_particles"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -215,8 +214,6 @@ instance_shader_parameters/projected_radius_uv = 0.30253658
 mesh = ExtResource("8_unqks")
 script = ExtResource("13_distortion_shell")
 
-[node name="FlowParticles" parent="." instance=ExtResource("14_flow_particles")]
-
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
 script = ExtResource("9_ocr5p")
 thickness_ratio = 0.07
@@ -241,7 +238,7 @@ mesh = ExtResource("8_unqks")
 script = ExtResource("9_bnioy")
 patch_count = 300
 patch_color_gradient = ExtResource("10_unqks")
-patch_size_min_ratio = 0.25
+patch_size_min_ratio = 0.2
 patch_lifetime_min = 0.15000000000000002
 patch_lifetime_max = 0.5
 

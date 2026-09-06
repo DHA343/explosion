@@ -1,6 +1,6 @@
 extends Node3D
 
-@export_range(1, 500, 1) var patch_count: int = 100
+@export_range(1, 300, 1) var patch_count: int = 100
 @export var patch_color_gradient: Gradient
 @export_range(0.05, 0.8, 0.01) var patch_size_min_ratio: float = 0.4
 @export_range(0.05, 0.8, 0.01) var patch_size_max_ratio: float = 0.8
