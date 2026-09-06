@@ -6,7 +6,6 @@ uniform float edge_softness : hint_range(0.01, 1.0, 0.01) = 0.5;
 instance uniform float peak_position_ratio : hint_range(0.05, 0.95) = 0.67;
 instance uniform float peak_end_position_ratio : hint_range(0.05, 0.95) = 0.75;
 instance uniform float roundness_power : hint_range(1.0, 8.0) = 2.0;
-instance uniform bool collision_deformation = false;
 instance uniform float length_end_scale : hint_range(0.0, 2.0) = 0.0;
 instance uniform float length_change_power : hint_range(0.1, 8.0) = 1.0;
 instance uniform float thickness_end_scale : hint_range(0.0, 2.0) = 0.0;
@@ -46,18 +45,13 @@ void vertex() {
 	float travel_radius = max(length(MODEL_MATRIX[1].xyz), MIN_LENGTH);
 	float movement_t = instance_data.r;
 	float disappearance_t = instance_data.g;
-	float length_change_t = pow(disappearance_t, length_change_power);
-	float thickness_change_t = pow(disappearance_t, thickness_change_power);
-	float current_peak_position = peak_position_ratio;
-	if (collision_deformation) {
-		length_change_t = 1.0 - pow(1.0 - disappearance_t, length_change_power);
-		thickness_change_t = 1.0 - pow(1.0 - disappearance_t, thickness_change_power);
-		current_peak_position = mix(
-			peak_position_ratio,
-			peak_end_position_ratio,
-			thickness_change_t
-		);
-	}
+	float length_change_t = 1.0 - pow(1.0 - disappearance_t, length_change_power);
+	float thickness_change_t = 1.0 - pow(1.0 - disappearance_t, thickness_change_power);
+	float current_peak_position = mix(
+		peak_position_ratio,
+		peak_end_position_ratio,
+		thickness_change_t
+	);
 	float length_factor = mix(
 		1.0,
 		length_end_scale,
@@ -75,11 +69,7 @@ void vertex() {
 	float radius = instance_data.b * 0.5 * thickness_factor;
 	float full_length = min(instance_data.a / travel_radius, 1.0);
 	float current_length = full_length * length_factor;
-	float center_position = movement_t - full_length * 0.5;
-	float tail_position = center_position - current_length * 0.5;
-	if (collision_deformation) {
-		tail_position = movement_t - current_length;
-	}
+	float tail_position = movement_t - current_length;
 	float axial_position = tail_position + current_length * longitudinal;
 	float axial_rate = current_length;
 

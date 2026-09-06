@@ -1,17 +1,20 @@
-[gd_resource type="Resource" script_class="RadialEnergyCollisionProfile" format=3 uid="uid://duyx0h3imaavq"]
+[gd_resource type="Resource" script_class="RadialEnergyCollisionProfile" format=3 uid="uid://bad3b6jq1ipea"]
 
-[ext_resource type="Script" uid="uid://cqw6bpmscvet0" path="res://energy_sphere/radial_energy/radial_energy_collision_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://energy_sphere/radial_energy/radial_energy_collision_profile.gd" id="1_profile"]
 
 [resource]
 script = ExtResource("1_profile")
-approach_duration = 0.26
-approach_duration_variation = 0.06
-movement_power = 5.0
-length_change_power = 1.4
-peak_end_position_ratio = 0.5
-thickness_end_scale = 1.8
-thickness_change_power = 1.4
-fade_power = 3.0
+travel_speed = 4.0
+travel_speed_variation_ratio = 0.3
+movement_curve_power = 1.5
+impact_response_duration = 0.13
+fade_duration = 0.16
+length_end_scale = 0.1
+length_change_power = 1.0
+peak_end_position_ratio = 0.8
+thickness_end_scale = 1.7
+thickness_change_power = 1.0
+fade_power = 1.0
 impact_mark_opacity = 0.2
 impact_mark_softness = 1.0
 impact_mark_size_multiplier = 2.91

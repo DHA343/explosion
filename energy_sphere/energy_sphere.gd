@@ -33,11 +33,4 @@ func _ready() -> void:
 func _update_radius() -> void:
 	_energy_shell.radius = radius
 	_inflow_streaks.radius = radius
-	_set_radial_energy_property(&"radius", radius)
-
-
-func _set_radial_energy_property(property_name: StringName, value: float) -> void:
-	for property_info in _radial_energy.get_property_list():
-		if property_info.name == property_name:
-			_radial_energy.set(property_name, value)
-			return
+	_radial_energy.radius = radius
