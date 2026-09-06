@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://energy_sphere/flow_particles/flow_particles.gd" id="1_particles"]
+[ext_resource type="PackedScene" path="res://energy_sphere/flow_particles/flow_cluster.tscn" id="2_cluster"]
+
+[node name="FlowParticles" type="Node3D"]
+script = ExtResource("1_particles")
+
+[node name="Cluster01" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster02" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster03" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster04" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster05" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster06" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster07" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster08" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster09" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster10" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster11" parent="." instance=ExtResource("2_cluster")]
+
+[node name="Cluster12" parent="." instance=ExtResource("2_cluster")]
