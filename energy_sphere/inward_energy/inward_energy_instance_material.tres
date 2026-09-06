@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://energy_sphere/inward_energy/inward_energy_instance.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "InwardEnergyInstanceMaterial"
+render_priority = -3
+shader = ExtResource("1_shader")
+shader_parameter/intensity = 0.3
+shader_parameter/edge_softness = 0.4

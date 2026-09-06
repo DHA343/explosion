@@ -12,6 +12,7 @@ const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _inflow_streaks: InflowStreaks = $InflowStreaks
 @onready var _radial_energy: RadialEnergy = $RadialEnergy
+@onready var _inward_energy: InwardEnergy = $InwardEnergy
 @onready var _energy_shell: EnergyShell = $EnergyShell
 
 
@@ -34,3 +35,4 @@ func _update_radius() -> void:
 	_energy_shell.radius = radius
 	_inflow_streaks.radius = radius
 	_radial_energy.radius = radius
+	_inward_energy.radius = radius

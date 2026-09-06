@@ -148,13 +148,13 @@ var radius: float = 0.5:
 			_update_impact_style()
 
 @export_group("Impact Mark")
-@export_range(-0.5, 0.5, 0.001) var impact_mark_offset_ratio: float = 0.0:
+@export_range(-0.1, 0.1, 0.001) var impact_mark_offset_ratio: float = 0.0:
 	set(value):
 		impact_mark_offset_ratio = value
 		if is_node_ready():
 			_synchronize_instances()
 
-@export_range(0.1, 4.0, 0.01) var impact_mark_size_multiplier: float = 2.91:
+@export_range(0.1, 4.0, 0.01) var impact_mark_size_multiplier: float = 2.0:
 	set(value):
 		impact_mark_size_multiplier = value
 		if is_node_ready():
