@@ -2,7 +2,7 @@
 extends Node3D
 
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
-const REFRACTION_SOURCE_TEXTURE_PARAMETER: StringName = &"source_texture"
+const DISTORTION_TEXTURE_PARAMETER: StringName = &"captured_texture"
 
 @export var radius: float = 0.5:
 	set(value):
@@ -13,8 +13,8 @@ const REFRACTION_SOURCE_TEXTURE_PARAMETER: StringName = &"source_texture"
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _inflow_streaks: InflowStreaks = $InflowStreaks
 @onready var _energy_shell: EnergyShell = $EnergyShell
-@onready var _refraction_viewport: SubViewport = $RefractionCapture/RefractionViewport
-@onready var _refraction_shell: MeshInstance3D = $RefractionShell
+@onready var _distortion_viewport: SubViewport = $DistortionCapture/DistortionViewport
+@onready var _distortion_shell: MeshInstance3D = $DistortionShell
 
 
 func _ready() -> void:
@@ -31,11 +31,11 @@ func _ready() -> void:
 		_streaks_viewport.get_texture()
 	)
 
-	var refraction_material := _refraction_shell.material_override as ShaderMaterial
-	assert(refraction_material != null, "RefractionShell requires a ShaderMaterial override.")
-	refraction_material.set_shader_parameter(
-		REFRACTION_SOURCE_TEXTURE_PARAMETER,
-		_refraction_viewport.get_texture()
+	var distortion_material := _distortion_shell.material_override as ShaderMaterial
+	assert(distortion_material != null, "DistortionShell requires a ShaderMaterial override.")
+	distortion_material.set_shader_parameter(
+		DISTORTION_TEXTURE_PARAMETER,
+		_distortion_viewport.get_texture()
 	)
 
 

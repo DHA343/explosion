@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bhc1yajk6ihms"]
+
+[ext_resource type="Shader" uid="uid://ouwpktj0j4ia" path="res://energy_sphere/distortion/distortion.gdshader" id="1_shader"]
+[ext_resource type="NoiseTexture3D" uid="uid://cl0dy58f8c60r" path="res://energy_sphere/distortion/distortion_noise.tres" id="2_noise"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_h8x0p"]
+viewport_path = NodePath("DistortionCapture/DistortionViewport")
+
+[resource]
+render_priority = -1
+shader = ExtResource("1_shader")
+shader_parameter/captured_texture = SubResource("ViewportTexture_h8x0p")
+shader_parameter/distortion_noise = ExtResource("2_noise")
+shader_parameter/distortion_strength = 0.0130000006175
+shader_parameter/distortion_scale = 0.7000000067055401
+shader_parameter/distortion_evolution_speed = 30.0

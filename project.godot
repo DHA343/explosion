@@ -34,7 +34,7 @@ import/blender/enabled=false
 
 [layer_names]
 
-3d_render/layer_2="RefractionSource"
+3d_render/layer_2="DistortionSource"
 
 [physics]
 

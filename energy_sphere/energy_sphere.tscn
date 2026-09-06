@@ -16,8 +16,8 @@
 [ext_resource type="Script" uid="uid://dbtn2y65qrow0" path="res://energy_sphere/energy_shell/energy_shell.gd" id="9_ocr5p"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
 [ext_resource type="Gradient" uid="uid://ctjn4i857x130" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_color_gradient.tres" id="10_unqks"]
-[ext_resource type="Script" path="res://energy_sphere/refraction/refraction_capture.gd" id="11_refraction_capture"]
-[ext_resource type="Material" path="res://energy_sphere/refraction/refraction_material.tres" id="12_refraction_material"]
+[ext_resource type="Script" uid="uid://dt3srp08ap6oj" path="res://energy_sphere/distortion/distortion_capture.gd" id="11_distortion_capture"]
+[ext_resource type="Material" uid="uid://bhc1yajk6ihms" path="res://energy_sphere/distortion/distortion_material.tres" id="12_distortion_material"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -57,7 +57,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0rfsn"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gl07y"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -73,7 +73,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4dqqp"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2y8p8"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -88,6 +88,39 @@ radial_velocity_max = -500.0
 gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tknrg"]
+shader = ExtResource("1_q0apk")
+shader_parameter/zenith_color = Color(0.003, 0.007, 0.025, 1)
+shader_parameter/horizon_color = Color(0.025, 0.045, 0.11, 1)
+shader_parameter/star_color = Color(0.72, 0.82, 1, 1)
+shader_parameter/star_density = 0.009
+shader_parameter/star_intensity = 2.2
+shader_parameter/milky_way_intensity = 0.12
+
+[sub_resource type="Sky" id="Sky_b0480"]
+sky_material = SubResource("ShaderMaterial_tknrg")
+process_mode = 2
+
+[sub_resource type="Environment" id="Environment_8v5r3"]
+sky = SubResource("Sky_b0480")
+ambient_light_source = 2
+ambient_light_color = Color(0.065, 0.09, 0.18, 1)
+ambient_light_energy = 0.32
+reflected_light_source = 2
+glow_normalized = true
+glow_intensity = 0.64
+glow_strength = 1.05
+glow_bloom = 0.15
+fog_light_color = Color(0.018, 0.028, 0.065, 1)
+fog_light_energy = 0.35
+fog_density = 0.003
+fog_sky_affect = 0.35
+volumetric_fog_density = 0.0001
+volumetric_fog_albedo = Color(0.72, 0.76, 0.84, 1)
+volumetric_fog_emission_energy = 0.0
+volumetric_fog_length = 250.0
+volumetric_fog_sky_affect = 0.8
 
 [sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
 size = Vector2(1.05, 1.05)
@@ -112,6 +145,7 @@ script = ExtResource("2_womfm")
 
 [node name="Camera3D" type="Camera3D" parent="OrbitCamera" unique_id=740876973]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
+cull_mask = 1048573
 
 [node name="InflowStreaksViewport" type="SubViewport" parent="." unique_id=165995018]
 disable_3d = true
@@ -120,22 +154,6 @@ use_hdr_2d = true
 size = Vector2i(1600, 1600)
 render_target_update_mode = 4
 
-[node name="RefractionCapture" type="Node" parent="." unique_id=165995020]
-process_priority = 100
-script = ExtResource("11_refraction_capture")
-
-[node name="RefractionViewport" type="SubViewport" parent="RefractionCapture" unique_id=165995021]
-disable_3d = false
-transparent_bg = true
-own_world_3d = false
-use_hdr_2d = true
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="RefractionCamera" type="Camera3D" parent="RefractionCapture/RefractionViewport" unique_id=165995022]
-current = true
-cull_mask = 2
-
 [node name="Position" type="Node2D" parent="InflowStreaksViewport" unique_id=771168688]
 position = Vector2(800, 800)
 
@@ -143,18 +161,34 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_0rfsn")
+process_material = SubResource("ParticleProcessMaterial_gl07y")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_4dqqp")
+process_material = SubResource("ParticleProcessMaterial_2y8p8")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
 radial_velocity_min = -200.0
 radial_velocity_max = -500.0
+
+[node name="DistortionCapture" type="Node" parent="." unique_id=165995020]
+process_priority = 100
+script = ExtResource("11_distortion_capture")
+
+[node name="DistortionViewport" type="SubViewport" parent="DistortionCapture" unique_id=165995021]
+transparent_bg = true
+use_hdr_2d = true
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="DistortionCamera" type="Camera3D" parent="DistortionCapture/DistortionViewport" unique_id=165995022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
+cull_mask = 2
+environment = SubResource("Environment_8v5r3")
+current = true
 
 [node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
 layers = 2
@@ -172,11 +206,9 @@ mesh = SubResource("BoxMesh_ua4af")
 layers = 2
 mesh = SubResource("BoxMesh_ua4af")
 
-[node name="RefractionShell" type="MeshInstance3D" parent="." unique_id=165995023]
-layers = 1
+[node name="DistortionShell" type="MeshInstance3D" parent="." unique_id=165995023]
+material_override = ExtResource("12_distortion_material")
 cast_shadow = 0
-scale = Vector3(1, 1, 1)
-material_override = ExtResource("12_refraction_material")
 mesh = ExtResource("8_unqks")
 
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
@@ -190,19 +222,18 @@ cast_shadow = 0
 mesh = ExtResource("8_unqks")
 
 [node name="OuterRim" type="MeshInstance3D" parent="EnergyShell" unique_id=347990059]
-layers = 1
 material_override = ExtResource("8_1g8yp")
 mesh = ExtResource("8_unqks")
 
 [node name="InnerRim" type="MeshInstance3D" parent="EnergyShell" unique_id=1475531302]
-layers = 2
 transform = Transform3D(0.93, 0, 0, 0, 0.93, 0, 0, 0, 0.93, 0, 0, 0)
+layers = 2
 material_override = ExtResource("9_inner_rim")
 mesh = ExtResource("8_unqks")
 
 [node name="ShellPatches" type="Node3D" parent="EnergyShell" unique_id=1708681012]
 script = ExtResource("9_bnioy")
-patch_count = 200
+patch_count = 300
 patch_color_gradient = ExtResource("10_unqks")
 patch_size_min_ratio = 0.2
 patch_lifetime_min = 0.15000000000000002

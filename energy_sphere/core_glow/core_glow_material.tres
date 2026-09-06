@@ -7,10 +7,10 @@
 render_priority = 0
 shader = ExtResource("1_g4en1")
 shader_parameter/sphere_radius = 0.5
-shader_parameter/core_ratio = 0.3499999921768
+shader_parameter/core_ratio = 0.3
 shader_parameter/noise_scale = 1.0000000149012
 shader_parameter/noise_speed = 0.60000000894072
 shader_parameter/noise_texture = ExtResource("2_p3jgk")
 shader_parameter/distortion_strength = 0.1999999955296
-shader_parameter/intensity = 1.60000002384192
+shader_parameter/intensity = 2.0
 shader_parameter/ColorParameter = Color(1, 1, 1, 1)
