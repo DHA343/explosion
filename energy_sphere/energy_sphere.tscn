@@ -16,6 +16,8 @@
 [ext_resource type="Script" uid="uid://dbtn2y65qrow0" path="res://energy_sphere/energy_shell/energy_shell.gd" id="9_ocr5p"]
 [ext_resource type="PlaneMesh" uid="uid://e5qb35syyn4n" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_mesh.tres" id="10_bnioy"]
 [ext_resource type="Gradient" uid="uid://ctjn4i857x130" path="res://energy_sphere/energy_shell/shell_patches/shell_patch_color_gradient.tres" id="10_unqks"]
+[ext_resource type="Script" path="res://energy_sphere/refraction/refraction_capture.gd" id="11_refraction_capture"]
+[ext_resource type="Material" path="res://energy_sphere/refraction/refraction_material.tres" id="12_refraction_material"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -118,6 +120,21 @@ use_hdr_2d = true
 size = Vector2i(1600, 1600)
 render_target_update_mode = 4
 
+[node name="RefractionCapture" type="Node" parent="." unique_id=165995020]
+process_priority = 100
+script = ExtResource("11_refraction_capture")
+
+[node name="RefractionViewport" type="SubViewport" parent="RefractionCapture" unique_id=165995021]
+disable_3d = false
+transparent_bg = true
+own_world_3d = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="RefractionCamera" type="Camera3D" parent="RefractionCapture/RefractionViewport" unique_id=165995022]
+current = true
+cull_mask = 2
+
 [node name="Position" type="Node2D" parent="InflowStreaksViewport" unique_id=771168688]
 position = Vector2(800, 800)
 
@@ -139,32 +156,45 @@ radial_velocity_min = -200.0
 radial_velocity_max = -500.0
 
 [node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
+layers = 2
 material_override = ExtResource("5_2y8p8")
 mesh = SubResource("QuadMesh_inflow_streaks")
 script = ExtResource("6_tknrg")
 radius_ratio = 1.05
 
 [node name="CoreColor" type="MeshInstance3D" parent="." unique_id=854978960]
+layers = 2
 material_override = ExtResource("6_h5tvb")
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
+layers = 2
 mesh = SubResource("BoxMesh_ua4af")
+
+[node name="RefractionShell" type="MeshInstance3D" parent="." unique_id=165995023]
+layers = 1
+cast_shadow = 0
+scale = Vector3(1, 1, 1)
+material_override = ExtResource("12_refraction_material")
+mesh = ExtResource("8_unqks")
 
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
 script = ExtResource("9_ocr5p")
 thickness_ratio = 0.07
 
 [node name="ShellBackdrop" type="MeshInstance3D" parent="EnergyShell" unique_id=1200946892]
+layers = 2
 material_override = ExtResource("9_0rfsn")
 cast_shadow = 0
 mesh = ExtResource("8_unqks")
 
 [node name="OuterRim" type="MeshInstance3D" parent="EnergyShell" unique_id=347990059]
+layers = 1
 material_override = ExtResource("8_1g8yp")
 mesh = ExtResource("8_unqks")
 
 [node name="InnerRim" type="MeshInstance3D" parent="EnergyShell" unique_id=1475531302]
+layers = 2
 transform = Transform3D(0.93, 0, 0, 0, 0.93, 0, 0, 0, 0.93, 0, 0, 0)
 material_override = ExtResource("9_inner_rim")
 mesh = ExtResource("8_unqks")
@@ -178,5 +208,6 @@ patch_lifetime_min = 0.15000000000000002
 patch_lifetime_max = 0.5
 
 [node name="PatchInstances" type="MultiMeshInstance3D" parent="EnergyShell/ShellPatches" unique_id=969384425]
+layers = 2
 instance_shader_parameters/inner_radius = 0.46499999999999997
 multimesh = SubResource("MultiMesh_6b1ja")
