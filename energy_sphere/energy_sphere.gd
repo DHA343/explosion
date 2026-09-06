@@ -15,7 +15,7 @@ const SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 @onready var _inflow_streaks: InflowStreaks = $InflowStreaks
 @onready var _energy_shell: EnergyShell = $EnergyShell
 @onready var _distortion_viewport: SubViewport = $DistortionCapture/DistortionViewport
-@onready var _distortion_shell: MeshInstance3D = $DistortionShell
+@onready var _distortion_shell: DistortionShell = $DistortionShell
 @onready var _core_glow: MeshInstance3D = $CoreGlow
 @onready var _core_color: MeshInstance3D = $CoreColor
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 	_update_radius()
 
 	var material := _inflow_streaks.material_override as ShaderMaterial
-	assert(material != null, "InflowStreaks requires a ShaderMaterial override.")
+	assert(material != null, "InflowStreaks requires a ShaderMaterial over22ride.")
 
 	# NOTE: シリアライズされたViewportTextureは3Dエディタのカスタムシェーダーで解決されない。
 	# 両方の子がSceneTreeへ入った後にライブテクスチャを設定し、
@@ -45,6 +45,7 @@ func _ready() -> void:
 func _update_radius() -> void:
 	_energy_shell.radius = radius
 	_inflow_streaks.radius = radius
+	_distortion_shell.radius = radius
 	_update_core_radius()
 
 

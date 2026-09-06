@@ -1,13 +1,19 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://1j4l2g57ssae"]
 
-[ext_resource type="Shader" path="res://energy_sphere/core_glow/core_glow.gdshader" id="1_s7slj"]
+[ext_resource type="Shader" uid="uid://cntyphvvuw8bh" path="res://energy_sphere/core_glow/core_glow.gdshader" id="1_s7slj"]
 
 [resource]
 render_priority = -1
 shader = ExtResource("1_s7slj")
+shader_parameter/ColorParameter = Color(0, 0.8745043, 1.8247963, 1)
+shader_parameter/distortion_strength = 0.1
+shader_parameter/noise_scale = 1.0
+shader_parameter/noise_speed = 1.0
 shader_parameter/sphere_radius = 0.5
 shader_parameter/core_ratio = 0.46999998949456
 shader_parameter/intensity = 3.0000000447036004
-shader_parameter/ColorParameter = Color(0, 0.8745043, 1.8247963, 1)
-shader_parameter/core_ratio_modulation_amount = 0.0
+shader_parameter/core_ratio_modulation_amount = 0.05999999865888
 shader_parameter/intensity_modulation_amount = 0.0
+shader_parameter/modulation_speed = 4.40000006556528
+shader_parameter/modulation_noise_speed = 3.0
+shader_parameter/noise_amount = 1.0

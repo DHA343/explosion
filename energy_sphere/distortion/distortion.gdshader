@@ -5,9 +5,11 @@ render_mode unshaded, blend_premul_alpha, depth_draw_always;
 uniform sampler2D captured_texture : filter_linear, repeat_disable;
 uniform sampler3D distortion_noise : filter_linear, repeat_enable;
 
-uniform float distortion_strength : hint_range(0.0, 0.02, 0.0005) = 0.007;
+uniform float distortion_strength_ratio : hint_range(0.0, 0.2, 0.001) = 0.043;
 uniform float distortion_scale : hint_range(0.25, 8.0, 0.05) = 0.6;
 uniform float distortion_evolution_speed : hint_range(0.0, 50.0, 1.0) = 10.0;
+
+instance uniform float projected_radius_uv = 0.25;
 
 varying vec3 local_surface_direction;
 
@@ -93,8 +95,12 @@ void fragment() {
 			distortion_x,
 			distortion_y
 		)
-		* distortion_strength
-		* vec2(0.5625, 1.0);
+		* distortion_strength_ratio
+		* projected_radius_uv
+		* vec2(
+			VIEWPORT_SIZE.y / VIEWPORT_SIZE.x,
+			1.0
+		);
 
 	vec2 sample_uv =
 		SCREEN_UV
