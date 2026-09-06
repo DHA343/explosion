@@ -20,6 +20,8 @@
 [ext_resource type="Script" uid="uid://ciyeplv23wouj" path="res://energy_sphere/radial_energy/radial_energy_instances.gd" id="11_radial_instances"]
 [ext_resource type="ArrayMesh" uid="uid://cj8e688ybg51a" path="res://energy_sphere/radial_energy/radial_energy_instance_mesh.tres" id="12_radial_instance_mesh"]
 [ext_resource type="Material" uid="uid://b4m3gcl5bl8ik" path="res://energy_sphere/radial_energy/radial_energy_instance_material.tres" id="13_radial_instance_material"]
+[ext_resource type="Script" uid="uid://c1jp7i3q0bvl3" path="res://energy_sphere/radial_energy/impact_marks/radial_energy_impact_marks.gd" id="14_impact_marks"]
+[ext_resource type="PlaneMesh" path="res://energy_sphere/radial_energy/impact_marks/radial_energy_impact_mark_mesh.tres" id="15_impact_mark_mesh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -59,7 +61,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -75,7 +77,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -97,10 +99,22 @@ size = Vector2(1.05, 1.05)
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
 
-[sub_resource type="MultiMesh" id="MultiMesh_radial_energy"]
+[sub_resource type="MultiMesh" id="MultiMesh_radial_collision"]
 transform_format = 1
+use_colors = true
 use_custom_data = true
 mesh = ExtResource("12_radial_instance_mesh")
+
+[sub_resource type="MultiMesh" id="MultiMesh_radial_miss"]
+transform_format = 1
+use_colors = true
+use_custom_data = true
+mesh = ExtResource("12_radial_instance_mesh")
+
+[sub_resource type="MultiMesh" id="MultiMesh_impact_marks"]
+transform_format = 1
+use_custom_data = true
+mesh = ExtResource("15_impact_mark_mesh")
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
@@ -131,15 +145,16 @@ render_target_update_mode = 4
 position = Vector2(800, 800)
 
 [node name="InflowStreaksA" parent="InflowStreaksViewport/Position" unique_id=165995017 instance=ExtResource("7_inflow_streaks")]
+amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_tknrg")
+process_material = SubResource("ParticleProcessMaterial_8v5r3")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_b0480")
+process_material = SubResource("ParticleProcessMaterial_eoufh")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -161,22 +176,28 @@ mesh = SubResource("BoxMesh_ua4af")
 
 [node name="RadialEnergy" type="Node3D" parent="." unique_id=790397916]
 script = ExtResource("10_radial_energy")
-instance_count = 24
-lifetime = 0.26
-lifetime_variation = 0.05
-deceleration_power = 1.8
-length_shrink_start_ratio = 0.6
-length_shrink_power = 1.2
-thickness_shrink_start_ratio = 0.85
-thickness_shrink_power = 1.5
-fade_start_ratio = 0.3
-fade_power = 1.2000000000000002
+impact_mark_offset_ratio = 0.01500000000000001
+collision_ratio = 1.0
+length = 0.15000000000000002
+length_variation = 0.03
+thickness = 0.06
 
-[node name="Instances" type="MultiMeshInstance3D" parent="RadialEnergy" unique_id=708258604]
+[node name="CollisionInstances" type="MultiMeshInstance3D" parent="RadialEnergy" unique_id=708258604]
 material_override = ExtResource("13_radial_instance_material")
 cast_shadow = 0
-multimesh = SubResource("MultiMesh_radial_energy")
+multimesh = SubResource("MultiMesh_radial_collision")
 script = ExtResource("11_radial_instances")
+
+[node name="MissInstances" type="MultiMeshInstance3D" parent="RadialEnergy" unique_id=618792170]
+material_override = ExtResource("13_radial_instance_material")
+cast_shadow = 0
+multimesh = SubResource("MultiMesh_radial_miss")
+script = ExtResource("11_radial_instances")
+
+[node name="ImpactMarks" type="MultiMeshInstance3D" parent="RadialEnergy" unique_id=81985703]
+cast_shadow = 0
+multimesh = SubResource("MultiMesh_impact_marks")
+script = ExtResource("14_impact_marks")
 
 [node name="EnergyShell" type="Node3D" parent="." unique_id=1905044028]
 script = ExtResource("9_ocr5p")

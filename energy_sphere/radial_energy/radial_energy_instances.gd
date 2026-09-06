@@ -4,14 +4,18 @@ extends MultiMeshInstance3D
 const MIN_LENGTH := 0.001
 const MIN_THICKNESS := 0.001
 const PEAK_POSITION_RATIO_PARAMETER := &"peak_position_ratio"
+const PEAK_END_POSITION_RATIO_PARAMETER := &"peak_end_position_ratio"
 const ROUNDNESS_POWER_PARAMETER := &"roundness_power"
-const DECELERATION_POWER_PARAMETER := &"deceleration_power"
-const LENGTH_SHRINK_START_RATIO_PARAMETER := &"length_shrink_start_ratio"
-const LENGTH_SHRINK_POWER_PARAMETER := &"length_shrink_power"
-const THICKNESS_SHRINK_START_RATIO_PARAMETER := &"thickness_shrink_start_ratio"
-const THICKNESS_SHRINK_POWER_PARAMETER := &"thickness_shrink_power"
-const FADE_START_RATIO_PARAMETER := &"fade_start_ratio"
+const COLLISION_DEFORMATION_PARAMETER := &"collision_deformation"
+const LENGTH_END_SCALE_PARAMETER := &"length_end_scale"
+const LENGTH_CHANGE_POWER_PARAMETER := &"length_change_power"
+const THICKNESS_END_SCALE_PARAMETER := &"thickness_end_scale"
+const THICKNESS_CHANGE_POWER_PARAMETER := &"thickness_change_power"
 const FADE_POWER_PARAMETER := &"fade_power"
+
+var _is_collision: bool = false
+var _movement_power: float = 1.0
+var _fade_duration: float = 0.0
 
 
 func synchronize(
@@ -42,22 +46,28 @@ func set_shape(peak_position_ratio: float, roundness_power: float) -> void:
 	set_instance_shader_parameter(ROUNDNESS_POWER_PARAMETER, roundness_power)
 
 
-func set_lifecycle(
-	deceleration_power: float, length_shrink_start_ratio: float,
-	length_shrink_power: float, thickness_shrink_start_ratio: float,
-	thickness_shrink_power: float, fade_start_ratio: float, fade_power: float
-) -> void:
-	set_instance_shader_parameter(DECELERATION_POWER_PARAMETER, deceleration_power)
+func set_collision_profile(profile: RadialEnergyCollisionProfile) -> void:
+	_is_collision = true
+	_movement_power = profile.movement_power
+	_fade_duration = profile.fade_duration
 	set_instance_shader_parameter(
-		LENGTH_SHRINK_START_RATIO_PARAMETER, length_shrink_start_ratio
+		PEAK_END_POSITION_RATIO_PARAMETER, profile.peak_end_position_ratio
 	)
-	set_instance_shader_parameter(LENGTH_SHRINK_POWER_PARAMETER, length_shrink_power)
-	set_instance_shader_parameter(
-		THICKNESS_SHRINK_START_RATIO_PARAMETER, thickness_shrink_start_ratio
+	_set_deformation(
+		true, profile.length_end_scale, profile.length_change_power,
+		profile.thickness_end_scale, profile.thickness_change_power, profile.fade_power
 	)
-	set_instance_shader_parameter(THICKNESS_SHRINK_POWER_PARAMETER, thickness_shrink_power)
-	set_instance_shader_parameter(FADE_START_RATIO_PARAMETER, fade_start_ratio)
-	set_instance_shader_parameter(FADE_POWER_PARAMETER, fade_power)
+
+
+func set_miss_profile(profile: RadialEnergyMissProfile) -> void:
+	_is_collision = false
+	_movement_power = profile.movement_power
+	_fade_duration = profile.fade_duration
+	_set_deformation(
+		false, profile.length_end_scale,
+		profile.length_change_power, profile.thickness_end_scale,
+		profile.thickness_change_power, profile.fade_power
+	)
 
 
 func update_dynamic_data(
@@ -65,12 +75,17 @@ func update_dynamic_data(
 	thickness: float, thickness_variation: float
 ) -> void:
 	for instance_index in range(instance_data.size()):
+		var data := instance_data[instance_index]
 		multimesh.set_instance_custom_data(
 			instance_index,
 			_custom_data_for(
-				instance_data[instance_index], length, length_variation,
+				data, length, length_variation,
 				thickness, thickness_variation
 			)
+		)
+		multimesh.set_instance_color(
+			instance_index,
+			Color(data.brightness, 1.0, 1.0, _fade_progress_for(data))
 		)
 
 
@@ -84,16 +99,41 @@ func _transform_for(data: RadialEnergyInstance) -> Transform3D:
 	return Transform3D(Basis(axis_x, direction * data.travel_radius, axis_z), Vector3.ZERO)
 
 
+func _set_deformation(
+	collision_deformation: bool, length_end_scale: float, length_change_power: float,
+	thickness_end_scale: float, thickness_change_power: float, fade_power: float
+) -> void:
+	set_instance_shader_parameter(COLLISION_DEFORMATION_PARAMETER, collision_deformation)
+	set_instance_shader_parameter(LENGTH_END_SCALE_PARAMETER, length_end_scale)
+	set_instance_shader_parameter(LENGTH_CHANGE_POWER_PARAMETER, length_change_power)
+	set_instance_shader_parameter(THICKNESS_END_SCALE_PARAMETER, thickness_end_scale)
+	set_instance_shader_parameter(
+		THICKNESS_CHANGE_POWER_PARAMETER, thickness_change_power
+	)
+	set_instance_shader_parameter(FADE_POWER_PARAMETER, fade_power)
+
+
 func _custom_data_for(
 	data: RadialEnergyInstance, length: float, length_variation: float,
 	thickness: float, thickness_variation: float
 ) -> Color:
+	var travel_progress := data.travel_progress()
+	var movement_progress := 1.0 - pow(1.0 - travel_progress, _movement_power)
+	var deformation_progress := data.response_progress()
+	if not _is_collision:
+		deformation_progress = data.travel_ending_progress(_fade_duration)
 	return Color(
-		data.lifecycle_progress(),
+		movement_progress,
+		deformation_progress,
 		_thickness_for(data, thickness, thickness_variation),
-		data.brightness,
 		_length_for(data, length, length_variation)
 	)
+
+
+func _fade_progress_for(data: RadialEnergyInstance) -> float:
+	if _is_collision:
+		return data.impact_fade_progress(_fade_duration)
+	return data.travel_ending_progress(_fade_duration)
 
 
 func _length_for(

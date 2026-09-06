@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="RadialEnergyMissProfile" format=3 uid="uid://c2l3s5u24wa46"]
+
+[ext_resource type="Script" uid="uid://cojfxfl14lale" path="res://energy_sphere/radial_energy/radial_energy_miss_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+fade_duration = 0.065
+thickness_end_scale = 0.4
