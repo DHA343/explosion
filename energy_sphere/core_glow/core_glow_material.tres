@@ -1,16 +1,21 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cwni8o5bn1b1u"]
 
-[ext_resource type="Shader" uid="uid://cjb43jt6fl1p2" path="res://energy_sphere/core_glow/core_glow_shader.tres" id="1_g4en1"]
+[ext_resource type="Shader" uid="uid://cntyphvvuw8bh" path="res://energy_sphere/core_glow/core_glow.gdshader" id="1_g4en1"]
 [ext_resource type="NoiseTexture3D" uid="uid://ccix4hb74fs4v" path="res://energy_sphere/core_glow/core_glow_noise.tres" id="2_p3jgk"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_g4en1")
-shader_parameter/sphere_radius = 0.5
-shader_parameter/core_ratio = 0.3
+shader_parameter/ColorParameter = Color(1, 1, 1, 1)
+shader_parameter/distortion_strength = 0.1999999955296
 shader_parameter/noise_scale = 1.0000000149012
 shader_parameter/noise_speed = 0.60000000894072
 shader_parameter/noise_texture = ExtResource("2_p3jgk")
-shader_parameter/distortion_strength = 0.1999999955296
+shader_parameter/sphere_radius = 0.5
+shader_parameter/core_ratio = 0.39999999105920003
 shader_parameter/intensity = 2.0
-shader_parameter/ColorParameter = Color(1, 1, 1, 1)
+shader_parameter/core_ratio_modulation_amount = 0.11999999731776
+shader_parameter/intensity_modulation_amount = 0.30999999307088
+shader_parameter/modulation_speed = 4.40000006556528
+shader_parameter/modulation_noise_speed = 0.87999998033024
+shader_parameter/noise_amount = 0.8999999798832
