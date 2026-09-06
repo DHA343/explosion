@@ -238,7 +238,7 @@ mesh = ExtResource("8_unqks")
 script = ExtResource("9_bnioy")
 patch_count = 300
 patch_color_gradient = ExtResource("10_unqks")
-patch_size_min_ratio = 0.2
+patch_size_min_ratio = 0.25
 patch_lifetime_min = 0.15000000000000002
 patch_lifetime_max = 0.5
 

@@ -24,7 +24,7 @@ func _ready() -> void:
 	_update_radius()
 
 	var material := _inflow_streaks.material_override as ShaderMaterial
-	assert(material != null, "InflowStreaks requires a ShaderMaterial over22ride.")
+	assert(material != null, "InflowStreaks requires a ShaderMaterial override.")
 
 	# NOTE: シリアライズされたViewportTextureは3Dエディタのカスタムシェーダーで解決されない。
 	# 両方の子がSceneTreeへ入った後にライブテクスチャを設定し、

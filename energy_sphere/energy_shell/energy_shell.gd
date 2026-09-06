@@ -6,7 +6,7 @@ signal inner_radius_changed(value: float)
 
 const PATCH_INNER_RADIUS_PARAMETER: StringName = &"inner_radius"
 
-@export_range(0.0, 0.5, 0.01) var thickness_ratio: float = 0.06:
+@export_range(0.0, 0.2, 0.005) var thickness_ratio: float = 0.06:
 	set(value):
 		thickness_ratio = value
 		if is_node_ready():
