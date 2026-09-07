@@ -1,7 +1,0 @@
-[gd_resource type="ShaderMaterial" format=3]
-
-[ext_resource type="Shader" path="res://energy_sphere/flow_particles/flow_particle_render.gdshader" id="1_render"]
-
-[resource]
-resource_local_to_scene = true
-shader = ExtResource("1_render")
