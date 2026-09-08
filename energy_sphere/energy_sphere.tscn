@@ -209,6 +209,7 @@ layers = 2
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="AuraFlow" parent="." unique_id=1781685533 instance=ExtResource("14_aura_flow")]
+visible = false
 cyan_color = Color(0, 0.78431374, 1, 1)
 purple_color = Color(0.7647059, 0, 1, 1)
 cyan_haze_density = 0.5
@@ -218,12 +219,12 @@ haze_emission_strength = 1.0
 radial_speed = 1.0
 radial_variation = 0.8
 tangential_strength = 0.64
-flow_scale = 1.1500000000000001
+flow_scale = 1.15
 flow_speed = 0.4
 source_scale = 0.4
 source_speed = 0.6
 source_min_strength = 0.3
-shape_scale = 1.9000000000000001
+shape_scale = 1.9
 shape_speed = 1.0
 shape_contrast = 0.45
 haze_lifetime_min = 0.5

@@ -13,5 +13,4 @@ orbit_velocity_max = 0.1000001
 radial_velocity_min = -500.0
 radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
-scale_min = 2.0
-scale_max = 2.0
+scale_max = 1.5
