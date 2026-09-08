@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://dt3srp08ap6oj" path="res://energy_sphere/distortion/distortion_capture.gd" id="11_distortion_capture"]
 [ext_resource type="Material" uid="uid://bhc1yajk6ihms" path="res://energy_sphere/distortion/distortion_material.tres" id="12_distortion_material"]
 [ext_resource type="Script" uid="uid://7h3q133c87fq" path="res://energy_sphere/distortion/distortion_shell.gd" id="13_distortion_shell"]
+[ext_resource type="PackedScene" uid="uid://di0c8y1ue2ttu" path="res://energy_sphere/aura_flow/aura_flow.tscn" id="14_aura_flow"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q0apk"]
 shader = ExtResource("1_q0apk")
@@ -58,7 +59,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2y8p8"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -74,7 +75,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -90,7 +91,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_b0480"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8v5r3"]
 shader = ExtResource("1_q0apk")
 shader_parameter/zenith_color = Color(0.003, 0.007, 0.025, 1)
 shader_parameter/horizon_color = Color(0.025, 0.045, 0.11, 1)
@@ -99,12 +100,12 @@ shader_parameter/star_density = 0.009
 shader_parameter/star_intensity = 2.2
 shader_parameter/milky_way_intensity = 0.12
 
-[sub_resource type="Sky" id="Sky_8v5r3"]
-sky_material = SubResource("ShaderMaterial_b0480")
+[sub_resource type="Sky" id="Sky_eoufh"]
+sky_material = SubResource("ShaderMaterial_8v5r3")
 process_mode = 2
 
-[sub_resource type="Environment" id="Environment_eoufh"]
-sky = SubResource("Sky_8v5r3")
+[sub_resource type="Environment" id="Environment_t144h"]
+sky = SubResource("Sky_eoufh")
 ambient_light_source = 2
 ambient_light_color = Color(0.065, 0.09, 0.18, 1)
 ambient_light_energy = 0.32
@@ -162,13 +163,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_2y8p8")
+process_material = SubResource("ParticleProcessMaterial_tknrg")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_tknrg")
+process_material = SubResource("ParticleProcessMaterial_b0480")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -188,7 +189,7 @@ render_target_update_mode = 4
 [node name="DistortionCamera" type="Camera3D" parent="DistortionCapture/DistortionViewport" unique_id=165995022]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
 cull_mask = 2
-environment = SubResource("Environment_eoufh")
+environment = SubResource("Environment_t144h")
 current = true
 
 [node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
@@ -206,6 +207,37 @@ mesh = SubResource("BoxMesh_ua4af")
 [node name="CoreGlow" type="MeshInstance3D" parent="." unique_id=351590610]
 layers = 2
 mesh = SubResource("BoxMesh_ua4af")
+
+[node name="AuraFlow" parent="." unique_id=1781685533 instance=ExtResource("14_aura_flow")]
+cyan_color = Color(0, 0.78431374, 1, 1)
+purple_color = Color(0.7647059, 0, 1, 1)
+cyan_haze_density = 0.5
+purple_haze_density = 0.5
+haze_opacity = 0.3
+haze_emission_strength = 1.0
+radial_speed = 1.0
+radial_variation = 0.8
+tangential_strength = 0.64
+flow_scale = 1.1500000000000001
+flow_speed = 0.4
+source_scale = 0.4
+source_speed = 0.6
+source_min_strength = 0.3
+shape_scale = 1.9000000000000001
+shape_speed = 1.0
+shape_contrast = 0.45
+haze_lifetime_min = 0.5
+haze_lifetime_max = 2.2
+haze_lifetime_fade_start = 0.0
+haze_dilution_power = 1.0
+view_front_visibility = 0.25
+view_falloff_power = 1.3
+cyan_amount = 3000
+purple_amount = 3000
+particle_size_min_ratio = 0.01
+particle_size_max_ratio = 0.024
+particle_opacity = 0.35
+particle_emission_strength = 2.0
 
 [node name="DistortionShell" type="MeshInstance3D" parent="." unique_id=165995023]
 material_override = ExtResource("12_distortion_material")

@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://di0c8y1ue2ttu"]
+
+[ext_resource type="Script" uid="uid://dqkc7s711tqqe" path="res://energy_sphere/aura_flow/aura_flow.gd" id="1_aura"]
+[ext_resource type="SphereMesh" uid="uid://bbtlyoxlsokk3" path="res://energy_sphere/aura_flow/haze/aura_haze_volume_mesh.tres" id="2_haze_mesh"]
+[ext_resource type="Material" path="res://energy_sphere/aura_flow/haze/aura_haze_volume_material.tres" id="3_haze_material"]
+[ext_resource type="Shader" uid="uid://dyaa767s2m21b" path="res://energy_sphere/aura_flow/particles/aura_particle_process.gdshader" id="4_j4rfk"]
+[ext_resource type="NoiseTexture3D" uid="uid://mn04vsmicgqt" path="res://energy_sphere/aura_flow/shared/aura_flow_noise.tres" id="5_12d37"]
+[ext_resource type="Shader" uid="uid://cike3prto0sv2" path="res://energy_sphere/aura_flow/particles/aura_particle_render.gdshader" id="6_paeml"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qx1k6"]
+shader = ExtResource("4_j4rfk")
+shader_parameter/aura_flow_noise = ExtResource("5_12d37")
+shader_parameter/sphere_radius = 0.5
+shader_parameter/particle_size_min_ratio = 0.008
+shader_parameter/particle_size_max_ratio = 0.016
+shader_parameter/flow_seed = 2048
+shader_parameter/radial_speed = 0.2
+shader_parameter/radial_variation = 0.35
+shader_parameter/tangential_strength = 0.46
+shader_parameter/flow_scale = 0.78
+shader_parameter/flow_speed = 0.2
+shader_parameter/source_seed = 343
+shader_parameter/source_scale = 1.45
+shader_parameter/source_speed = 0.16
+shader_parameter/source_min_strength = 0.32
+shader_parameter/source_contrast = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nb5qi"]
+render_priority = 0
+shader = ExtResource("6_paeml")
+shader_parameter/particle_color = Color(0.18, 0.78, 1, 1)
+shader_parameter/particle_lifetime = 2.0
+shader_parameter/particle_opacity = 0.34
+shader_parameter/particle_emission_strength = 1.55
+shader_parameter/view_front_visibility = 0.08
+shader_parameter/view_falloff_power = 2.1
+
+[sub_resource type="QuadMesh" id="QuadMesh_mx8nw"]
+material = SubResource("ShaderMaterial_nb5qi")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w3snb"]
+shader = ExtResource("4_j4rfk")
+shader_parameter/aura_flow_noise = ExtResource("5_12d37")
+shader_parameter/sphere_radius = 0.5
+shader_parameter/particle_size_min_ratio = 0.008
+shader_parameter/particle_size_max_ratio = 0.016
+shader_parameter/flow_seed = 2048
+shader_parameter/radial_speed = 0.2
+shader_parameter/radial_variation = 0.35
+shader_parameter/tangential_strength = 0.46
+shader_parameter/flow_scale = 0.78
+shader_parameter/flow_speed = 0.2
+shader_parameter/source_seed = 1343
+shader_parameter/source_scale = 1.45
+shader_parameter/source_speed = 0.16
+shader_parameter/source_min_strength = 0.32
+shader_parameter/source_contrast = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vnka"]
+render_priority = 0
+shader = ExtResource("6_paeml")
+shader_parameter/particle_color = Color(0.58, 0.25, 1, 1)
+shader_parameter/particle_lifetime = 2.0
+shader_parameter/particle_opacity = 0.34
+shader_parameter/particle_emission_strength = 1.55
+shader_parameter/view_front_visibility = 0.08
+shader_parameter/view_falloff_power = 2.1
+
+[sub_resource type="QuadMesh" id="QuadMesh_v4w7a"]
+material = SubResource("ShaderMaterial_8vnka")
+
+[node name="AuraFlow" type="Node3D" unique_id=775404452]
+script = ExtResource("1_aura")
+radial_speed = 0.2
+
+[node name="HazeVolume" type="MeshInstance3D" parent="." unique_id=974202449]
+material_override = ExtResource("3_haze_material")
+cast_shadow = 0
+custom_aabb = AABB(-0.976, -0.976, -0.976, 1.952, 1.952, 1.952)
+mesh = ExtResource("2_haze_mesh")
+
+[node name="Particles" type="Node3D" parent="." unique_id=1916949334]
+
+[node name="CyanParticles" type="GPUParticles3D" parent="Particles" unique_id=1615177659]
+amount = 1100
+lifetime = 2.0
+preprocess = 2.0
+use_fixed_seed = true
+seed = 343
+fixed_fps = 60
+visibility_aabb = AABB(-1.566, -1.566, -1.566, 3.132, 3.132, 3.132)
+local_coords = true
+draw_order = 3
+transform_align = 1
+transform_align_channel_filter = 1
+process_material = SubResource("ShaderMaterial_qx1k6")
+draw_pass_1 = SubResource("QuadMesh_mx8nw")
+
+[node name="PurpleParticles" type="GPUParticles3D" parent="Particles" unique_id=1517002635]
+amount = 850
+lifetime = 2.0
+preprocess = 2.0
+use_fixed_seed = true
+seed = 1343
+fixed_fps = 60
+visibility_aabb = AABB(-1.566, -1.566, -1.566, 3.132, 3.132, 3.132)
+local_coords = true
+draw_order = 3
+transform_align = 1
+transform_align_channel_filter = 1
+process_material = SubResource("ShaderMaterial_w3snb")
+draw_pass_1 = SubResource("QuadMesh_v4w7a")
