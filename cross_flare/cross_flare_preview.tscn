@@ -1,0 +1,76 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://cross_flare/cross_flare.tscn" id="1"]
+[ext_resource type="Script" path="res://main/free_fly_camera.gd" id="2"]
+[ext_resource type="Script" path="res://cross_flare/cross_flare_preview.gd" id="3"]
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 1
+background_color = Color(0.014, 0.006, 0.012, 1)
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.05
+
+[node name="CrossFlarePreview" type="Node3D"]
+script = ExtResource("3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 0, 6.5)
+current = true
+fov = 45.0
+script = ExtResource("2")
+move_speed = 3.0
+
+[node name="Cross" parent="." instance=ExtResource("1")]
+position = Vector3(-2.2, 0, 0)
+ring_style = 0
+autoplay = false
+
+[node name="SingleRing" parent="." instance=ExtResource("1")]
+position = Vector3(0, 0, 0)
+ring_style = 1
+autoplay = false
+
+[node name="DoubleRing" parent="." instance=ExtResource("1")]
+position = Vector3(2.2, 0, 0)
+ring_style = 2
+autoplay = false
+
+[node name="Help" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 20.0
+theme_override_font_sizes/font_size = 22
+text = "十字のみ                         単リング                         二重リング＋膨らみ\n中ドラッグ：周回 ／ ホイール：ズーム"
+
+[node name="Controls" type="VBoxContainer" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -390.0
+offset_right = 990.0
+offset_bottom = -16.0
+
+[node name="Time" type="Label" parent="Controls"]
+
+[node name="Palette" type="OptionButton" parent="Controls"]
+
+[node name="Timeline" type="HSlider" parent="Controls"]
+max_value = 1.0
+step = 0.0
+
+[node name="Buttons" type="HBoxContainer" parent="Controls"]
+
+[node name="Play" type="Button" parent="Controls/Buttons"]
+text = "1回再生"
+
+[node name="Slow" type="Button" parent="Controls/Buttons"]
+text = "1/4速度で再生"
+
+[node name="Stepped" type="CheckButton" parent="Controls/Buttons"]
+button_pressed = false
+text = "コマ単位の変形"
+

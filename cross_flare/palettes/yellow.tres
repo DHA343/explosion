@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cfkudqnu0ybdq"]
+
+[ext_resource type="Shader" uid="uid://dy2glmq30kbc8" path="res://cross_flare/cross_flare.gdshader" id="1"]
+
+[sub_resource type="Gradient" id="CrossColors"]
+offsets = PackedFloat32Array(0, 0.08, 0.17, 0.8, 0.9, 1)
+colors = PackedColorArray(0.35, 0.04, 1, 1, 1, 0.025, 0.8, 1, 1, 0.95, 0.025, 1, 1, 0.95, 0.025, 1, 0.55, 1, 0.05, 1, 0.02, 0.9, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="CrossGradient"]
+gradient = SubResource("CrossColors")
+width = 512
+
+[sub_resource type="Gradient" id="RingColors"]
+offsets = PackedFloat32Array(0, 0.22, 0.43, 0.63, 0.78, 1)
+colors = PackedColorArray(1, 0.025, 0.8, 1, 0.02, 0.9, 1, 1, 1, 0.88, 0.96, 1, 1, 0.88, 0.96, 1, 1, 0.95, 0.025, 1, 1, 0.025, 0.8, 1)
+
+[sub_resource type="GradientTexture1D" id="RingGradient"]
+gradient = SubResource("RingColors")
+width = 512
+
+[resource]
+render_priority = 0
+shader = ExtResource("1")
+shader_parameter/cross_gradient = SubResource("CrossGradient")
+shader_parameter/ring_gradient = SubResource("RingGradient")
+shader_parameter/color_angle = 0.5
+shader_parameter/color_offset = 0.0
+shader_parameter/color_span = 1.4
+shader_parameter/ring_color_offset = 0.0
+shader_parameter/inner_color_offset = 0.15
+shader_parameter/flowing = false

@@ -5,12 +5,12 @@
 [resource]
 render_priority = -1
 shader = ExtResource("1_s7slj")
-shader_parameter/color_a = Color(0, 0.54901963, 1, 1)
-shader_parameter/color_b = Color(0.7176471, 0.27058825, 1, 1)
+shader_parameter/color_a = Color(0, 0.6313726, 1, 1)
+shader_parameter/color_b = Color(0.6627451, 0, 0.9098039, 1)
 shader_parameter/distortion_strength = 0.0
 shader_parameter/noise_scale = 1.0
 shader_parameter/noise_speed = 1.0
-shader_parameter/sphere_radius = 0.5
+shader_parameter/sphere_radius = 0.15000000000000002
 shader_parameter/core_ratio = 0.6499999854712001
 shader_parameter/intensity = 2.159999955445
 shader_parameter/core_ratio_modulation_amount = 0.0

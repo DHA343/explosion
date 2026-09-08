@@ -72,8 +72,7 @@ orbit_velocity_max = 0.1000001
 radial_velocity_min = -500.0
 radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
-scale_min = 2.0
-scale_max = 2.0
+scale_max = 1.5
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
 particle_flag_disable_z = true
@@ -88,8 +87,7 @@ orbit_velocity_max = 0.15
 radial_velocity_min = -500.0
 radial_velocity_max = -500.0
 gravity = Vector3(0, 0, 0)
-scale_min = 2.0
-scale_max = 2.0
+scale_max = 1.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8v5r3"]
 shader = ExtResource("1_q0apk")
@@ -146,7 +144,7 @@ environment = SubResource("Environment_nfcmq")
 script = ExtResource("2_womfm")
 
 [node name="Camera3D" type="Camera3D" parent="OrbitCamera" unique_id=740876973]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.747)
 cull_mask = 1048573
 
 [node name="InflowStreaksViewport" type="SubViewport" parent="." unique_id=165995018]
@@ -187,7 +185,7 @@ size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
 [node name="DistortionCamera" type="Camera3D" parent="DistortionCapture/DistortionViewport" unique_id=165995022]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1873276)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.747)
 cull_mask = 2
 environment = SubResource("Environment_t144h")
 current = true
@@ -209,7 +207,6 @@ layers = 2
 mesh = SubResource("BoxMesh_ua4af")
 
 [node name="AuraFlow" parent="." unique_id=1781685533 instance=ExtResource("14_aura_flow")]
-visible = false
 cyan_color = Color(0, 0.78431374, 1, 1)
 purple_color = Color(0.7647059, 0, 1, 1)
 cyan_haze_density = 0.5
@@ -243,7 +240,7 @@ particle_emission_strength = 2.0
 [node name="DistortionShell" type="MeshInstance3D" parent="." unique_id=165995023]
 material_override = ExtResource("12_distortion_material")
 cast_shadow = 0
-instance_shader_parameters/projected_radius_uv = 0.30253658
+instance_shader_parameters/projected_radius_uv = 0.1946367
 mesh = ExtResource("8_unqks")
 script = ExtResource("13_distortion_shell")
 

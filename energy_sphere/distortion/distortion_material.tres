@@ -11,6 +11,6 @@ render_priority = -1
 shader = ExtResource("1_shader")
 shader_parameter/captured_texture = SubResource("ViewportTexture_h8x0p")
 shader_parameter/distortion_noise = ExtResource("2_noise")
-shader_parameter/distortion_strength_ratio = 0.054000002564999997
+shader_parameter/distortion_strength_ratio = 0.05400000256499999
 shader_parameter/distortion_scale = 0.7000000067055401
 shader_parameter/distortion_evolution_speed = 30.0

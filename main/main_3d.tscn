@@ -66,6 +66,7 @@ environment = SubResource("Environment_night")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=792399058]
 transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 160)
+cull_mask = 1048573
 current = true
 fov = 52.0
 far = 2000.0
@@ -88,4 +89,5 @@ mesh = SubResource("PlaneMesh_ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75, 0)
 
 [node name="EnergySphere" parent="." unique_id=252090666 instance=ExtResource("6_energy_sphere")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 152.72737)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 158.14853)
+radius = 0.15000000000000002
