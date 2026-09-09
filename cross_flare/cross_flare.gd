@@ -20,20 +20,18 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export var variant_random: bool = true
 
-@export_range(0.05, 20.0, 0.05, "suffix:m") var size: float = 1.0:
+@export_range(0.1, 5.0, 0.05, "suffix:m") var size: float = 0.675:
 	set(value):
-		size = value
+		size = clampf(value, 0.1, 5.0)
 		_update_variant_size_parameters()
-		custom_aabb = AABB(Vector3.ONE * -value * 1.5, Vector3.ONE * value * 3.0)
+		custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 
-@export_range(0.0, 20.0, 0.05, "suffix:m") var size_random: float = 0.225
+@export_range(0.0, 1.0, 0.01) var size_random_ratio: float = 0.33
 
-@export_range(0.0, 8.0, 0.05) var brightness: float = 1.6:
+@export_range(0.0, 8.0, 0.05) var intensity: float = 1.6:
 	set(value):
-		brightness = value
+		intensity = clampf(value, 0.0, 8.0)
 		_update_effect_parameters()
-
-@export_range(0.0, 8.0, 0.05) var brightness_random: float = 0.25
 
 @export var palette: ShaderMaterial:
 	set(value):
@@ -48,24 +46,25 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export_range(0.0, 180.0, 1.0, "degrees") var angle_random: float = 180.0
 
-@export_range(0.0, 10.0, 0.01, "suffix:rad/s") var rotation_speed: float = PI:
+@export_range(0.0, 10.0, 0.1, "suffix:rad/s") var rotation_speed: float = 5.17:
 	set(value):
-		rotation_speed = value
+		rotation_speed = clampf(value, 0.0, 10.0)
 		_update_rotation()
 
-@export_range(0.0, 10.0, 0.01, "suffix:rad/s") var rotation_speed_random: float = 0.0
+@export_range(0.0, 1.0, 0.01) var rotation_speed_random_ratio: float = 0.13
 
-@export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.5:
+@export_group("Playback")
+@export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.45:
 	set(value):
-		duration = maxf(value, MIN_DURATION)
+		duration = clampf(value, MIN_DURATION, 1.0)
 		_elapsed = minf(_elapsed, duration)
 		_update_effect_parameters()
 
-@export_range(0.0, 1.0, 0.01, "suffix:s") var duration_random: float = 0.12
+@export_range(0.0, 1.0, 0.01) var duration_random_ratio: float = 0.11
 
 @export var autoplay: bool = true
 
-@export var stepped: bool = false:
+@export var stepped: bool = true:
 	set(value):
 		stepped = value
 		_update_stepped_parameters()
@@ -76,64 +75,64 @@ const MIN_TIMING_SPAN: float = 0.001
 		_update_stepped_parameters()
 
 @export_group("Motion Timing")
-@export_range(0.0, 1.0, 0.01) var growth_end: float = 0.36:
+@export_range(0.0, 1.0, 0.01) var growth_end: float = 0.55:
 	set(value):
 		growth_end = clampf(value, 0.0, 1.0)
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var width_fade_start: float = 0.38:
+@export_range(0.0, 1.0, 0.01) var width_fade_start: float = 0.6:
 	set(value):
 		width_fade_start = clampf(value, 0.0, 1.0)
 		width_fade_start = minf(width_fade_start, maxf(0.0, width_fade_end - MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var width_fade_end: float = 0.82:
+@export_range(0.0, 1.0, 0.01) var width_fade_end: float = 0.8:
 	set(value):
 		width_fade_end = clampf(value, 0.0, 1.0)
 		width_fade_end = maxf(width_fade_end, minf(1.0, width_fade_start + MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var shrink_start: float = 0.46:
+@export_range(0.0, 1.0, 0.01) var shrink_start: float = 0.6:
 	set(value):
 		shrink_start = clampf(value, 0.0, 1.0)
 		shrink_start = minf(shrink_start, maxf(0.0, shrink_end - MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var shrink_end: float = 0.70:
+@export_range(0.0, 1.0, 0.01) var shrink_end: float = 0.8:
 	set(value):
 		shrink_end = clampf(value, 0.0, 1.0)
 		shrink_end = maxf(shrink_end, minf(1.0, shrink_start + MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var shortening_start: float = 0.68:
+@export_range(0.0, 1.0, 0.01) var shortening_start: float = 0.7:
 	set(value):
 		shortening_start = clampf(value, 0.0, 1.0)
 		shortening_start = minf(shortening_start, maxf(0.0, shortening_end - MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var shortening_end: float = 0.85:
+@export_range(0.0, 1.0, 0.01) var shortening_end: float = 0.9:
 	set(value):
 		shortening_end = clampf(value, 0.0, 1.0)
 		shortening_end = maxf(shortening_end, minf(1.0, shortening_start + MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var stretch_start: float = 0.70:
+@export_range(0.0, 1.0, 0.01) var stretch_start: float = 0.72:
 	set(value):
 		stretch_start = clampf(value, 0.0, 1.0)
 		stretch_start = minf(stretch_start, maxf(0.0, stretch_end - MIN_TIMING_SPAN))
 		_update_motion_timing()
 
-@export_range(0.0, 1.0, 0.01) var stretch_end: float = 0.86:
+@export_range(0.0, 1.0, 0.01) var stretch_end: float = 1.0:
 	set(value):
 		stretch_end = clampf(value, 0.0, 1.0)
 		stretch_end = maxf(stretch_end, minf(1.0, stretch_start + MIN_TIMING_SPAN))
 		_update_motion_timing()
 
 @export_group("Color Flow")
-@export_range(0.0, 1.0, 0.01) var flow_position_random: float = 0.25
+@export_range(0.0, 1.0, 0.01) var flow_position_random: float = 0.5
 
 @export_group("Ring Shape")
-@export_range(0.01, 0.12, 0.001) var ring_peak_width: float = 0.065:
+@export_range(0.01, 0.15, 0.005) var ring_peak_width: float = 0.065:
 	set(value):
 		ring_peak_width = value
 		_update_ring_shape_parameters()
@@ -176,19 +175,22 @@ const MIN_TIMING_SPAN: float = 0.001
 		split_irregularity = value
 		_update_style()
 
-@export_range(0.1, 0.65, 0.01) var gap_ratio: float = 0.55:
+@export_range(0.0, 1.0, 0.01) var gap_ratio: float = 0.85:
 	set(value):
-		gap_ratio = value
+		gap_ratio = clampf(value, 0.0, 1.0)
 		_update_style()
 
-@export_range(0.0, 0.45, 0.005) var split_start: float = 0.29:
+@export_range(0.0, 1.0, 0.01) var split_start: float = 0.29:
 	set(value):
 		split_start = value
+		split_start = clampf(split_start, 0.0, 1.0)
+		split_start = minf(split_start, maxf(0.0, split_end - MIN_TIMING_SPAN))
 		_update_style()
 
-@export_range(0.0, 0.46, 0.005) var split_end: float = 0.40:
+@export_range(0.0, 1.0, 0.01) var split_end: float = 0.40:
 	set(value):
-		split_end = value
+		split_end = clampf(value, 0.0, 1.0)
+		split_end = maxf(split_end, minf(1.0, split_start + MIN_TIMING_SPAN))
 		_update_style()
 
 @export_group("Tail")
@@ -197,7 +199,7 @@ const MIN_TIMING_SPAN: float = 0.001
 		tail_breakup_strength = value
 		_update_tail_parameters()
 
-@export_range(0.82, 0.95, 0.01) var tail_breakup_start: float = 0.84:
+@export_range(0.0, 1.0, 0.01) var tail_breakup_start: float = 0.84:
 	set(value):
 		tail_breakup_start = value
 		_update_tail_parameters()
@@ -212,7 +214,7 @@ const MIN_TIMING_SPAN: float = 0.001
 		tail_irregularity = value
 		_update_tail_parameters()
 
-@export_range(0.1, 1.0, 0.01) var tail_width_ratio: float = 0.30:
+@export_range(0.0, 1.0, 0.01) var tail_width_ratio: float = 0.30:
 	set(value):
 		tail_width_ratio = value
 		_update_tail_parameters()
@@ -223,9 +225,9 @@ const MIN_TIMING_SPAN: float = 0.001
 		halo_strength = value
 		_update_effect_parameters()
 
-@export_range(0.001, 0.15, 0.001) var halo_width: float = 0.03:
+@export_range(0.005, 0.20, 0.005) var halo_width: float = 0.06:
 	set(value):
-		halo_width = maxf(value, 0.001)
+		halo_width = maxf(value, 0.005)
 		_update_effect_parameters()
 
 var playing: bool = false
@@ -238,15 +240,14 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		if variant_random:
 			variant = randi_range(Variant.CROSS_ONLY, Variant.DOUBLE_RING)
-		size += randf_range(-size_random, size_random)
-		size = clampf(size, 0.05, 20.0)
-		brightness += randf_range(-brightness_random, brightness_random)
-		brightness = clampf(brightness, 0.0, 8.0)
-		rotation_speed += randf_range(-rotation_speed_random, rotation_speed_random)
-		rotation_speed = maxf(rotation_speed, 0.0)
+		size *= 1.0 + randf_range(-size_random_ratio, size_random_ratio)
+		size = clampf(size, 0.1, 5.0)
+		rotation_speed *= 1.0 + randf_range(-rotation_speed_random_ratio,
+			rotation_speed_random_ratio)
+		rotation_speed = clampf(rotation_speed, 0.0, 10.0)
 		angle += randf_range(-angle_random, angle_random)
 		angle = fposmod(angle + 180.0, 360.0) - 180.0
-		duration += randf_range(-duration_random, duration_random)
+		duration *= 1.0 + randf_range(-duration_random_ratio, duration_random_ratio)
 		duration = clampf(duration, MIN_DURATION, 1.0)
 		_flow_direction = randf_range(-PI, PI)
 		_flow_position = randf_range(-flow_position_random, flow_position_random)
@@ -304,7 +305,7 @@ func _update_style() -> void:
 
 func _update_effect_parameters() -> void:
 	set_instance_shader_parameter(&"effect_parameters",
-		Vector4(brightness, duration, halo_strength, halo_width))
+		Vector4(intensity, duration, halo_strength, halo_width))
 
 
 func _update_color_flow_parameters() -> void:

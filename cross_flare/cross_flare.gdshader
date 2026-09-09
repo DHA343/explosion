@@ -4,10 +4,10 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
 instance uniform float progress = 0.0;
 uniform sampler2D cross_gradient : source_color, filter_linear, repeat_disable;
 uniform sampler2D ring_gradient : source_color, filter_linear, repeat_disable;
-uniform float flow_speed = 1.3;
-uniform float flow_width = 1.4;
+uniform float flow_speed : hint_range(0.0, 5.0, 0.1) = 2.5;
+uniform float flow_width : hint_range(0.1, 3.0, 0.1) = 1.5;
 instance uniform vec2 variant_size = vec2(1.0, 1.0);
-// brightness, duration, halo strength, halo width.
+// intensity, duration, halo strength, halo width.
 instance uniform vec4 effect_parameters = vec4(1.6, 0.5, 0.3, 0.03);
 // Initial angle and rotation speed in radians per second.
 instance uniform float initial_angle = 0.0;
@@ -69,7 +69,7 @@ float ring_weakness(float azimuth, float sector, float center) {
 			float cell = sector * weight / total_weight;
 			float jitter = (noise_value(float(i) + 1.0) - 0.5) * 0.18 * breakup_shape.w;
 			float location = cursor + (0.5 + jitter) * cell;
-			float spread = cell * mix(0.12, 0.42, breakup_time.z / 0.65)
+			float spread = cell * mix(0.12, 0.42, breakup_time.z)
 				* mix(1.0, mix(0.55, 1.0, noise_value(float(i) + 11.0)), breakup_shape.w);
 			float delta = abs(atan(sin(azimuth - location), cos(azimuth - location)));
 			float strength = mix(1.0, mix(0.6, 1.4, noise_value(float(i) + 51.0)), breakup_shape.w);
