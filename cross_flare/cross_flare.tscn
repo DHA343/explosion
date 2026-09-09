@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://byhr4npb5tl2m"]
 
 [ext_resource type="Script" uid="uid://dhc0c3xw47qt8" path="res://cross_flare/cross_flare.gd" id="1"]
-[ext_resource type="Material" uid="uid://dmuu2sah4gduj" path="res://cross_flare/palettes/rainbow.tres" id="2"]
+[ext_resource type="Material" uid="uid://dmuu2sah4gduj" path="res://cross_flare/palettes/cmy.tres" id="2"]
 
 [sub_resource type="QuadMesh" id="Quad"]
 size = Vector2(2, 2)
@@ -28,3 +28,4 @@ instance_shader_parameters/variant_size = Vector2(1, 0.675)
 mesh = SubResource("Quad")
 script = ExtResource("1")
 palette = ExtResource("2")
+rotation_speed = 5.17

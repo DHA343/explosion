@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://fesc4vkflwgp"]
+
+[ext_resource type="Shader" uid="uid://dy2glmq30kbc8" path="res://cross_flare/cross_flare.gdshader" id="1_ckjp5"]
+
+[sub_resource type="Gradient" id="Gradient_ublqf"]
+offsets = PackedFloat32Array(0.11878453, 0.53038675, 0.8839779)
+colors = PackedColorArray(1, 0, 0.9666667, 1, 0.96000004, 0.6, 1, 1, 1, 0, 0.96862745, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4aub5"]
+gradient = SubResource("Gradient_ublqf")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ckjp5")
+shader_parameter/cross_gradient = SubResource("GradientTexture1D_4aub5")
+shader_parameter/ring_use_cross_gradient = true
+shader_parameter/flow_speed = 1.0000000149012
+shader_parameter/flow_width = 2.0

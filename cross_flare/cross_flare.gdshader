@@ -4,8 +4,9 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
 instance uniform float progress = 0.0;
 uniform sampler2D cross_gradient : source_color, filter_linear, repeat_disable;
 uniform sampler2D ring_gradient : source_color, filter_linear, repeat_disable;
-uniform float flow_speed : hint_range(0.0, 5.0, 0.1) = 2.5;
-uniform float flow_width : hint_range(0.1, 3.0, 0.1) = 1.5;
+uniform bool ring_use_cross_gradient = true;
+uniform float flow_speed : hint_range(0.0, 5.0, 0.1) = 2.0;
+uniform float flow_width : hint_range(0.1, 3.0, 0.1) = 2.0;
 instance uniform vec2 variant_size = vec2(1.0, 1.0);
 // intensity, duration, halo strength, halo width.
 instance uniform vec4 effect_parameters = vec4(1.6, 0.5, 0.3, 0.03);
@@ -207,7 +208,24 @@ vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
 	float halo_distance = outside / ring_halo_width;
 	float outside_mask = 1.0 - line;
 	float haze = exp(-halo_distance * halo_distance) * effect_parameters.z * taper * outside_mask;
-	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
+
+	vec3 tint;
+	if (ring_use_cross_gradient) {
+		tint = sample_flow_gradient(
+			cross_gradient,
+			color_point,
+			palette_offset,
+			sampled_elapsed
+		);
+	} else {
+		tint = sample_flow_gradient(
+			ring_gradient,
+			color_point,
+			palette_offset,
+			sampled_elapsed
+		);
+	}
+
 	return tint * (line + haze) * growth * opacity;
 }
 

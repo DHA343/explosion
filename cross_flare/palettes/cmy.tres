@@ -3,8 +3,8 @@
 [ext_resource type="Shader" uid="uid://dy2glmq30kbc8" path="res://cross_flare/cross_flare.gdshader" id="1_qpv4t"]
 
 [sub_resource type="Gradient" id="Gradient_qpv4t"]
-offsets = PackedFloat32Array(0.12707183, 0.25414366, 0.44475138, 0.5276243, 0.7237569, 0.839779)
-colors = PackedColorArray(1, 1, 0, 1, 0, 0.93333316, 1, 1, 0, 0.8833332, 1, 1, 0.8704135, 0.22310002, 0.97, 1, 0.8768801, 0.27159998, 0.97, 1, 1, 1, 0, 1)
+offsets = PackedFloat32Array(0, 0.06629834, 0.12154696, 0.1961326, 0.37292817, 0.4640884, 0.6132597, 0.71823204)
+colors = PackedColorArray(1, 1, 0.14999998, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0.93333316, 1, 1, 0, 0.8833332, 1, 1, 0.84066683, 0, 0.97, 1, 0.8666668, 0, 1, 1, 1, 1, 0.100000024, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_gdou6"]
 gradient = SubResource("Gradient_qpv4t")
@@ -13,5 +13,6 @@ gradient = SubResource("Gradient_qpv4t")
 render_priority = 0
 shader = ExtResource("1_qpv4t")
 shader_parameter/cross_gradient = SubResource("GradientTexture1D_gdou6")
-shader_parameter/flow_speed = 2.500000037253
-shader_parameter/flow_width = 1.5000000223518
+shader_parameter/ring_use_cross_gradient = true
+shader_parameter/flow_speed = 2.0000000298024
+shader_parameter/flow_width = 2.0000000298024

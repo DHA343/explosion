@@ -46,12 +46,12 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export_range(0.0, 180.0, 1.0, "degrees") var angle_random: float = 180.0
 
-@export_range(0.0, 10.0, 0.1, "suffix:rad/s") var rotation_speed: float = 5.17:
+@export_range(0.0, 10.0, 0.1, "suffix:rad/s") var rotation_speed: float = 5.2:
 	set(value):
 		rotation_speed = clampf(value, 0.0, 10.0)
 		_update_rotation()
 
-@export_range(0.0, 1.0, 0.01) var rotation_speed_random_ratio: float = 0.13
+@export_range(0.0, 1.0, 0.01) var rotation_speed_random_ratio: float = 0.1
 
 @export_group("Playback")
 @export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.45:
@@ -60,7 +60,7 @@ const MIN_TIMING_SPAN: float = 0.001
 		_elapsed = minf(_elapsed, duration)
 		_update_effect_parameters()
 
-@export_range(0.0, 1.0, 0.01) var duration_random_ratio: float = 0.11
+@export_range(0.0, 1.0, 0.01) var duration_random_ratio: float = 0.1
 
 @export var autoplay: bool = true
 
