@@ -20,15 +20,15 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export var variant_random: bool = true
 
-@export_range(0.1, 5.0, 0.05, "suffix:m") var size: float = 0.675:
+@export_range(0.01, 1.0, 0.01, "suffix:m") var size: float = 0.5:
 	set(value):
 		size = clampf(value, 0.1, 5.0)
 		_update_variant_size_parameters()
 		custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 
-@export_range(0.0, 1.0, 0.01) var size_random_ratio: float = 0.33
+@export_range(0.0, 1.0, 0.01) var size_random_ratio: float = 0.3
 
-@export_range(0.0, 8.0, 0.05) var intensity: float = 1.6:
+@export_range(0.0, 8.0, 0.1) var intensity: float = 2.0:
 	set(value):
 		intensity = clampf(value, 0.0, 8.0)
 		_update_effect_parameters()
@@ -52,6 +52,16 @@ const MIN_TIMING_SPAN: float = 0.001
 		_update_rotation()
 
 @export_range(0.0, 1.0, 0.01) var rotation_speed_random_ratio: float = 0.1
+
+@export_range(0.0, 1.0, 0.01) var rotation_final_speed_ratio: float = 1.0:
+	set(value):
+		rotation_final_speed_ratio = clampf(value, 0.0, 1.0)
+		_update_rotation()
+
+@export_range(0.1, 5.0, 0.1) var rotation_slowdown_power: float = 1.0:
+	set(value):
+		rotation_slowdown_power = maxf(value, 0.1)
+		_update_rotation()
 
 @export_group("Playback")
 @export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.45:
@@ -341,3 +351,5 @@ func _update_stepped_parameters() -> void:
 func _update_rotation() -> void:
 	set_instance_shader_parameter(&"initial_angle", deg_to_rad(angle))
 	set_instance_shader_parameter(&"rotation_speed_radians", rotation_speed)
+	set_instance_shader_parameter(&"rotation_slowdown",
+		Vector2(rotation_final_speed_ratio, rotation_slowdown_power))

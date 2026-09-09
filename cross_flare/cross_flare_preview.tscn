@@ -14,7 +14,8 @@ glow_bloom = 0.05
 script = ExtResource("1_preview")
 max_alive = 51
 spawn_interval_min = 0.01
-spawn_interval_max = 0.01
+spawn_interval_max = 0.02
+spawn_depth = 6.3
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1652942463]
 environment = SubResource("Environment")

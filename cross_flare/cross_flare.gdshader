@@ -5,7 +5,7 @@ instance uniform float progress = 0.0;
 uniform sampler2D cross_gradient : source_color, filter_linear, repeat_disable;
 uniform sampler2D ring_gradient : source_color, filter_linear, repeat_disable;
 uniform bool ring_use_cross_gradient = true;
-uniform float flow_speed : hint_range(0.0, 5.0, 0.1) = 2.0;
+uniform float flow_speed : hint_range(0.0, 5.0, 0.1) = 1.0;
 uniform float flow_width : hint_range(0.1, 3.0, 0.1) = 2.0;
 instance uniform vec2 variant_size = vec2(1.0, 1.0);
 // intensity, duration, halo strength, halo width.
@@ -13,6 +13,8 @@ instance uniform vec4 effect_parameters = vec4(1.6, 0.5, 0.3, 0.03);
 // Initial angle and rotation speed in radians per second.
 instance uniform float initial_angle = 0.0;
 instance uniform float rotation_speed_radians = 3.1415927;
+// Final speed ratio and slowdown power.
+instance uniform vec2 rotation_slowdown = vec2(1.0, 1.0);
 // Flow direction and position are selected once for each CrossFlare instance.
 instance uniform vec2 color_flow_parameters = vec2(0.0, 0.0);
 // Sector center, sector width, island count, irregularity.
@@ -91,7 +93,11 @@ vec2 rotate_point(vec2 point, float angle) {
 }
 
 float rotation_angle(float age) {
-	return rotation_speed_radians * effect_parameters.y * age;
+	float integrated_speed = age
+		+ (rotation_slowdown.x - 1.0)
+		* pow(age, rotation_slowdown.y + 1.0)
+		/ (rotation_slowdown.y + 1.0);
+	return rotation_speed_radians * effect_parameters.y * integrated_speed;
 }
 
 vec4 motion_at(float age) {
