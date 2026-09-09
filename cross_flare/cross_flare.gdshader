@@ -28,7 +28,9 @@ instance uniform float flow_width_offset = 0.0;
 instance uniform vec4 breakup_shape = vec4(3.14159, 2.8, 4.0, 0.65);
 instance uniform vec4 breakup_time = vec4(0.29, 0.40, 0.55, 0.0);
 instance uniform float breakup_seed = 1.0;
-instance uniform vec2 edge_style = vec2(0.008, 0.3);
+// Godot supports 16 instance uniform slots; keep both per-instance Halo values
+// together so the existing CrossFlare instance API can fit within that limit.
+instance uniform vec2 halo_parameters = vec2(0.3, 0.03);
 
 vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
 		float extra_offset, float sampled_elapsed) {
@@ -127,9 +129,17 @@ vec4 motion_at(float age) {
 
 float cross_distance(vec2 point, vec2 reach, float width) {
 	vec2 q = abs(point);
-	float horizontal = q.y - width * pow(max(1.0 - q.x / reach.x, 0.0), 2.4);
-	float vertical = q.x - width * pow(max(1.0 - q.y / reach.y, 0.0), 2.4);
-	return min(max(horizontal, q.x - reach.x), max(vertical, q.y - reach.y));
+	float horizontal_t = q.x / max(reach.x, 0.001);
+	float vertical_t = q.y / max(reach.y, 0.001);
+	float horizontal_width = width * pow(max(1.0 - horizontal_t, 0.0), 2.4);
+	float vertical_width = width * pow(max(1.0 - vertical_t, 0.0), 2.4);
+	float horizontal_body = q.y - horizontal_width;
+	float vertical_body = q.x - vertical_width;
+	float horizontal_tip = length(vec2(max(q.x - reach.x, 0.0), q.y));
+	float vertical_tip = length(vec2(q.x, max(q.y - reach.y, 0.0)));
+	float horizontal = mix(horizontal_body, horizontal_tip, step(reach.x, q.x));
+	float vertical = mix(vertical_body, vertical_tip, step(reach.y, q.y));
+	return min(horizontal, vertical);
 }
 
 vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
@@ -150,11 +160,12 @@ vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
 	float width = ring_peak_width * growth * taper * width_energy;
 	float ring_distance = abs(length(point) - radius) - width;
 	float pixel_width = 0.5 * (length(dFdx(point)) + length(dFdy(point)));
-	float aa = max(pixel_width, 0.001) + edge_style.x;
+	float aa = max(pixel_width, 0.001);
 	float line = 1.0 - smoothstep(-aa, aa, ring_distance);
 	float outside = max(ring_distance, 0.0);
-	float haze_width = max(0.002, 0.02 * sqrt(width_energy) * growth);
-	float haze = exp(-pow(outside / haze_width, 2.0)) * edge_style.y * taper;
+	float ring_halo_width = max(halo_parameters.y * 0.7, 0.001);
+	float halo_distance = outside / ring_halo_width;
+	float haze = exp(-halo_distance * halo_distance) * halo_parameters.x * taper;
 	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
 	return tint * (line + haze) * growth * opacity;
 }
@@ -187,11 +198,11 @@ void fragment() {
 	// abs/min at the thin centerline cancel screen derivatives. Use the
 	// unmodified coordinates so opposite sides receive identical filtering.
 	float pixel_width = 0.5 * (length(dFdx(q)) + length(dFdy(q)));
-	float aa = max(pixel_width, 0.001) + edge_style.x;
+	float aa = max(pixel_width, 0.001);
 	float body = 1.0 - smoothstep(-aa, aa, shape_distance);
 	float outside = max(shape_distance, 0.0);
-	float tip_fade = 1.0 - smoothstep(0.65, 1.02, max(abs(q.x) / pose.x, abs(q.y) / pose.y));
-	float halo = exp(-outside * outside / 0.0009) * edge_style.y * tip_fade;
+	float halo_distance = outside / max(halo_parameters.y, 0.001);
+	float halo = exp(-halo_distance * halo_distance) * halo_parameters.x;
 	vec3 tint = sample_flow_gradient(cross_gradient, color_plane, 0.0, sampled_elapsed);
 	vec3 center_tint = sample_flow_gradient(cross_gradient, vec2(0.0), 0.0, sampled_elapsed);
 	float fade = smoothstep(0.0, 0.0466667, sampled_progress)

@@ -172,18 +172,18 @@ const MIN_DURATION: float = 0.1
 
 @export_range(0.0, 0.46, 0.005) var split_end_random: float = 0.04
 
-@export_group("Edges")
-@export_range(0.0, 0.04, 0.001) var edge_softness: float = 0.008:
-	set(value):
-		edge_softness = value
-		_update_style()
-
+@export_group("Halo")
 @export_range(0.0, 1.0, 0.01) var halo_strength: float = 0.3:
 	set(value):
 		halo_strength = value
-		_update_style()
+		_update_halo_parameters()
 
 @export_range(0.0, 1.0, 0.01) var halo_strength_random: float = 0.08
+
+@export_range(0.001, 0.15, 0.001) var halo_width: float = 0.03:
+	set(value):
+		halo_width = maxf(value, 0.001)
+		_update_halo_parameters()
 
 var playing: bool = false
 var _elapsed: float = 0.0
@@ -248,6 +248,7 @@ func _ready() -> void:
 	set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(flow_direction_offset))
 	set_instance_shader_parameter(&"flow_position_offset", flow_position_offset)
 	set_instance_shader_parameter(&"flow_width_offset", flow_width_offset)
+	_update_halo_parameters()
 	set_instance_shader_parameter(&"progress", 0.0)
 	custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 	seek(0.0)
@@ -280,7 +281,10 @@ func _update_style() -> void:
 	set_instance_shader_parameter(&"breakup_time",
 		Vector4(split_start, split_end, gap_ratio, 0.0 if double_full_circle else 1.0))
 	set_instance_shader_parameter(&"breakup_seed", float(split_seed))
-	set_instance_shader_parameter(&"edge_style", Vector2(edge_softness, halo_strength))
+
+
+func _update_halo_parameters() -> void:
+	set_instance_shader_parameter(&"halo_parameters", Vector2(halo_strength, halo_width))
 
 
 func _update_rotation() -> void:
