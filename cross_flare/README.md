@@ -49,7 +49,7 @@
 
 Paletteは `cross_flare/palettes/` 直下のShaderMaterial `.tres` を起動時に自動取得する。
 Palette、Spawn位置、Spawn間隔はPreviewが決定する。CrossFlareのVariant、Size、Brightness、
-Angle、Duration、Color Flow Offset、Breakup、Halo等の個体差は、CrossFlare自身が生成時に決定する。
+Angle、Duration、Color Flow、Breakup、Halo等の個体差は、CrossFlare自身が生成時に決定する。
 初期個体は再生時刻をずらして生成され、通常Spawnは0秒から再生する。
 終了したCrossFlareはPreview側で自動解放する。
 
@@ -58,19 +58,17 @@ Angle、Duration、Color Flow Offset、Breakup、Halo等の個体差は、CrossF
 ## 配色の編集
 
 `palettes/` の `.tres` がプリセット。既定Paletteは `cross_flare.tscn` 側でResource参照として設定する。
-PaletteのShader Parametersで、`cross_gradient` と `ring_gradient` 内のGradientを編集する。
+Paletteは配色のみを担当する。Paletteの調整対象は `cross_gradient`、`ring_gradient`、
+`flow_speed`、`flow_width` の4項目で、Gradient自体と色面の速度・幅を編集する。
 全Paletteは常にGradient方式で時間移動する。`flow_speed = 0` で停止し、負値で逆方向へ流れる。
 `flow_speed` はGradient座標／秒の実時間値で、`duration` によって速度は変化しない。
-`flow_direction` は軸方向（rad）、`flow_position` は時刻0の位置、`flow_width` は色面の幅を表す。
-PaletteごとにFlow Speed / Direction / Position / Widthを設定する。
-`ring_color_offset` と `inner_color_offset` はRing Gradient座標への追加オフセットとして使用する。
-CrossFlare側のFlow Direction Offset（度）、Flow Speed Offset、Flow Position Offset、
-Flow Width Offsetで個体ごとに補正する。PaletteのShaderMaterial自体は共有できる。
+`flow_width` は色面の幅であり、CrossやRingそのものの線幅ではない。PaletteのShaderMaterialは共有できる。
 
 ## 個体ランダム化
 
-CrossFlareは各パラメータの直後にRandom幅を持つ。RuntimeでNodeが生成された際に一度だけ、
-元の値へ±Random幅を加えて個体値を確定する。Random幅が0ならその値は固定される。
+CrossFlareはVariant、Size、Brightness、Angle、Durationに個体Random幅を持つ。RuntimeでNodeが生成された際に一度だけ、
+元の値へ±Random幅を加えて個体値を確定する。Flow Directionは常に360度から一様Random、
+Flow Positionは `flow_position_random` の範囲でRandomに決定する。Ring BreakupではSplit SeedだけをRandom化する。
 `play()` や `seek()` では再抽選しない。Editorではランダム化せず、Inspectorの値をそのまま使用する。
 
 ## 回転と欠け
@@ -95,26 +93,32 @@ Split Rangeは適用角度幅、Split Irregularityは配置と幅のばらつき
 Gap Ratioは弱まる場所の広がり。固定の最終隙間幅ではない。
 Split Start / Endは既存の保存値を引き継ぐ。Startの0.035前から衰弱を開始し、Endの0.07後に消失する。
 衰弱区間は最低0.08を確保する。内リングは外リングの0.72倍の時刻で衰弱・消失する。
-PaletteのRing Peak Widthで最大線幅を調整できる。実際の幅は成長と局所的な残存エネルギーで変わる。
+CrossFlareのRing Peak Widthで最大線幅を調整できる。実際の幅は成長と局所的な残存エネルギーで変わる。
 Ring Min Width Ratioで衰弱時の最小幅の比率を調整する。下限に達した部分は本体・にじみを同時にフェードする。
 加算合成なので、透明度は加算する光量へ乗算する。ゼロで背景への寄与もゼロになる。
 Steppedは連続した計算結果のサンプリングだけを行い、分裂の段階や保持時間を作らない。
 
-## 十字の終盤
+## Motion Timing
 
-寿命の0.46〜0.70で全体を縮め、0.70〜0.86で長軸を伸ばす。
-短軸は0.68〜0.85で縮める。長軸の向きは入れ替えず、回転の減速とは独立して評価する。
+Growth End、Width Fade Start / End、Shrink Start / End、Shortening Start / End、
+Stretch Start / Endは、Crossの基本変形を寿命0〜1の正規化時間で指定する。
+初期値はそれぞれ `0.36`、`0.38〜0.82`、`0.46〜0.70`、`0.68〜0.85`、`0.70〜0.86`。
+Durationを変更しても、これらの値は寿命に対する割合として維持される。
+各Start / Endは0〜1にClampされ、同じPhase内ではEndがStartより少なくとも0.001大きくなる。
+寿命のShrink区間で全体を縮め、Shortening区間で短軸を縮め、Stretch区間で長軸を伸ばす。
+Width Fade区間ではCross本体の線幅をTail Width Ratioまで細くする。
+長軸の向きは入れ替えず、回転の減速とは独立して評価する。
 終盤の線幅には下限を残し、0.90〜1.0で全体をフェードする。
 線上の部分フェードを重ねることで、破片が元の線上に残って消える。
 部分フェードは本体とにじみに共通で、位置は個体のSplit Seedから固定する。
 
-PaletteのShader Parametersで次を調整する。
+CrossFlareのTailで次を調整する。
 
 - Tail Breakup Strength：ちぎれの強さ。0なら単純フェード。
 - Tail Breakup Start：部分フェード開始（寿命0〜1、既定0.84）。
 - Tail Fragment Count：破片数の目安（3〜6、既定4）。
 - Tail Irregularity：分断位置・幅・弱まり方のばらつき。
-- Tail Width Ratio：終盤の中心幅の比率（既定0.55）。長軸は胴の幅を保ち、先端だけを丸く細める。
+- Tail Width Ratio：終盤の中心幅の比率（既定0.30）。長軸は胴の幅を保ち、先端だけを丸く細める。
 
 ## 輪郭とにじみ
 
@@ -130,4 +134,4 @@ CrossとRingは同じHalo設定を共有し、Ringのみ内部的にやや狭い
 Godot 4.7.2 / Forward+でインポート、CrossFlare単体Scene、PreviewのランダムSpawn、
 Palette自動取得、同時存在数制限、終了個体の解放を確認する。
 追加機能は実描画の比較で、初期個体の時刻ずらし、各個体のPalette・Variant・サイズ・寿命・
-Flow Offset・Breakup・Haloの差、画面Aspect Ratioへの追従を確認する。
+Flow Direction・Flow Position・Breakup・Haloの差、画面Aspect Ratioへの追従を確認する。

@@ -11,6 +11,7 @@ enum Variant {
 }
 
 const MIN_DURATION: float = 0.1
+const MIN_TIMING_SPAN: float = 0.001
 
 @export var variant: Variant = Variant.SINGLE_RING:
 	set(value):
@@ -30,7 +31,7 @@ const MIN_DURATION: float = 0.1
 @export_range(0.0, 8.0, 0.05) var brightness: float = 1.6:
 	set(value):
 		brightness = value
-		set_instance_shader_parameter(&"brightness", value)
+		_update_effect_parameters()
 
 @export_range(0.0, 8.0, 0.05) var brightness_random: float = 0.25
 
@@ -65,7 +66,7 @@ const MIN_DURATION: float = 0.1
 	set(value):
 		duration = maxf(value, MIN_DURATION)
 		_elapsed = minf(_elapsed, duration)
-		set_instance_shader_parameter(&"duration", duration)
+		_update_effect_parameters()
 
 @export_range(0.0, 1.0, 0.01, "suffix:s") var duration_random: float = 0.12
 
@@ -81,34 +82,73 @@ const MIN_DURATION: float = 0.1
 		stepped_fps = clampf(value, 1.0, 60.0)
 		_update_stepped_parameters()
 
+@export_group("Motion Timing")
+@export_range(0.0, 1.0, 0.01) var growth_end: float = 0.36:
+	set(value):
+		growth_end = clampf(value, 0.0, 1.0)
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var width_fade_start: float = 0.38:
+	set(value):
+		width_fade_start = clampf(value, 0.0, 1.0)
+		width_fade_start = minf(width_fade_start, maxf(0.0, width_fade_end - MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var width_fade_end: float = 0.82:
+	set(value):
+		width_fade_end = clampf(value, 0.0, 1.0)
+		width_fade_end = maxf(width_fade_end, minf(1.0, width_fade_start + MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var shrink_start: float = 0.46:
+	set(value):
+		shrink_start = clampf(value, 0.0, 1.0)
+		shrink_start = minf(shrink_start, maxf(0.0, shrink_end - MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var shrink_end: float = 0.70:
+	set(value):
+		shrink_end = clampf(value, 0.0, 1.0)
+		shrink_end = maxf(shrink_end, minf(1.0, shrink_start + MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var shortening_start: float = 0.68:
+	set(value):
+		shortening_start = clampf(value, 0.0, 1.0)
+		shortening_start = minf(shortening_start, maxf(0.0, shortening_end - MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var shortening_end: float = 0.85:
+	set(value):
+		shortening_end = clampf(value, 0.0, 1.0)
+		shortening_end = maxf(shortening_end, minf(1.0, shortening_start + MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var stretch_start: float = 0.70:
+	set(value):
+		stretch_start = clampf(value, 0.0, 1.0)
+		stretch_start = minf(stretch_start, maxf(0.0, stretch_end - MIN_TIMING_SPAN))
+		_update_motion_timing()
+
+@export_range(0.0, 1.0, 0.01) var stretch_end: float = 0.86:
+	set(value):
+		stretch_end = clampf(value, 0.0, 1.0)
+		stretch_end = maxf(stretch_end, minf(1.0, stretch_start + MIN_TIMING_SPAN))
+		_update_motion_timing()
+
 @export_group("Color Flow")
-@export var flow_speed_offset: float = 0.0:
-	set(value):
-		flow_speed_offset = value
-		set_instance_shader_parameter(&"flow_speed_offset", value)
-
-@export_range(0.0, 4.0, 0.01) var flow_speed_random: float = 0.35
-
-@export_range(-180.0, 180.0, 1.0, "degrees") var flow_direction_offset: float = 0.0:
-	set(value):
-		flow_direction_offset = value
-		set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(value))
-
-@export_range(0.0, 180.0, 1.0, "degrees") var flow_direction_random: float = 30.0
-
-@export_range(-1.0, 1.0, 0.01) var flow_position_offset: float = 0.0:
-	set(value):
-		flow_position_offset = value
-		set_instance_shader_parameter(&"flow_position_offset", value)
-
 @export_range(0.0, 1.0, 0.01) var flow_position_random: float = 0.25
 
-@export_range(-2.0, 2.0, 0.01) var flow_width_offset: float = 0.0:
+@export_group("Ring Shape")
+@export_range(0.01, 0.12, 0.001) var ring_peak_width: float = 0.065:
 	set(value):
-		flow_width_offset = value
-		set_instance_shader_parameter(&"flow_width_offset", value)
+		ring_peak_width = value
+		_update_ring_shape_parameters()
 
-@export_range(0.0, 2.0, 0.01) var flow_width_random: float = 0.20
+@export_range(0.1, 0.8, 0.01) var ring_min_width_ratio: float = 0.4:
+	set(value):
+		ring_min_width_ratio = value
+		_update_ring_shape_parameters()
 
 @export_group("Ring Breakup")
 @export_range(0, 9999, 1) var split_seed: int = 1:
@@ -123,21 +163,15 @@ const MIN_DURATION: float = 0.1
 		island_count = value
 		_update_style()
 
-@export_range(0, 2, 1) var island_count_random: int = 1
-
 @export_range(-180.0, 180.0, 1.0, "degrees") var split_direction: float = 180.0:
 	set(value):
 		split_direction = value
 		_update_style()
 
-@export_range(0.0, 180.0, 1.0, "degrees") var split_direction_random: float = 45.0
-
 @export_range(30.0, 360.0, 1.0, "degrees") var split_range: float = 160.0:
 	set(value):
 		split_range = value
 		_update_style()
-
-@export_range(0.0, 180.0, 1.0, "degrees") var split_range_random: float = 40.0
 
 @export var double_full_circle: bool = true:
 	set(value):
@@ -149,44 +183,62 @@ const MIN_DURATION: float = 0.1
 		split_irregularity = value
 		_update_style()
 
-@export_range(0.0, 1.0, 0.01) var split_irregularity_random: float = 0.20
-
 @export_range(0.1, 0.65, 0.01) var gap_ratio: float = 0.55:
 	set(value):
 		gap_ratio = value
 		_update_style()
-
-@export_range(0.0, 0.55, 0.01) var gap_ratio_random: float = 0.08
 
 @export_range(0.0, 0.45, 0.005) var split_start: float = 0.29:
 	set(value):
 		split_start = value
 		_update_style()
 
-@export_range(0.0, 0.45, 0.005) var split_start_random: float = 0.04
-
 @export_range(0.0, 0.46, 0.005) var split_end: float = 0.40:
 	set(value):
 		split_end = value
 		_update_style()
 
-@export_range(0.0, 0.46, 0.005) var split_end_random: float = 0.04
+@export_group("Tail")
+@export_range(0.0, 1.0, 0.01) var tail_breakup_strength: float = 0.0:
+	set(value):
+		tail_breakup_strength = value
+		_update_tail_parameters()
+
+@export_range(0.82, 0.95, 0.01) var tail_breakup_start: float = 0.84:
+	set(value):
+		tail_breakup_start = value
+		_update_tail_parameters()
+
+@export_range(3, 6, 1) var tail_fragment_count: int = 4:
+	set(value):
+		tail_fragment_count = value
+		_update_tail_parameters()
+
+@export_range(0.0, 1.0, 0.01) var tail_irregularity: float = 0.65:
+	set(value):
+		tail_irregularity = value
+		_update_tail_parameters()
+
+@export_range(0.1, 1.0, 0.01) var tail_width_ratio: float = 0.30:
+	set(value):
+		tail_width_ratio = value
+		_update_tail_parameters()
 
 @export_group("Halo")
 @export_range(0.0, 1.0, 0.01) var halo_strength: float = 0.3:
 	set(value):
 		halo_strength = value
-		_update_halo_parameters()
-
-@export_range(0.0, 1.0, 0.01) var halo_strength_random: float = 0.08
+		_update_effect_parameters()
 
 @export_range(0.001, 0.15, 0.001) var halo_width: float = 0.03:
 	set(value):
 		halo_width = maxf(value, 0.001)
-		_update_halo_parameters()
+		_update_effect_parameters()
 
 var playing: bool = false
 var _elapsed: float = 0.0
+var _flow_direction: float = 0.0
+var _flow_position: float = 0.0
 
 
 func _ready() -> void:
@@ -201,35 +253,11 @@ func _ready() -> void:
 		angle = fposmod(angle + 180.0, 360.0) - 180.0
 		duration += randf_range(-duration_random, duration_random)
 		duration = clampf(duration, MIN_DURATION, 1.0)
-
-		flow_speed_offset += randf_range(-flow_speed_random, flow_speed_random)
-		flow_direction_offset += randf_range(-flow_direction_random, flow_direction_random)
-		flow_direction_offset = fposmod(flow_direction_offset + 180.0, 360.0) - 180.0
-		flow_position_offset += randf_range(-flow_position_random, flow_position_random)
-		flow_position_offset = clampf(flow_position_offset, -1.0, 1.0)
-		flow_width_offset += randf_range(-flow_width_random, flow_width_random)
-		flow_width_offset = clampf(flow_width_offset, -2.0, 2.0)
+		_flow_direction = randf_range(-PI, PI)
+		_flow_position = randf_range(-flow_position_random, flow_position_random)
 
 		if split_seed_random:
 			split_seed = randi_range(0, 9999)
-		island_count += randi_range(-island_count_random, island_count_random)
-		island_count = clampi(island_count, 3, 5)
-		split_direction += randf_range(-split_direction_random, split_direction_random)
-		split_direction = fposmod(split_direction + 180.0, 360.0) - 180.0
-		split_range += randf_range(-split_range_random, split_range_random)
-		split_range = clampf(split_range, 30.0, 360.0)
-		split_irregularity += randf_range(-split_irregularity_random, split_irregularity_random)
-		split_irregularity = clampf(split_irregularity, 0.0, 1.0)
-		gap_ratio += randf_range(-gap_ratio_random, gap_ratio_random)
-		gap_ratio = clampf(gap_ratio, 0.1, 0.65)
-		split_start += randf_range(-split_start_random, split_start_random)
-		split_start = clampf(split_start, 0.0, 0.45)
-		split_end += randf_range(-split_end_random, split_end_random)
-		split_end = clampf(split_end, 0.0, 0.46)
-		split_end = maxf(split_end, split_start + 0.001)
-		split_end = minf(split_end, 0.46)
-		halo_strength += randf_range(-halo_strength_random, halo_strength_random)
-		halo_strength = clampf(halo_strength, 0.0, 1.0)
 
 	if palette == null:
 		push_error("CrossFlare requires a ShaderMaterial palette.")
@@ -238,15 +266,13 @@ func _ready() -> void:
 
 	_update_style()
 	_update_variant_size_parameters()
-	set_instance_shader_parameter(&"brightness", brightness)
+	_update_effect_parameters()
 	_update_rotation()
 	_update_stepped_parameters()
-	set_instance_shader_parameter(&"duration", duration)
-	set_instance_shader_parameter(&"flow_speed_offset", flow_speed_offset)
-	set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(flow_direction_offset))
-	set_instance_shader_parameter(&"flow_position_offset", flow_position_offset)
-	set_instance_shader_parameter(&"flow_width_offset", flow_width_offset)
-	_update_halo_parameters()
+	_update_color_flow_parameters()
+	_update_motion_timing()
+	_update_ring_shape_parameters()
+	_update_tail_parameters()
 	set_instance_shader_parameter(&"progress", 0.0)
 	custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 	seek(0.0)
@@ -281,9 +307,31 @@ func _update_style() -> void:
 	set_instance_shader_parameter(&"breakup_seed", float(split_seed))
 
 
-func _update_halo_parameters() -> void:
-	set_instance_shader_parameter(&"halo_strength", halo_strength)
-	set_instance_shader_parameter(&"halo_width", halo_width)
+func _update_effect_parameters() -> void:
+	set_instance_shader_parameter(&"effect_parameters",
+		Vector4(brightness, duration, halo_strength, halo_width))
+
+
+func _update_color_flow_parameters() -> void:
+	set_instance_shader_parameter(&"color_flow_parameters", Vector2(_flow_direction, _flow_position))
+
+
+func _update_motion_timing() -> void:
+	set_instance_shader_parameter(&"motion_timing_a",
+		Vector4(growth_end, width_fade_start, width_fade_end, shrink_start))
+	set_instance_shader_parameter(&"motion_timing_b",
+		Vector4(shrink_end, shortening_start, shortening_end, stretch_start))
+	set_instance_shader_parameter(&"motion_timing_c", Vector2(stretch_end, tail_width_ratio))
+
+
+func _update_ring_shape_parameters() -> void:
+	set_instance_shader_parameter(&"ring_shape", Vector2(ring_peak_width, ring_min_width_ratio))
+
+
+func _update_tail_parameters() -> void:
+	set_instance_shader_parameter(&"tail_parameters",
+		Vector4(tail_breakup_strength, tail_breakup_start, tail_fragment_count, tail_irregularity))
+	_update_motion_timing()
 
 
 func _update_variant_size_parameters() -> void:
