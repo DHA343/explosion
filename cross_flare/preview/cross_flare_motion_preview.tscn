@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dkolytpq0x3vg"]
 
-[ext_resource type="Script" uid="uid://ckrmnktmjd23n" path="res://cross_flare/cross_flare_motion_preview.gd" id="1_preview"]
+[ext_resource type="Script" uid="uid://ckrmnktmjd23n" path="res://cross_flare/preview/cross_flare_motion_preview.gd" id="1_preview"]
 [ext_resource type="PackedScene" uid="uid://byhr4npb5tl2m" path="res://cross_flare/cross_flare.tscn" id="2_cross_flare"]
 
 [sub_resource type="Environment" id="Environment"]
@@ -13,7 +13,7 @@ glow_bloom = 0.05
 
 [node name="CrossFlareMotionPreview" type="Node3D" unique_id=112457613]
 script = ExtResource("1_preview")
-preview_progress = 0.7412860518511889
+preview_progress = 0.28697827407320947
 auto_preview = true
 preview_speed = 0.5
 
@@ -26,13 +26,15 @@ fov = 45.0
 environment = SubResource("Environment")
 
 [node name="CrossFlare" parent="." unique_id=1253580778 instance=ExtResource("2_cross_flare")]
-instance_shader_parameters/progress = 0.7412860518511889
+instance_shader_parameters/effect_parameters = Vector4(1.6, 0.45, 0.15, 0.05)
+instance_shader_parameters/progress = 0.28697827407320947
 instance_shader_parameters/rotation_speed_radians = 6.963863715457375
 variant_random = false
 size_random_ratio = 0.0
+intensity = 1.6
 rotation_speed = 6.963863715457375
+rotation_speed_random_ratio = 0.0
+duration_random_ratio = 0.0
 autoplay = false
 flow_position_random = 0.0
 split_seed_random = false
-rotation_speed_random_ratio = 0.0
-duration_random_ratio = 0.0
