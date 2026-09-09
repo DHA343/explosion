@@ -22,7 +22,7 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export_range(0.01, 1.0, 0.01, "suffix:m") var size: float = 0.5:
 	set(value):
-		size = clampf(value, 0.1, 5.0)
+		size = value
 		_update_variant_size_parameters()
 		custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 

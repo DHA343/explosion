@@ -6,6 +6,7 @@
 [ext_resource type="Shader" uid="uid://b3r0oo7r2rgv2" path="res://main/ground_plane.gdshader" id="4_ground"]
 [ext_resource type="Script" uid="uid://ccr4uytuht3go" path="res://main/free_fly_camera.gd" id="5_camera"]
 [ext_resource type="PackedScene" uid="uid://c0kne2q7bmeo4" path="res://energy_sphere/energy_sphere.tscn" id="6_energy_sphere"]
+[ext_resource type="Script" uid="uid://bk5tdvwgh3208" path="res://main/cross_flare_spawner.gd" id="7_cross_flare_spawner"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night_sky"]
 shader = ExtResource("2_night_sky")
@@ -91,3 +92,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75, 0)
 [node name="EnergySphere" parent="." unique_id=252090666 instance=ExtResource("6_energy_sphere")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 158.14853)
 radius = 0.15000000000000002
+
+[node name="CrossFlareSpawner" type="Node3D" parent="." unique_id=1893553781]
+script = ExtResource("7_cross_flare_spawner")
+spawn_rate = 103.0
+max_active_count = 100
+ground_clearance = 0.3
