@@ -26,7 +26,7 @@ enum RingStyle {
 		brightness = value
 		set_instance_shader_parameter(&"brightness", value)
 
-@export var palette: ShaderMaterial = preload("res://cross_flare/palettes/cyan.tres"):
+@export var palette: ShaderMaterial = preload("res://cross_flare/palettes/rainbow.tres"):
 	set(value):
 		palette = value
 		material_override = value

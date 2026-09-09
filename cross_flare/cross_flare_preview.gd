@@ -1,7 +1,7 @@
 extends Node3D
 
 const PALETTES: Array[ShaderMaterial] = [
-	preload("res://cross_flare/palettes/cyan.tres"),
+	preload("res://cross_flare/palettes/rainbow.tres"),
 	preload("res://cross_flare/palettes/magenta.tres"),
 	preload("res://cross_flare/palettes/yellow.tres"),
 	preload("res://cross_flare/palettes/gold.tres"),
