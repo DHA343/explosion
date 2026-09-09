@@ -12,6 +12,13 @@ uniform float ring_color_offset : hint_range(0.0, 1.0) = 0.0;
 uniform float inner_color_offset : hint_range(0.0, 1.0) = 0.15;
 uniform float ring_peak_width : hint_range(0.01, 0.12) = 0.065;
 uniform float ring_min_width_ratio : hint_range(0.1, 0.8) = 0.4;
+uniform float ring_fade_softness : hint_range(0.1, 1.0) = 0.4;
+uniform float ring_end_softness : hint_range(0.0, 0.2) = 0.06;
+uniform float tail_breakup_strength : hint_range(0.0, 1.0) = 0.0;
+uniform float tail_breakup_start : hint_range(0.82, 0.95) = 0.84;
+uniform int tail_fragment_count : hint_range(3, 6) = 4;
+uniform float tail_irregularity : hint_range(0.0, 1.0) = 0.65;
+uniform float tail_width_ratio : hint_range(0.1, 1.0) = 0.1;
 instance uniform vec2 variant_size = vec2(1.0, 1.0);
 instance uniform float brightness = 1.6;
 // Initial angle, total rotation multiplier, deceleration start, strength.
@@ -29,6 +36,9 @@ instance uniform float breakup_seed = 1.0;
 instance uniform vec2 stepped_parameters = vec2(0.0, 24.0);
 instance uniform float halo_strength = 0.3;
 instance uniform float halo_width = 0.03;
+
+const float HALO_MIN_WIDTH_RATIO = 0.2;
+const float CROSS_REFERENCE_WIDTH = 0.055;
 
 vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
 		float extra_offset, float sampled_elapsed) {
@@ -111,11 +121,12 @@ float rotation_progress(float age) {
 vec4 motion_at(float age) {
 	float rotation = rotation_progress(age);
 	float growth = smoothstep(0.0, 0.36, age);
-	float contraction = 1.0 - smoothstep(0.76, 1.0, age);
-	float shortening = 1.0 - smoothstep(0.46, 0.9, age);
-	float long_arm = max(0.001, 0.68 * growth * contraction);
-	float short_arm = max(0.001, long_arm * mix(0.015, 0.93, shortening));
-	float width = max(0.001, 0.055 * growth * (1.0 - smoothstep(0.38, 1.0, age)));
+	float contraction = mix(1.0, 0.55, smoothstep(0.46, 0.70, age));
+	float stretch = smoothstep(0.70, 0.86, age);
+	float long_arm = max(0.001, 0.68 * growth * mix(contraction, 1.15, stretch));
+	float short_arm = max(0.001, 0.68 * growth * 0.93 * contraction
+		* (1.0 - smoothstep(0.68, 0.85, age)));
+	float width = max(0.001, 0.055 * growth * mix(1.0, tail_width_ratio, smoothstep(0.38, 0.82, age)));
 	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * rotation);
 	if (variant_value() == 1) {
 		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * rotation);
@@ -129,19 +140,53 @@ vec4 motion_at(float age) {
 	return pose;
 }
 
-float cross_distance(vec2 point, vec2 reach, float width) {
+float tail_opacity(vec2 point, float age) {
+	if (tail_breakup_strength <= 0.0) {
+		return 1.0;
+	}
+	float coordinate = (variant_value() == 1 ? point.y : point.x) / 0.782;
+	float count = float(tail_fragment_count);
+	float cell = 2.0 / count;
+	float weakness = 0.0;
+	for (int i = 0; i < 5; i++) {
+		if (float(i) < count - 1.0) {
+			float jitter = (noise_value(float(i) + 81.0) - 0.5) * 0.5 * tail_irregularity;
+			float center = -1.0 + (float(i) + 1.0 + jitter) * cell;
+			float spread = cell * mix(0.20, 0.10 + 0.22 * noise_value(float(i) + 91.0), tail_irregularity);
+			float strength = mix(1.0, 0.6 + noise_value(float(i) + 101.0), tail_irregularity);
+			weakness += exp(-pow((coordinate - center) / spread, 2.0)) * strength;
+		}
+	}
+	float erosion = smoothstep(tail_breakup_start, 1.0, age);
+	float remaining = max(0.0, 1.0 - erosion * (1.0 + weakness * 2.0));
+	return mix(1.0, smoothstep(0.0, 0.35, remaining), tail_breakup_strength);
+}
+
+vec2 cross_metrics(vec2 point, vec2 reach, float width, float age) {
 	vec2 q = abs(point);
 	float horizontal_t = q.x / max(reach.x, 0.001);
 	float vertical_t = q.y / max(reach.y, 0.001);
 	float horizontal_width = width * pow(max(1.0 - horizontal_t, 0.0), 2.4);
 	float vertical_width = width * pow(max(1.0 - vertical_t, 0.0), 2.4);
+	// The final streak retains a broad body; only its ends taper to zero.
+	float streak = smoothstep(0.68, 0.85, age);
+	if (variant_value() == 1) {
+		vertical_width = mix(vertical_width,
+			width * sqrt(max(1.0 - vertical_t * vertical_t, 0.0)), streak);
+	} else {
+		horizontal_width = mix(horizontal_width,
+			width * sqrt(max(1.0 - horizontal_t * horizontal_t, 0.0)), streak);
+	}
 	float horizontal_body = q.y - horizontal_width;
 	float vertical_body = q.x - vertical_width;
 	float horizontal_tip = length(vec2(max(q.x - reach.x, 0.0), q.y));
 	float vertical_tip = length(vec2(q.x, max(q.y - reach.y, 0.0)));
 	float horizontal = mix(horizontal_body, horizontal_tip, step(reach.x, q.x));
 	float vertical = mix(vertical_body, vertical_tip, step(reach.y, q.y));
-	return min(horizontal, vertical);
+	if (horizontal <= vertical) {
+		return vec2(horizontal, horizontal_width);
+	}
+	return vec2(vertical, vertical_width);
 }
 
 vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
@@ -154,19 +199,36 @@ vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
 	float growth = smoothstep(0.015, max(0.04, min(0.22, decay_start)), age);
 	float decay = smoothstep(decay_start, decay_end, age);
 	float weakness = ring_weakness(azimuth, sector, center);
-	// Preserve the angular thickness profile; below the width floor, fade coverage instead.
-	float remaining = max(0.0, taper * (1.0 - decay) - weakness * decay * 0.8);
-	float energy = remaining / taper;
+	// Preserve the width floor while fading independently across a broader energy range.
+	float signed_energy = 1.0 - decay - weakness * decay * 0.8 / taper;
+	float energy = max(0.0, signed_energy);
 	float width_energy = max(ring_min_width_ratio, energy);
-	float opacity = smoothstep(0.0, ring_min_width_ratio, energy);
+	float opacity = smoothstep(0.0, ring_fade_softness, energy);
+	// Convert the energy gradient to local distance so steep cuts also receive a soft edge.
+	vec2 point_dx = dFdx(point);
+	vec2 point_dy = dFdy(point);
+	float determinant = point_dx.x * point_dy.y - point_dx.y * point_dy.x;
+	float end_opacity = 1.0;
+	if (abs(determinant) > 0.00000001 && ring_end_softness > 0.0) {
+		vec2 energy_screen = vec2(dFdx(signed_energy), dFdy(signed_energy));
+		vec2 energy_gradient = vec2(
+			energy_screen.x * point_dy.y - energy_screen.y * point_dx.y,
+			point_dx.x * energy_screen.y - point_dy.x * energy_screen.x) / determinant;
+		float end_distance = energy / max(length(energy_gradient), 0.0001);
+		end_opacity = smoothstep(0.0, ring_end_softness, end_distance);
+	}
+	opacity *= end_opacity;
 	float width = ring_peak_width * growth * taper * width_energy;
 	float ring_distance = abs(length(point) - radius) - width;
 	float aa = max(fwidth(ring_distance), 0.001);
 	float line = 1.0 - smoothstep(-aa, aa, ring_distance);
 	float outside = max(ring_distance, 0.0);
-	float ring_halo_width = max(halo_width * 0.7, 0.001);
+	float local_width_factor = clamp(width / max(ring_peak_width, 0.001),
+		HALO_MIN_WIDTH_RATIO, 1.0);
+	float ring_halo_width = max(halo_width * 0.7 * local_width_factor, 0.001);
 	float halo_distance = outside / ring_halo_width;
-	float haze = exp(-halo_distance * halo_distance) * halo_strength * taper;
+	float outside_mask = 1.0 - line;
+	float haze = exp(-halo_distance * halo_distance) * halo_strength * taper * outside_mask;
 	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
 	return tint * (line + haze) * growth * opacity;
 }
@@ -195,19 +257,26 @@ void fragment() {
 	vec2 color_plane = (UV * 2.0 - 1.0) * 1.2;
 	vec2 point = rotate_point(color_plane, rotation_profile.x);
 	vec2 q = rotate_point(point, pose.w);
-	float shape_distance = cross_distance(q, pose.xy, pose.z);
+	vec2 cross_data = cross_metrics(q, pose.xy, pose.z, sampled_progress);
+	float shape_distance = cross_data.x;
+	float local_width = cross_data.y;
 	// abs/min at the thin centerline cancel screen derivatives. Use the
 	// unmodified coordinates so opposite sides receive identical filtering.
 	float pixel_width = 0.5 * (length(dFdx(q)) + length(dFdy(q)));
 	float aa = max(pixel_width, 0.001);
 	float body = 1.0 - smoothstep(-aa, aa, shape_distance);
 	float outside = max(shape_distance, 0.0);
-	float halo_distance = outside / max(halo_width, 0.001);
-	float halo = exp(-halo_distance * halo_distance) * halo_strength;
+	float local_width_factor = clamp(local_width / CROSS_REFERENCE_WIDTH,
+		HALO_MIN_WIDTH_RATIO, 1.0);
+	float effective_halo_width = max(halo_width * local_width_factor, 0.001);
+	float halo_distance = outside / effective_halo_width;
+	float outside_mask = 1.0 - body;
+	float halo = exp(-halo_distance * halo_distance) * halo_strength * outside_mask;
 	vec3 tint = sample_flow_gradient(cross_gradient, color_plane, 0.0, sampled_elapsed);
 	vec3 center_tint = sample_flow_gradient(cross_gradient, vec2(0.0), 0.0, sampled_elapsed);
 	float fade = smoothstep(0.0, 0.0466667, sampled_progress)
-		* (1.0 - smoothstep(0.7333333, 1.0, sampled_progress));
+		* (1.0 - smoothstep(0.90, 1.0, sampled_progress))
+		* tail_opacity(q, sampled_progress);
 	vec3 radiance = tint * (body + halo) * fade;
 	float spark = exp(-dot(point, point) / 0.0006);
 	radiance += mix(center_tint, vec3(1.0), 0.5) * spark
