@@ -4,30 +4,39 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
 instance uniform float progress = 0.0;
 uniform sampler2D cross_gradient : source_color, filter_linear, repeat_disable;
 uniform sampler2D ring_gradient : source_color, filter_linear, repeat_disable;
-uniform float color_angle : hint_range(-3.14, 3.14) = 0.0;
-uniform float color_offset : hint_range(-1.0, 1.0) = 0.0;
-uniform float color_span : hint_range(0.1, 2.0) = 1.4;
+uniform float flow_speed = 1.3;
+uniform float flow_direction = 0.0;
+uniform float flow_position = 0.0;
+uniform float flow_width = 1.4;
 uniform float ring_color_offset : hint_range(0.0, 1.0) = 0.0;
 uniform float inner_color_offset : hint_range(0.0, 1.0) = 0.15;
-instance uniform int ring_style = 1;
+instance uniform int variant = 1;
 instance uniform float flare_size = 1.0;
 instance uniform float brightness = 1.6;
 instance uniform float initial_angle = 0.0;
 instance uniform bool stepped = false;
-uniform bool flowing = true;
-// Angle, signed travel per lifetime, starting offset, band width multiplier.
-instance uniform vec4 color_flow = vec4(0.0, 0.65, 0.0, 1.0);
+instance uniform float stepped_fps = 24.0;
+instance uniform float duration = 0.5;
+instance uniform float flow_speed_offset = 0.0;
+instance uniform float flow_direction_offset = 0.0;
+instance uniform float flow_position_offset = 0.0;
+instance uniform float flow_width_offset = 0.0;
 // Sector center, sector width, island count, irregularity.
 instance uniform vec4 breakup_shape = vec4(3.14159, 2.8, 4.0, 0.65);
 instance uniform vec4 breakup_time = vec4(0.29, 0.40, 0.55, 0.0);
 instance uniform float breakup_seed = 1.0;
 instance uniform vec2 edge_style = vec2(0.008, 0.3);
 
-vec3 plane_color(vec2 point) {
-	vec2 axis = vec2(cos(color_angle + color_flow.x), sin(color_angle + color_flow.x));
-	float position = dot(point, axis) / (color_span * color_flow.w) + 0.5 + color_offset;
-	position += color_flow.z - (progress - 0.5) * color_flow.y;
-	return texture(cross_gradient, vec2(clamp(position, 0.0, 1.0), 0.5)).rgb;
+vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
+		float extra_offset, float sampled_elapsed) {
+	float final_flow_speed = flow_speed + flow_speed_offset;
+	float final_flow_direction = flow_direction + flow_direction_offset;
+	float final_flow_position = flow_position + flow_position_offset;
+	float final_flow_width = max(0.05, flow_width + flow_width_offset);
+	vec2 axis = vec2(cos(final_flow_direction), sin(final_flow_direction));
+	float position = dot(point, axis) / final_flow_width + 0.5
+		+ final_flow_position + extra_offset - sampled_elapsed * final_flow_speed;
+	return texture(gradient_texture, vec2(clamp(position, 0.0, 1.0), 0.5)).rgb;
 }
 
 float noise_value(float index) {
@@ -66,7 +75,6 @@ vec2 rotate_point(vec2 point, float angle) {
 	return mat2(vec2(c, -s), vec2(s, c)) * point;
 }
 
-// Continuous motion; stepped playback only samples this timeline less often.
 vec4 motion_at(float age) {
 	float growth = smoothstep(0.0, 0.36, age);
 	float contraction = 1.0 - smoothstep(0.76, 1.0, age);
@@ -75,9 +83,9 @@ vec4 motion_at(float age) {
 	float short_arm = max(0.001, long_arm * mix(0.015, 0.93, shortening));
 	float width = max(0.001, 0.055 * growth * (1.0 - smoothstep(0.38, 1.0, age)));
 	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * age);
-	if (ring_style == 1) {
+	if (variant == 1) {
 		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * age);
-	} else if (ring_style == 2) {
+	} else if (variant == 2) {
 		float squash = smoothstep(0.045, 0.13, age) * (1.0 - smoothstep(0.24, 0.34, age));
 		float burst = exp(-pow((age - 0.36) / 0.075, 2.0));
 		pose.y *= mix(1.0, 0.22, squash);
@@ -86,6 +94,7 @@ vec4 motion_at(float age) {
 	}
 	return pose;
 }
+
 float cross_distance(vec2 point, vec2 reach, float width) {
 	vec2 q = abs(point);
 	float horizontal = q.y - width * pow(max(1.0 - q.x / reach.x, 0.0), 2.4);
@@ -94,7 +103,8 @@ float cross_distance(vec2 point, vec2 reach, float width) {
 }
 
 vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
-		float breakup, float palette_offset, float sector, float center) {
+		float breakup, float palette_offset, float sector, float center,
+		float sampled_elapsed) {
 	float azimuth = atan(point.y, point.x);
 	float thickness_bias = pow(0.5 + 0.5 * cos(azimuth - thick_angle), 1.2);
 	float taper = mix(mix(0.28, 0.10, breakup), 1.0, thickness_bias);
@@ -108,11 +118,7 @@ vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
 	float line = 1.0 - smoothstep(-aa, aa, ring_distance);
 	float outside = max(ring_distance, 0.0);
 	float haze = exp(-outside * outside / 0.0004) * edge_style.y * taper;
-	float color_position = fract(azimuth / TAU + 0.5 + palette_offset);
-	vec3 tint = texture(ring_gradient, vec2(color_position, 0.5)).rgb;
-	if (flowing) {
-		tint = plane_color(color_point);
-	}
+	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
 	return tint * (line + haze);
 }
 
@@ -125,11 +131,18 @@ void vertex() {
 }
 
 void fragment() {
-	float frame = clamp(progress, 0.0, 1.0) * 15.0;
+	float raw_progress = clamp(progress, 0.0, 1.0);
+	float raw_elapsed = raw_progress * duration;
+	float sampled_elapsed = raw_elapsed;
 	if (stepped) {
-		frame = floor(frame + 0.0001);
+		sampled_elapsed = floor(raw_elapsed * stepped_fps + 0.00001) / stepped_fps;
 	}
-	vec4 pose = motion_at(frame / 15.0);
+	sampled_elapsed = min(sampled_elapsed, duration);
+	float sampled_progress = duration > 0.0
+		? clamp(sampled_elapsed / duration, 0.0, 1.0)
+		: 0.0;
+
+	vec4 pose = motion_at(sampled_progress);
 	vec2 color_plane = (UV * 2.0 - 1.0) * 1.2;
 	vec2 point = rotate_point(color_plane, initial_angle);
 	vec2 q = rotate_point(point, pose.w);
@@ -142,27 +155,25 @@ void fragment() {
 	float outside = max(shape_distance, 0.0);
 	float tip_fade = 1.0 - smoothstep(0.65, 1.02, max(abs(q.x) / pose.x, abs(q.y) / pose.y));
 	float halo = exp(-outside * outside / 0.0009) * edge_style.y * tip_fade;
-	vec2 color_point = rotate_point(q, color_angle);
-	float color_position = clamp(color_point.x / color_span + 0.5 + color_offset, 0.0, 1.0);
-	vec3 tint = texture(cross_gradient, vec2(color_position, 0.5)).rgb;
-	vec3 center_tint = texture(cross_gradient, vec2(clamp(0.5 + color_offset, 0.0, 1.0), 0.5)).rgb;
-	if (flowing) {
-		tint = plane_color(color_plane);
-		center_tint = plane_color(vec2(0.0));
-	}
-	float fade = smoothstep(0.0, 0.7, frame) * (1.0 - smoothstep(11.0, 15.0, frame));
+	vec3 tint = sample_flow_gradient(cross_gradient, color_plane, 0.0, sampled_elapsed);
+	vec3 center_tint = sample_flow_gradient(cross_gradient, vec2(0.0), 0.0, sampled_elapsed);
+	float fade = smoothstep(0.0, 0.0466667, sampled_progress)
+		* (1.0 - smoothstep(0.7333333, 1.0, sampled_progress));
 	vec3 radiance = tint * (body + halo) * fade;
 	float spark = exp(-dot(point, point) / 0.0006);
 	radiance += mix(center_tint, vec3(1.0), 0.5) * spark
-		* (1.0 - smoothstep(0.0, 2.0, frame)) * smoothstep(0.0, 0.015, progress);
-	if (ring_style > 0) {
-		float expansion = smoothstep(1.0, 5.8, frame);
+		* (1.0 - smoothstep(0.0, 0.1333333, sampled_progress))
+		* smoothstep(0.0, 0.015, sampled_progress);
+	if (variant > 0) {
+		float expansion = smoothstep(0.0666667, 0.3866667, sampled_progress);
 		float radius = mix(0.07, 0.77, expansion);
-		float ring_fade = smoothstep(0.8, 2.0, frame) * (1.0 - smoothstep(5.0, 7.0, frame));
-		float breakup = smoothstep(breakup_time.x, max(breakup_time.x + 0.001, breakup_time.y), frame / 15.0);
+		float ring_fade = smoothstep(0.0533333, 0.1333333, sampled_progress)
+			* (1.0 - smoothstep(0.3333333, 0.4666667, sampled_progress));
+		float breakup = smoothstep(breakup_time.x, max(breakup_time.x + 0.001, breakup_time.y),
+			sampled_progress);
 		vec2 ring_point = point;
 		float thick_angle = 0.0;
-		if (ring_style == 1) {
+		if (variant == 1) {
 			ring_point = rotate_point(point, mix(-0.7, 0.15, expansion));
 			ring_point.x /= mix(0.35, 0.92, expansion);
 			thick_angle = -0.5;
@@ -170,23 +181,21 @@ void fragment() {
 			ring_point.x /= 0.86;
 		}
 		float sector = breakup_shape.y;
-		if (ring_style == 2 && breakup_time.w < 0.5) {
+		if (variant == 2 && breakup_time.w < 0.5) {
 			sector = TAU;
 		}
-		radiance += crescent(ring_point, color_plane, radius, thick_angle, breakup, ring_color_offset,
-			sector, thick_angle + breakup_shape.x)
-			* ring_fade;
-		if (ring_style == 2) {
+		radiance += crescent(ring_point, color_plane, radius, thick_angle, breakup,
+			ring_color_offset, sector, thick_angle + breakup_shape.x, sampled_elapsed) * ring_fade;
+		if (variant == 2) {
 			float inner_radius = radius * 0.53;
-			float inner_fade = 1.0 - smoothstep(4.0, 5.0, frame);
+			float inner_fade = 1.0 - smoothstep(0.2666667, 0.3333333, sampled_progress);
 			radiance += crescent(ring_point, color_plane, inner_radius, thick_angle + PI,
-				smoothstep(4.0, 5.0, frame), ring_color_offset + inner_color_offset,
-				2.8, thick_angle + TAU) * ring_fade * inner_fade;
+				smoothstep(0.2666667, 0.3333333, sampled_progress),
+				ring_color_offset + inner_color_offset, 2.8, thick_angle + TAU, sampled_elapsed)
+				* ring_fade * inner_fade;
 		}
 	}
 	float border = 1.0 - smoothstep(1.1, 1.2, max(abs(color_plane.x), abs(color_plane.y)));
 	ALBEDO = radiance * brightness * border;
-	ALPHA = progress > 0.0 && progress < 1.0 ? 1.0 : 0.0;
+	ALPHA = raw_progress > 0.0 && raw_progress < 1.0 ? 1.0 : 0.0;
 }
-
-

@@ -4,16 +4,18 @@ extends MeshInstance3D
 
 signal finished
 
-enum RingStyle {
-	NONE,
-	SINGLE,
-	DOUBLE,
+enum Variant {
+	CROSS_ONLY,
+	SINGLE_RING,
+	DOUBLE_RING,
 }
 
-@export var ring_style: RingStyle = RingStyle.SINGLE:
+const MIN_DURATION: float = 0.1
+
+@export var variant: Variant = Variant.SINGLE_RING:
 	set(value):
-		ring_style = value
-		set_instance_shader_parameter(&"ring_style", value)
+		variant = value
+		set_instance_shader_parameter(&"variant", value)
 
 @export_range(0.05, 20.0, 0.05, "suffix:m") var size: float = 1.0:
 	set(value):
@@ -26,7 +28,7 @@ enum RingStyle {
 		brightness = value
 		set_instance_shader_parameter(&"brightness", value)
 
-@export var palette: ShaderMaterial = preload("res://cross_flare/palettes/rainbow.tres"):
+@export var palette: ShaderMaterial:
 	set(value):
 		palette = value
 		material_override = value
@@ -36,12 +38,23 @@ enum RingStyle {
 		angle = value
 		set_instance_shader_parameter(&"initial_angle", deg_to_rad(value))
 
-@export_range(0.1, 1.0, 0.01, "suffix:s") var duration: float = 0.5
+@export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.5:
+	set(value):
+		duration = maxf(value, MIN_DURATION)
+		_elapsed = minf(_elapsed, duration)
+		set_instance_shader_parameter(&"duration", duration)
+
 @export var autoplay: bool = true
+
 @export var stepped: bool = false:
 	set(value):
 		stepped = value
 		set_instance_shader_parameter(&"stepped", value)
+
+@export_range(1.0, 60.0, 1.0, "suffix:fps") var stepped_fps: float = 24.0:
+	set(value):
+		stepped_fps = clampf(value, 1.0, 60.0)
+		set_instance_shader_parameter(&"stepped_fps", stepped_fps)
 
 @export_range(0.0, 1.0, 0.001) var preview_progress: float = 0.267:
 	set(value):
@@ -50,25 +63,25 @@ enum RingStyle {
 			set_instance_shader_parameter(&"progress", value)
 
 @export_group("Color Flow")
-@export_range(-180.0, 180.0, 1.0, "degrees") var flow_direction: float = 0.0:
+@export var flow_speed_offset: float = 0.0:
 	set(value):
-		flow_direction = value
-		_update_style()
+		flow_speed_offset = value
+		set_instance_shader_parameter(&"flow_speed_offset", value)
 
-@export_range(-1.5, 1.5, 0.01) var flow_travel: float = 0.65:
+@export_range(-180.0, 180.0, 1.0, "degrees") var flow_direction_offset: float = 0.0:
 	set(value):
-		flow_travel = value
-		_update_style()
+		flow_direction_offset = value
+		set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(value))
 
-@export_range(-1.0, 1.0, 0.01) var flow_offset: float = 0.0:
+@export_range(-1.0, 1.0, 0.01) var flow_position_offset: float = 0.0:
 	set(value):
-		flow_offset = value
-		_update_style()
+		flow_position_offset = value
+		set_instance_shader_parameter(&"flow_position_offset", value)
 
-@export_range(0.25, 3.0, 0.05) var flow_width: float = 1.0:
+@export_range(-2.0, 2.0, 0.01) var flow_width_offset: float = 0.0:
 	set(value):
-		flow_width = value
-		_update_style()
+		flow_width_offset = value
+		set_instance_shader_parameter(&"flow_width_offset", value)
 
 @export_group("Ring Breakup")
 @export_range(0, 9999, 1) var split_seed: int = 1:
@@ -132,13 +145,23 @@ var _elapsed: float = 0.0
 
 
 func _ready() -> void:
+	if palette == null:
+		push_error("CrossFlare requires a ShaderMaterial palette.")
+	else:
+		material_override = palette
+
 	_update_style()
-	set_instance_shader_parameter(&"ring_style", ring_style)
+	set_instance_shader_parameter(&"variant", variant)
 	set_instance_shader_parameter(&"flare_size", size)
 	set_instance_shader_parameter(&"brightness", brightness)
-	material_override = palette
 	set_instance_shader_parameter(&"initial_angle", deg_to_rad(angle))
 	set_instance_shader_parameter(&"stepped", stepped)
+	set_instance_shader_parameter(&"stepped_fps", stepped_fps)
+	set_instance_shader_parameter(&"duration", duration)
+	set_instance_shader_parameter(&"flow_speed_offset", flow_speed_offset)
+	set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(flow_direction_offset))
+	set_instance_shader_parameter(&"flow_position_offset", flow_position_offset)
+	set_instance_shader_parameter(&"flow_width_offset", flow_width_offset)
 	custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 	if Engine.is_editor_hint():
 		set_instance_shader_parameter(&"progress", preview_progress)
@@ -163,12 +186,11 @@ func play() -> void:
 
 func seek(seconds: float) -> void:
 	_elapsed = clampf(seconds, 0.0, duration)
-	set_instance_shader_parameter(&"progress", _elapsed / duration)
+	var progress := _elapsed / duration
+	set_instance_shader_parameter(&"progress", progress)
 
 
 func _update_style() -> void:
-	set_instance_shader_parameter(&"color_flow",
-		Vector4(deg_to_rad(flow_direction), flow_travel, flow_offset, flow_width))
 	set_instance_shader_parameter(&"breakup_shape",
 		Vector4(deg_to_rad(split_direction), deg_to_rad(split_range), island_count, split_irregularity))
 	set_instance_shader_parameter(&"breakup_time",

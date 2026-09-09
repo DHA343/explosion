@@ -27,8 +27,8 @@ move_speed = 3.0
 
 [node name="Cross" parent="." unique_id=1323461647 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0, 0)
-instance_shader_parameters/ring_style = 0
-ring_style = 0
+instance_shader_parameters/variant = 0
+variant = 0
 autoplay = false
 
 [node name="SingleRing" parent="." unique_id=1352296066 instance=ExtResource("1")]
@@ -36,8 +36,8 @@ autoplay = false
 
 [node name="DoubleRing" parent="." unique_id=570396180 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0, 0)
-instance_shader_parameters/ring_style = 2
-ring_style = 2
+instance_shader_parameters/variant = 2
+variant = 2
 autoplay = false
 
 [node name="Help" type="Label" parent="." unique_id=1598226560]

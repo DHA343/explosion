@@ -3,12 +3,12 @@
 動画の分析に基づく、出現から消滅まで1回再生する3Dビルボード。
 十字と独立したリングの形をシェーダーで描画する。配色にはグラデーションを使う。
 
-## 3種類
+## 3種類のVariant
 
-- None：十字が拡大・回転し、細長い残光になって消える。
-- Single：斜めの小リングが開き、太さの偏った単リングが拡大・分断・消失する。
+- Cross Only：十字が拡大・回転し、細長い残光になって消える。
+- Single Ring：斜めの小リングが開き、太さの偏った単リングが拡大・分断・消失する。
   十字は残り、細長くなって消える。
-- Double：横に膨らむ十字と大小2本のリングが現れる。内外の太い側は半周ずらす。
+- Double Ring：横に膨らむ十字と大小2本のリングが現れる。内外の太い側は半周ずらす。
   リングが拡散する段階で十字が一瞬幅広い四芒星になり、その後細長くなって消える。
 
 円弧は消滅過程であり、独立した種類にはしていない。
@@ -16,7 +16,7 @@
 
 ## 使用
 
-`cross_flare.tscn` を3Dシーンにインスタンス化する。既定では0.625秒で1回再生し、
+`cross_flare.tscn` を3Dシーンにインスタンス化する。既定では0.5秒で1回再生し、
 消滅後に停止する。ノードは残り、`play()` で最初から再生できる。
 自然に再生を完了すると `finished` を1回通知する。解放する場合は利用側で扱う。
 `playing = false` で一時停止、`playing = true` で続行する。
@@ -24,19 +24,21 @@
 
 | 設定 | 内容 |
 | --- | --- |
-| Ring Style | None / Single / Double |
+| Variant | Cross Only / Single Ring / Double Ring |
 | Size | 描画面の半幅（m） |
 | Brightness | 加算する光の強さ |
 | Palette | 十字とリングのグラデーションを持つShaderMaterialプリセット |
 | Angle | ビルボード面内での全体の開始角度（度） |
-| Duration | 1回の出現から消滅までの時間 |
+| Duration | 1回の出現から消滅までの時間（秒） |
 | Autoplay | 実行時に自動で1回再生 |
-| Stepped | 既定は無効。有効時は連続モーションを24fps相当（寿命0.625秒の場合）で間引く |
+| Stepped | 既定は無効。有効時は指定FPSの実時間サンプルで全体を更新 |
+| Stepped FPS | Stepped時のサンプリングFPS（1〜60） |
 | Preview Progress | エディター内の静止プレビュー位置（0〜1） |
 
-基本モーションは時間の連続関数。重複したコマの保持や区間ごとの直線補間は使わない。
+基本モーションは寿命0〜1の正規化時間で評価する。Stepped時は形状、回転、リング、分裂、
+フェード、発光、Gradient移動を同じ実時間サンプルで評価する。
 流れる配色はビルボード面の座標で評価し、十字と大小リングで共有する。
-形の回転から独立して色面を移動する。コマ単位の変形でも色は連続時間で進む。
+形の回転から独立して色面を移動する。
 色面の両端はクランプし、寿命中に無制限に循環させない。
 単体は外部のカメラ参照を必要とせず、通常の3D遮蔽に従う。影は落とさない。
 加算合成のため背景と表示サイズで見え方が変わる。にじみはシェーダーにも含む。
@@ -61,18 +63,23 @@
 
 ## 配色の編集
 
-`palettes/` の5つの `.tres` がプリセット。既定は `cyan.tres`。
+`palettes/` の5つの `.tres` がプリセット。既定は `rainbow.tres`。
 PaletteのShader Parametersで、`cross_gradient` と `ring_gradient` 内のGradientを編集する。
-`flowing` が有効なシアン・マゼンタ・白系は、全形状が `cross_gradient` の色面を共有する。
-黄・橙／金は `flowing = false`。既存の本体・先端・リングの色差を維持し、配色を時間移動しない。
-色だけでなく各停止点の位置を変えることで、主色を広く保持する範囲と細い色帯を調整できる。
-`color_angle`（rad）、`color_offset`、`color_span` はプリセットの向き・位置・広がり。
-ノード側の Flow Direction（度）、Flow Offset、Flow Width で個体ごとに補正する。
-Flow Travel は寿命全体で移動するグラデーション座標量。正は指定方向、負は逆方向。
-Flow Offset は寿命中央での位置補正で、出現時の位置も一緒に変わる。
-`ring_color_offset` と `inner_color_offset` は固定配色のみの周方向の位置。
+全Paletteは常にGradient方式で時間移動する。`flow_speed = 0` で停止し、負値で逆方向へ流れる。
+`flow_speed` はGradient座標／秒の実時間値で、`duration` によって速度は変化しない。
+`flow_direction` は軸方向（rad）、`flow_position` は時刻0の位置、`flow_width` は色面の幅を表す。
+PaletteごとにFlow Speed / Direction / Position / Widthを設定する。
+`ring_color_offset` と `inner_color_offset` はRing Gradient座標への追加オフセットとして使用する。
+CrossFlare側のFlow Direction Offset（度）、Flow Speed Offset、Flow Position Offset、
+Flow Width Offsetで個体ごとに補正する。PaletteのShaderMaterial自体は共有できる。
 リングのグラデーション両端は同色にして、周方向の継ぎ目をなくす。
-個体専用の配色を作る場合はプリセットを複製し、GradientTextureとGradientも固有化する。
+
+## 個体ランダム化
+
+`CrossFlareRandomization` は、CrossFlareへ適用するランダム化設定だけを保持するResource。
+`apply_to(flare, rng)` を外部から明示的に呼び出したときだけ、渡された
+`RandomNumberGenerator` で値をサンプリングする。CrossFlare自身は自動的に乱数を生成せず、
+`play()` を繰り返しても設定値を再抽選しない。同じSeedを渡せば同じ個体設定を再現できる。
 
 ## 回転と欠け
 
