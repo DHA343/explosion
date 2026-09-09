@@ -40,6 +40,7 @@ const MIN_TIMING_SPAN: float = 0.001
 		palette = value
 		material_override = value
 
+@export_group("Rotation")
 @export_range(-180.0, 180.0, 1.0, "degrees") var angle: float = 0.0:
 	set(value):
 		angle = value
@@ -47,20 +48,12 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export_range(0.0, 180.0, 1.0, "degrees") var angle_random: float = 180.0
 
-@export_range(0.0, 2.0, 0.01) var rotation_amount: float = 1.0:
+@export_range(0.0, 10.0, 0.01, "suffix:rad/s") var rotation_speed: float = PI:
 	set(value):
-		rotation_amount = value
+		rotation_speed = value
 		_update_rotation()
 
-@export_range(0.0, 0.8, 0.01) var rotation_slowdown_start: float = 0.25:
-	set(value):
-		rotation_slowdown_start = value
-		_update_rotation()
-
-@export_range(0.0, 0.95, 0.01) var rotation_slowdown_strength: float = 0.9:
-	set(value):
-		rotation_slowdown_strength = value
-		_update_rotation()
+@export_range(0.0, 10.0, 0.01, "suffix:rad/s") var rotation_speed_random: float = 0.0
 
 @export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.5:
 	set(value):
@@ -249,6 +242,8 @@ func _ready() -> void:
 		size = clampf(size, 0.05, 20.0)
 		brightness += randf_range(-brightness_random, brightness_random)
 		brightness = clampf(brightness, 0.0, 8.0)
+		rotation_speed += randf_range(-rotation_speed_random, rotation_speed_random)
+		rotation_speed = maxf(rotation_speed, 0.0)
 		angle += randf_range(-angle_random, angle_random)
 		angle = fposmod(angle + 180.0, 360.0) - 180.0
 		duration += randf_range(-duration_random, duration_random)
@@ -343,5 +338,5 @@ func _update_stepped_parameters() -> void:
 
 
 func _update_rotation() -> void:
-	set_instance_shader_parameter(&"rotation_profile", Vector4(deg_to_rad(angle),
-		rotation_amount, rotation_slowdown_start, rotation_slowdown_strength))
+	set_instance_shader_parameter(&"initial_angle", deg_to_rad(angle))
+	set_instance_shader_parameter(&"rotation_speed_radians", rotation_speed)

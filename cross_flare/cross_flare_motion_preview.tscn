@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://dkolytpq0x3vg"]
+
+[ext_resource type="Script" uid="uid://ckrmnktmjd23n" path="res://cross_flare/cross_flare_motion_preview.gd" id="1_preview"]
+[ext_resource type="PackedScene" uid="uid://byhr4npb5tl2m" path="res://cross_flare/cross_flare.tscn" id="2_cross_flare"]
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 1
+background_color = Color(0.014, 0.006, 0.012, 1)
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.05
+
+[node name="CrossFlareMotionPreview" type="Node3D" unique_id=112457613]
+script = ExtResource("1_preview")
+preview_progress = 0.7412860518511889
+auto_preview = true
+preview_speed = 0.5
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=9358542]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.5)
+current = true
+fov = 45.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=895174283]
+environment = SubResource("Environment")
+
+[node name="CrossFlare" parent="." unique_id=1253580778 instance=ExtResource("2_cross_flare")]
+instance_shader_parameters/progress = 0.7412860518511889
+instance_shader_parameters/rotation_speed_radians = 6.963863715457375
+variant_random = false
+size_random = 0.0
+brightness_random = 0.0
+rotation_speed = 6.963863715457375
+autoplay = false
+flow_position_random = 0.0
+split_seed_random = false
+rotation_speed_random = 0.0

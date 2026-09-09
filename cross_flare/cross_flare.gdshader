@@ -9,8 +9,9 @@ uniform float flow_width = 1.4;
 instance uniform vec2 variant_size = vec2(1.0, 1.0);
 // brightness, duration, halo strength, halo width.
 instance uniform vec4 effect_parameters = vec4(1.6, 0.5, 0.3, 0.03);
-// Initial angle, total rotation multiplier, deceleration start, strength.
-instance uniform vec4 rotation_profile = vec4(0.0, 1.0, 0.25, 0.9);
+// Initial angle and rotation speed in radians per second.
+instance uniform float initial_angle = 0.0;
+instance uniform float rotation_speed_radians = 3.1415927;
 // Flow direction and position are selected once for each CrossFlare instance.
 instance uniform vec2 color_flow_parameters = vec2(0.0, 0.0);
 // Sector center, sector width, island count, irregularity.
@@ -88,27 +89,12 @@ vec2 rotate_point(vec2 point, float angle) {
 	return mat2(vec2(c, -s), vec2(s, c)) * point;
 }
 
-float rotation_progress(float age) {
-	float start = clamp(rotation_profile.z, 0.0, 0.8);
-	float strength = clamp(rotation_profile.w, 0.0, 0.95);
-	strength *= variant_value() == 1 ? 1.0 : (variant_value() == 2 ? 0.85 : 0.9);
-	float span = 1.0 - start;
-	float u = clamp((age - start) / span, 0.0, 1.0);
-	// Integral of a smooth speed reduction; normalize to retain the total angle.
-	float travel = age - strength * span * (u * u * u - 0.5 * u * u * u * u);
-	float total = 1.0 - strength * span * 0.5;
-	float acceleration = variant_value() == 0 ? min(0.16, start * 0.8) : 0.0;
-	if (acceleration > 0.0) {
-		float a = clamp(age / acceleration, 0.0, 1.0);
-		float ramp = a - a * a * a + 0.5 * a * a * a * a;
-		travel -= 0.65 * acceleration * ramp;
-		total -= 0.65 * acceleration * 0.5;
-	}
-	return travel / total * rotation_profile.y;
+float rotation_angle(float age) {
+	return rotation_speed_radians * effect_parameters.y * age;
 }
 
 vec4 motion_at(float age) {
-	float rotation = rotation_progress(age);
+	float rotation = rotation_angle(age);
 	float growth = smoothstep(0.0, motion_timing_a.x, age);
 	float contraction = mix(1.0, 0.55,
 		smoothstep(motion_timing_a.w, motion_timing_b.x, age));
@@ -118,15 +104,15 @@ vec4 motion_at(float age) {
 		* (1.0 - smoothstep(motion_timing_b.y, motion_timing_b.z, age)));
 	float width_fade = smoothstep(motion_timing_a.y, motion_timing_a.z, age);
 	float width = max(0.001, 0.055 * growth * mix(1.0, motion_timing_c.y, width_fade));
-	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * rotation);
+	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + rotation);
 	if (variant_value() == 1) {
-		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * rotation);
+		pose = vec4(short_arm, long_arm, width, -0.8 + rotation);
 	} else if (variant_value() == 2) {
 		float squash = smoothstep(0.045, 0.13, age) * (1.0 - smoothstep(0.24, 0.34, age));
 		float burst = exp(-pow((age - 0.36) / 0.075, 2.0));
 		pose.y *= mix(1.0, 0.22, squash);
 		pose.z += 0.09 * squash + 0.23 * burst;
-		pose.w = 1.7 * rotation;
+		pose.w = rotation;
 	}
 	return pose;
 }
@@ -161,7 +147,7 @@ vec2 cross_metrics(vec2 point, vec2 reach, float width, float age) {
 	float horizontal_width = width * pow(max(1.0 - horizontal_t, 0.0), 2.4);
 	float vertical_width = width * pow(max(1.0 - vertical_t, 0.0), 2.4);
 	// The final streak retains a broad body; only its ends taper to zero.
-	float streak = smoothstep(0.68, 0.85, age);
+	float streak = smoothstep(motion_timing_b.y, motion_timing_b.z, age);
 	if (variant_value() == 1) {
 		vertical_width = mix(vertical_width,
 			width * sqrt(max(1.0 - vertical_t * vertical_t, 0.0)), streak);
@@ -247,7 +233,7 @@ void fragment() {
 
 	vec4 pose = motion_at(sampled_progress);
 	vec2 color_plane = (UV * 2.0 - 1.0) * 1.2;
-	vec2 point = rotate_point(color_plane, rotation_profile.x);
+	vec2 point = rotate_point(color_plane, initial_angle);
 	vec2 q = rotate_point(point, pose.w);
 	vec2 cross_data = cross_metrics(q, pose.xy, pose.z, sampled_progress);
 	float shape_distance = cross_data.x;
