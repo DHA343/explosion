@@ -1,6 +1,7 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://dmuu2sah4gduj"]
+[gd_resource type="ShaderMaterial" script_class="CrossFlarePalette" format=3 uid="uid://dmuu2sah4gduj"]
 
 [ext_resource type="Shader" uid="uid://dy2glmq30kbc8" path="res://cross_flare/cross_flare.gdshader" id="1_qpv4t"]
+[ext_resource type="Script" uid="uid://cefvi7v5pswad" path="res://cross_flare/cross_flare_palette.gd" id="2_palette"]
 
 [sub_resource type="Gradient" id="Gradient_qpv4t"]
 offsets = PackedFloat32Array(0, 0.06629834, 0.12154696, 0.1961326, 0.37292817, 0.4640884, 0.6132597, 0.71823204)
@@ -16,3 +17,5 @@ shader_parameter/cross_gradient = SubResource("GradientTexture1D_gdou6")
 shader_parameter/ring_use_cross_gradient = true
 shader_parameter/flow_speed = 2.0000000298024
 shader_parameter/flow_width = 2.0000000298024
+script = ExtResource("2_palette")
+selection_weight = 5.0

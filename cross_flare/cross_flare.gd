@@ -33,7 +33,7 @@ const MIN_TIMING_SPAN: float = 0.001
 		intensity = clampf(value, 0.0, 8.0)
 		_update_effect_parameters()
 
-@export var palette: ShaderMaterial:
+@export var palette: CrossFlarePalette:
 	set(value):
 		palette = value
 		material_override = value
@@ -256,7 +256,7 @@ func _ready() -> void:
 			split_seed = randi_range(0, 9999)
 
 	if palette == null:
-		push_error("CrossFlare requires a ShaderMaterial palette.")
+		push_error("CrossFlare requires a CrossFlarePalette resource.")
 	else:
 		material_override = palette
 

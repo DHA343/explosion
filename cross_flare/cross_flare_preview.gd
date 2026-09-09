@@ -15,7 +15,7 @@ const CROSS_FLARE_SCENE: PackedScene = preload("res://cross_flare/cross_flare.ts
 @onready var _camera: Camera3D = $Camera3D
 @onready var _spawn_timer: Timer = $SpawnTimer
 
-var _palettes: Array[ShaderMaterial] = []
+var _palettes: Array[CrossFlarePalette] = []
 var _active_flares: Array[CrossFlare] = []
 var _rng := RandomNumberGenerator.new()
 
@@ -59,13 +59,31 @@ func _load_palettes() -> bool:
 
 	for palette_path in palette_paths:
 		var resource: Resource = load(palette_path)
-		if resource is ShaderMaterial:
-			_palettes.append(resource as ShaderMaterial)
+		if resource is CrossFlarePalette:
+			_palettes.append(resource as CrossFlarePalette)
 
 	if _palettes.is_empty():
-		push_error("No valid ShaderMaterial palettes found in: %s" % PALETTE_DIRECTORY)
+		push_error("No valid CrossFlarePalette resources found in: %s" % PALETTE_DIRECTORY)
 		return false
 	return true
+
+
+func _pick_palette() -> CrossFlarePalette:
+	var total_weight: float = 0.0
+
+	for palette_resource in _palettes:
+		total_weight += maxf(palette_resource.selection_weight, 0.0)
+
+	if total_weight <= 0.0:
+		return null
+
+	var selection := _rng.randf_range(0.0, total_weight)
+	for palette_resource in _palettes:
+		selection -= maxf(palette_resource.selection_weight, 0.0)
+		if selection <= 0.0:
+			return palette_resource
+
+	return _palettes.back()
 
 
 func _spawn_flare(initial: bool = false) -> void:
@@ -77,8 +95,13 @@ func _spawn_flare(initial: bool = false) -> void:
 		push_error("Failed to instantiate CrossFlare.")
 		return
 
+	var selected_palette := _pick_palette()
+	if selected_palette == null:
+		push_error("No selectable CrossFlare palette is available.")
+		return
+
 	flare.autoplay = false
-	flare.palette = _palettes[_rng.randi_range(0, _palettes.size() - 1)]
+	flare.palette = selected_palette
 	flare.position = _random_spawn_position()
 
 	flare.finished.connect(_on_flare_finished.bind(flare))
