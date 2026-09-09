@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://d1gb0kx41jbnk"]
 
-[ext_resource type="PackedScene" uid="uid://byhr4npb5tl2m" path="res://cross_flare/cross_flare.tscn" id="1"]
-[ext_resource type="Script" uid="uid://ccr4uytuht3go" path="res://main/free_fly_camera.gd" id="2"]
-[ext_resource type="Script" uid="uid://bibukwv3xwmgg" path="res://cross_flare/cross_flare_preview.gd" id="3"]
+[ext_resource type="Script" uid="uid://bibukwv3xwmgg" path="res://cross_flare/cross_flare_preview.gd" id="1_preview"]
+[ext_resource type="Resource" path="res://cross_flare/cross_flare_preview_randomization.tres" id="2_randomization"]
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -13,7 +12,11 @@ glow_intensity = 0.6
 glow_bloom = 0.05
 
 [node name="CrossFlarePreview" type="Node3D" unique_id=141742701]
-script = ExtResource("3")
+script = ExtResource("1_preview")
+randomization = ExtResource("2_randomization")
+max_alive = 51
+spawn_interval_min = 0.01
+spawn_interval_max = 0.05
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1652942463]
 environment = SubResource("Environment")
@@ -22,62 +25,6 @@ environment = SubResource("Environment")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.5)
 current = true
 fov = 45.0
-script = ExtResource("2")
-move_speed = 3.0
 
-[node name="Cross" parent="." unique_id=1323461647 instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0, 0)
-instance_shader_parameters/variant = 0
-variant = 0
-autoplay = false
-
-[node name="SingleRing" parent="." unique_id=1352296066 instance=ExtResource("1")]
-autoplay = false
-
-[node name="DoubleRing" parent="." unique_id=570396180 instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0, 0)
-instance_shader_parameters/variant = 2
-variant = 2
-autoplay = false
-
-[node name="Help" type="Label" parent="." unique_id=1598226560]
-offset_left = 24.0
-offset_top = 20.0
-theme_override_font_sizes/font_size = 22
-text = "十字のみ                         単リング                         二重リング＋膨らみ
-中ドラッグ：周回 ／ ホイール：ズーム"
-
-[node name="Controls" type="VBoxContainer" parent="." unique_id=94638543]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -390.0
-offset_right = 990.0
-offset_bottom = -16.0
-
-[node name="Time" type="Label" parent="Controls" unique_id=855112231]
-layout_mode = 2
-
-[node name="Palette" type="OptionButton" parent="Controls" unique_id=1539444448]
-layout_mode = 2
-
-[node name="Timeline" type="HSlider" parent="Controls" unique_id=974852442]
-layout_mode = 2
-max_value = 1.0
-step = 0.0
-
-[node name="Buttons" type="HBoxContainer" parent="Controls" unique_id=1504218411]
-layout_mode = 2
-
-[node name="Play" type="Button" parent="Controls/Buttons" unique_id=673494420]
-layout_mode = 2
-text = "1回再生"
-
-[node name="Slow" type="Button" parent="Controls/Buttons" unique_id=118065393]
-layout_mode = 2
-text = "1/4速度で再生"
-
-[node name="Stepped" type="CheckButton" parent="Controls/Buttons" unique_id=1150116094]
-layout_mode = 2
-text = "コマ単位の変形"
+[node name="SpawnTimer" type="Timer" parent="." unique_id=304042134]
+one_shot = true

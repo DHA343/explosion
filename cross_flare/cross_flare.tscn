@@ -1,20 +1,20 @@
 [gd_scene format=3 uid="uid://byhr4npb5tl2m"]
 
 [ext_resource type="Script" uid="uid://dhc0c3xw47qt8" path="res://cross_flare/cross_flare.gd" id="1"]
-[ext_resource type="ShaderMaterial" uid="uid://dmuu2sah4gduj" path="res://cross_flare/palettes/rainbow.tres" id="2"]
+[ext_resource type="Material" uid="uid://dmuu2sah4gduj" path="res://cross_flare/palettes/rainbow.tres" id="2"]
 
 [sub_resource type="QuadMesh" id="Quad"]
 size = Vector2(2, 2)
 
 [node name="CrossFlare" type="MeshInstance3D" unique_id=1361283627]
-script = ExtResource("1")
+material_override = ExtResource("2")
 cast_shadow = 0
-palette = ExtResource("2")
 custom_aabb = AABB(-1.5, -1.5, -1.5, 3, 3, 3)
 instance_shader_parameters/breakup_seed = 1.0
 instance_shader_parameters/breakup_shape = Vector4(3.1415927, 2.7925267, 4, 0.65)
 instance_shader_parameters/breakup_time = Vector4(0.29, 0.4, 0.55, 0)
 instance_shader_parameters/brightness = 1.6
+instance_shader_parameters/duration = 0.5
 instance_shader_parameters/edge_style = Vector2(0.008, 0.3)
 instance_shader_parameters/flare_size = 1.0
 instance_shader_parameters/flow_direction_offset = 0.0
@@ -23,8 +23,10 @@ instance_shader_parameters/flow_speed_offset = 0.0
 instance_shader_parameters/flow_width_offset = 0.0
 instance_shader_parameters/initial_angle = 0.0
 instance_shader_parameters/progress = 0.267
+instance_shader_parameters/stepped = true
 instance_shader_parameters/stepped_fps = 24.0
-instance_shader_parameters/stepped = false
-instance_shader_parameters/duration = 0.5
 instance_shader_parameters/variant = 1
 mesh = SubResource("Quad")
+script = ExtResource("1")
+palette = ExtResource("2")
+stepped = true

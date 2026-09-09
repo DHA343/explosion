@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="CrossFlareRandomization" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://biqnoxpgqjeec" path="res://cross_flare/cross_flare_randomization.gd" id="1_randomization"]
+
+[resource]
+script = ExtResource("1_randomization")
+variant_mask = 7
+size_min = 0.45
+size_max = 0.9
+brightness_base = 1.6
+brightness_random = 0.25
+angle_base = 0.0
+angle_random = 180.0
+duration_base = 0.5
+duration_random = 0.12
+flow_speed_random = 0.35
+flow_direction_random = 30.0
+flow_position_random = 0.25
+flow_width_random = 0.2
+island_count_min = 3
+island_count_max = 5
+split_direction_base = 180.0
+split_direction_random = 45.0
+split_range_base = 160.0
+split_range_random = 40.0
+split_irregularity_base = 0.65
+split_irregularity_random = 0.2
+gap_ratio_base = 0.55
+gap_ratio_random = 0.08
+split_start_base = 0.29
+split_start_random = 0.04
+split_end_base = 0.4
+split_end_random = 0.04
+halo_strength_base = 0.3
+halo_strength_random = 0.08

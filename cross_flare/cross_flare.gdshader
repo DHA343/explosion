@@ -34,8 +34,11 @@ vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
 	float final_flow_position = flow_position + flow_position_offset;
 	float final_flow_width = max(0.05, flow_width + flow_width_offset);
 	vec2 axis = vec2(cos(final_flow_direction), sin(final_flow_direction));
+	float centered_elapsed = sampled_elapsed - duration * 0.5;
 	float position = dot(point, axis) / final_flow_width + 0.5
-		+ final_flow_position + extra_offset - sampled_elapsed * final_flow_speed;
+		+ final_flow_position
+		+ extra_offset
+		- centered_elapsed * final_flow_speed;
 	return texture(gradient_texture, vec2(clamp(position, 0.0, 1.0), 0.5)).rgb;
 }
 

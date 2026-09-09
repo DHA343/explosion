@@ -1,136 +1,123 @@
 extends Node3D
 
-const PALETTES: Array[ShaderMaterial] = [
-	preload("res://cross_flare/palettes/rainbow.tres"),
-	preload("res://cross_flare/palettes/magenta.tres"),
-	preload("res://cross_flare/palettes/yellow.tres"),
-	preload("res://cross_flare/palettes/gold.tres"),
-	preload("res://cross_flare/palettes/pearl.tres"),
-]
+const PALETTE_DIRECTORY := "res://cross_flare/palettes"
+const CROSS_FLARE_SCENE: PackedScene = preload("res://cross_flare/cross_flare.tscn")
 
-var _progress: float = 0.0
-var _speed: float = 1.0
-var _playing: bool = false
-var _target: int = 0
-var _editors: Dictionary[StringName, SpinBox] = {}
+@export var randomization: CrossFlareRandomization
+@export_range(0, 32, 1) var initial_spawn_count: int = 6
+@export_range(1, 64, 1) var max_alive: int = 10
+@export_range(0.01, 2.0, 0.01, "suffix:s") var spawn_interval_min: float = 0.07
+@export_range(0.01, 2.0, 0.01, "suffix:s") var spawn_interval_max: float = 0.15
+@export_range(0.0, 0.45, 0.01) var screen_margin_ratio: float = 0.10
+@export_range(0.1, 50.0, 0.1, "suffix:m") var spawn_depth: float = 6.5
+@export var randomize_seed_on_start: bool = true
+@export var random_seed: int = 1
 
-@onready var _flares: Array[CrossFlare] = [$Cross, $SingleRing, $DoubleRing]
-@onready var _timeline: HSlider = $Controls/Timeline
-@onready var _time_label: Label = $Controls/Time
+@onready var _camera: Camera3D = $Camera3D
+@onready var _spawn_timer: Timer = $SpawnTimer
+
+var _palettes: Array[ShaderMaterial] = []
+var _active_flares: Array[CrossFlare] = []
+var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
-	var palette_picker: OptionButton = $Controls/Palette
-	for label in ["シアン主体", "マゼンタ主体", "黄主体", "橙・金", "白・淡色＋シアン"]:
-		palette_picker.add_item(label)
-	palette_picker.item_selected.connect(_on_palette_selected)
-	$Controls/Buttons/Play.pressed.connect(_start.bind(1.0))
-	$Controls/Buttons/Slow.pressed.connect(_start.bind(0.25))
-	$Controls/Buttons/Stepped.toggled.connect(_on_stepped_toggled)
-	_timeline.value_changed.connect(_on_time_changed)
-	_build_settings()
-	_show_time(4.0 / 15.0)
+	_initialize_rng()
+	var palettes_available := _load_palettes()
+
+	if randomization == null:
+		push_error("CrossFlarePreview requires a CrossFlareRandomization resource.")
+		return
+	if not palettes_available:
+		return
+
+	_spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	var spawn_count := mini(maxi(initial_spawn_count, 0), maxi(max_alive, 0))
+	for _i in range(spawn_count):
+		_spawn_flare(true)
+	_schedule_next_spawn()
 
 
-func _process(delta: float) -> void:
-	if _playing:
-		_show_time(minf(_progress + delta * _speed / _flares[0].duration, 1.0))
-		if _progress >= 1.0:
-			_playing = false
+func _initialize_rng() -> void:
+	if randomize_seed_on_start:
+		_rng.randomize()
+	else:
+		_rng.seed = random_seed
 
 
-func _on_time_changed(value: float) -> void:
-	_playing = false
-	_show_time(value)
+func _load_palettes() -> bool:
+	var directory := DirAccess.open(PALETTE_DIRECTORY)
+	if directory == null:
+		push_error("Failed to open CrossFlare palette directory: %s" % PALETTE_DIRECTORY)
+		return false
+
+	var palette_paths: Array[String] = []
+	directory.list_dir_begin()
+	var file_name := directory.get_next()
+	while not file_name.is_empty():
+		if not directory.current_is_dir() and file_name.get_extension().to_lower() == "tres":
+			palette_paths.append(PALETTE_DIRECTORY.path_join(file_name))
+		file_name = directory.get_next()
+	directory.list_dir_end()
+	palette_paths.sort()
+
+	for palette_path in palette_paths:
+		var resource: Resource = load(palette_path)
+		if resource is ShaderMaterial:
+			_palettes.append(resource as ShaderMaterial)
+
+	if _palettes.is_empty():
+		push_error("No valid ShaderMaterial palettes found in: %s" % PALETTE_DIRECTORY)
+		return false
+	return true
 
 
-func _on_palette_selected(index: int) -> void:
-	for flare in _targets():
-		flare.palette = PALETTES[index]
+func _spawn_flare(initial: bool = false) -> void:
+	if _active_flares.size() >= max_alive:
+		return
+
+	var flare := CROSS_FLARE_SCENE.instantiate() as CrossFlare
+	if flare == null:
+		push_error("Failed to instantiate CrossFlare.")
+		return
+
+	flare.autoplay = false
+	flare.palette = _palettes[_rng.randi_range(0, _palettes.size() - 1)]
+	randomization.apply_to(flare, _rng)
+	flare.position = _random_spawn_position()
+
+	flare.finished.connect(_on_flare_finished.bind(flare))
+	add_child(flare)
+	_active_flares.append(flare)
+
+	flare.play()
+	if initial:
+		flare.seek(_rng.randf_range(0.0, flare.duration * 0.9))
 
 
-func _targets() -> Array[CrossFlare]:
-	if _target == 0:
-		return _flares
-	return [_flares[_target - 1]]
+func _random_spawn_position() -> Vector3:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var margin_ratio := clampf(screen_margin_ratio, 0.0, 0.45)
+	var margin_x := viewport_size.x * margin_ratio
+	var margin_y := viewport_size.y * margin_ratio
+	var screen_position := Vector2(
+		_rng.randf_range(margin_x, viewport_size.x - margin_x),
+		_rng.randf_range(margin_y, viewport_size.y - margin_y))
+	return _camera.project_position(screen_position, spawn_depth)
 
 
-func _build_settings() -> void:
-	var picker := OptionButton.new()
-	for title in ["編集対象：全種類", "十字のみ", "単リング", "二重リング"]:
-		picker.add_item(title)
-	picker.item_selected.connect(_on_target_selected)
-	$Controls.add_child(picker)
-	var grid := GridContainer.new()
-	grid.columns = 6
-	$Controls.add_child(grid)
-	_add_setting(grid, "色面の方向 °", &"flow_direction_offset", -180, 180, 1)
-	_add_setting(grid, "色の移動量 ±", &"flow_speed_offset", -1.5, 1.5, 0.01)
-	_add_setting(grid, "色の開始位置", &"flow_position_offset", -1, 1, 0.01)
-	_add_setting(grid, "色帯の幅", &"flow_width_offset", 0.25, 3, 0.05)
-	_add_setting(grid, "島の数", &"island_count", 3, 5, 1)
-	_add_setting(grid, "分裂シード", &"split_seed", 0, 9999, 1)
-	_add_setting(grid, "分裂範囲 °", &"split_range", 30, 360, 1)
-	_add_setting(grid, "分裂の方向 °", &"split_direction", -180, 180, 1)
-	_add_setting(grid, "ばらつき", &"split_irregularity", 0, 1, 0.01)
-	_add_setting(grid, "隙間の割合", &"gap_ratio", 0.1, 0.65, 0.01)
-	_add_setting(grid, "分裂開始 0〜1", &"split_start", 0, 0.45, 0.005)
-	_add_setting(grid, "分裂終了 0〜1", &"split_end", 0, 0.46, 0.005)
-	_add_setting(grid, "輪郭のぼかし", &"edge_softness", 0, 0.04, 0.001)
-	_add_setting(grid, "光のにじみ", &"halo_strength", 0, 1, 0.01)
-	var full := CheckButton.new()
-	full.name = "FullCircle"
-	full.text = "二重外リングは全周分裂"
-	full.button_pressed = true
-	full.toggled.connect(func(value: bool) -> void:
-		for flare in _targets():
-			flare.double_full_circle = value)
-	$Controls.add_child(full)
+func _on_spawn_timer_timeout() -> void:
+	_spawn_flare()
+	_schedule_next_spawn()
 
 
-func _add_setting(grid: GridContainer, title: String, property: StringName,
-		minimum: float, maximum: float, increment: float) -> void:
-	var label := Label.new()
-	label.text = title
-	grid.add_child(label)
-	var editor := SpinBox.new()
-	editor.min_value = minimum
-	editor.max_value = maximum
-	editor.step = increment
-	editor.custom_minimum_size.x = 110
-	editor.value = float(_flares[0].get(property))
-	editor.value_changed.connect(func(value: float) -> void:
-		for flare in _targets():
-			flare.set(property, value))
-	grid.add_child(editor)
-	_editors[property] = editor
+func _schedule_next_spawn() -> void:
+	var minimum := maxf(minf(spawn_interval_min, spawn_interval_max), 0.01)
+	var maximum := maxf(maxf(spawn_interval_min, spawn_interval_max), minimum)
+	_spawn_timer.start(_rng.randf_range(minimum, maximum))
 
 
-func _on_target_selected(index: int) -> void:
-	_target = index
-	var flare: CrossFlare = _targets()[0]
-	for property: StringName in _editors:
-		_editors[property].set_value_no_signal(float(flare.get(property)))
-	$Controls/FullCircle.set_pressed_no_signal(flare.double_full_circle)
-	$Controls/Palette.select(PALETTES.find(flare.palette))
-
-
-func _on_stepped_toggled(enabled: bool) -> void:
-	for flare in _flares:
-		flare.stepped = enabled
-
-
-func _start(speed: float) -> void:
-	_speed = speed
-	_show_time(0.0)
-	_playing = true
-
-
-func _show_time(value: float) -> void:
-	_progress = value
-	for flare in _flares:
-		flare.seek(value * flare.duration)
-	_timeline.set_value_no_signal(value)
-	_time_label.text = "%.3f 秒 ／ %.3f 秒   コマ %d / 15" % [
-		value * _flares[0].duration, _flares[0].duration, mini(int(value * 15.0 + 0.0001), 15)
-	]
+func _on_flare_finished(flare: CrossFlare) -> void:
+	_active_flares.erase(flare)
+	if is_instance_valid(flare):
+		flare.queue_free()

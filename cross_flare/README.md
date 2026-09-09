@@ -45,25 +45,21 @@
 
 ## プレビュー
 
-`cross_flare_preview.tscn` を実行すると3種類を並べて比較できる。
-初期状態は二重リングが見える0.167秒付近で停止する。
+`cross_flare_preview.tscn` は、暗い背景内へCrossFlareを画面内のランダムな位置に
+継続生成する確認用Scene。Preview上のUIや固定比較表示は持たない。
 
-- 「1回再生」「1/4速度で再生」で全種類を同時に1回再生する。
-- 時刻スライダーを動かすと停止し、その時刻の形を表示する。
-- 「コマ単位の変形」で段階的な変形と補間を比較する。
-- 配色リストでシアン主体・マゼンタ主体・黄主体・橙／金・白／淡色の5種類を切り替える。
-- 編集対象で全種類または個別のエフェクトを選び、色面・分裂・ぼかしを調整できる。
-- 移動量の符号を反転すると色面が逆方向へ流れる。色面の方向は形のAngleと独立。
-- 分裂を比較する場合、時刻を0.250秒（進行0.40）付近にして島の数とシードを変更する。
-- 「二重外リングは全周分裂」を無効にすると、二重リングにも指定した分裂範囲を使う。
-- 中ボタンドラッグで周回、ホイールでズームする（既存カメラスクリプトを使用）。
+Paletteは `cross_flare/palettes/` 直下のShaderMaterial `.tres` を起動時に自動取得する。
+各個体のVariant、Size、Brightness、Angle、Duration、Color Flow Offset、Breakup、Halo等は
+`cross_flare_preview_randomization.tres` を使って決定する。
+初期個体は再生時刻をずらして生成され、通常Spawnは0秒から再生する。
+終了したCrossFlareはPreview側で自動解放する。
 
-本体に周期的な自動ループはない。大量発生・空間移動は今回の対象外。
-メインシーンには配置していない。
+Palette、Randomization Resource、初期生成数、最大同時数、Spawn間隔、画面端Margin、
+SeedなどはPreview本体またはResourceのInspectorで調整する。
 
 ## 配色の編集
 
-`palettes/` の5つの `.tres` がプリセット。既定は `rainbow.tres`。
+`palettes/` の `.tres` がプリセット。既定Paletteは `cross_flare.tscn` 側でResource参照として設定する。
 PaletteのShader Parametersで、`cross_gradient` と `ring_gradient` 内のGradientを編集する。
 全Paletteは常にGradient方式で時間移動する。`flow_speed = 0` で停止し、負値で逆方向へ流れる。
 `flow_speed` はGradient座標／秒の実時間値で、`duration` によって速度は変化しない。
@@ -72,7 +68,6 @@ PaletteごとにFlow Speed / Direction / Position / Widthを設定する。
 `ring_color_offset` と `inner_color_offset` はRing Gradient座標への追加オフセットとして使用する。
 CrossFlare側のFlow Direction Offset（度）、Flow Speed Offset、Flow Position Offset、
 Flow Width Offsetで個体ごとに補正する。PaletteのShaderMaterial自体は共有できる。
-リングのグラデーション両端は同色にして、周方向の継ぎ目をなくす。
 
 ## 個体ランダム化
 
@@ -89,26 +84,24 @@ Flow Width Offsetで個体ごとに補正する。PaletteのShaderMaterial自体
 二重の外リングは既定で全周を分裂する。内リングは独立して早く消え、太さの偏りは外側と反対。
 
 Island Count（3〜5）は分裂完了時の幾何学的な島の総数。残る長い弧も1個に数える。
-Split Seed を変えると隙間の位置と幅が変わる。同じシードなら再生・シークで同じ形になる。
-Split Direction は太い側を0度とした分裂範囲の中心。180度が細い側。
-Split Range は適用角度幅、Split Irregularity は配置と幅のばらつき。
-Gap Ratio は各区間のうち隙間にする割合。隙間と島の最小幅は区間幅から確保する。
-Split Start / End は寿命の0〜1で指定する。EndがStart以下なら最短0.001の区間にする。
+Split Seedを変えると隙間の位置と幅が変わる。同じシードなら再生・シークで同じ形になる。
+Split Directionは太い側を0度とした分裂範囲の中心。180度が細い側。
+Split Rangeは適用角度幅、Split Irregularityは配置と幅のばらつき。
+Gap Ratioは各区間のうち隙間にする割合。隙間と島の最小幅は区間幅から確保する。
+Split Start / Endは寿命の0〜1で指定する。EndがStart以下なら最短0.001の区間にする。
 リングの消滅は進行7/15までなので、分裂時刻もその前に設定する。
 島の数は破片が十分見える時点の目標で、にじみ・背景・遮蔽・消滅中の可視数は変わる。
 
 ## 輪郭
 
-Edge Softness は十字・リング・分裂した端の輪郭のぼかし幅（エフェクト半幅に対する値）。
-Halo Strength は外に広がる光の強さで、輪郭のぼかしとは独立。
+Edge Softnessは十字・リング・分裂した端の輪郭のぼかし幅（エフェクト半幅に対する値）。
+Halo Strengthは外に広がる光の強さで、輪郭のぼかしとは独立。
 0でも画素単位のアンチエイリアスは残す。強いぼかしでは細い部分が淡くなり、隙間も狭く見える。
 描画用Quadを1.2倍にして余白を確保し、本体の見かけのサイズは維持する。
 
 ## 検証
 
-Godot 4.7.2 / Forward+ / D3D12でインポート、シーン実行、0〜15コマの描画、
-斜め視点、単発再生終了・再開・完了通知、時刻スライダーと補間切り替えを確認。
-追加機能は実描画の比較で、保持ポーズ中の固定色不変／色面移動、同一シードの再現性、
-シード変更による差、輪郭ぼかしの差、個体別の逆方向設定を検証。
-3・4・5個の分裂と、出現から消滅までの連続描画も確認した。
-
+Godot 4.7.2 / Forward+でインポート、CrossFlare単体Scene、PreviewのランダムSpawn、
+Palette自動取得、同時存在数制限、終了個体の解放を確認する。
+追加機能は実描画の比較で、初期個体の時刻ずらし、各個体のPalette・Variant・サイズ・寿命・
+Flow Offset・Breakup・Haloの差、画面Aspect Ratioへの追従を確認する。
