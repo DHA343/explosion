@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://d1gb0kx41jbnk"]
 
 [ext_resource type="Script" uid="uid://bibukwv3xwmgg" path="res://cross_flare/cross_flare_preview.gd" id="1_preview"]
-[ext_resource type="Resource" path="res://cross_flare/cross_flare_preview_randomization.tres" id="2_randomization"]
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -13,7 +12,6 @@ glow_bloom = 0.05
 
 [node name="CrossFlarePreview" type="Node3D" unique_id=141742701]
 script = ExtResource("1_preview")
-randomization = ExtResource("2_randomization")
 max_alive = 51
 spawn_interval_min = 0.01
 spawn_interval_max = 0.05

@@ -3,7 +3,6 @@ extends Node3D
 const PALETTE_DIRECTORY := "res://cross_flare/palettes"
 const CROSS_FLARE_SCENE: PackedScene = preload("res://cross_flare/cross_flare.tscn")
 
-@export var randomization: CrossFlareRandomization
 @export_range(0, 32, 1) var initial_spawn_count: int = 6
 @export_range(1, 64, 1) var max_alive: int = 10
 @export_range(0.01, 2.0, 0.01, "suffix:s") var spawn_interval_min: float = 0.07
@@ -25,9 +24,6 @@ func _ready() -> void:
 	_initialize_rng()
 	var palettes_available := _load_palettes()
 
-	if randomization == null:
-		push_error("CrossFlarePreview requires a CrossFlareRandomization resource.")
-		return
 	if not palettes_available:
 		return
 
@@ -83,7 +79,6 @@ func _spawn_flare(initial: bool = false) -> void:
 
 	flare.autoplay = false
 	flare.palette = _palettes[_rng.randi_range(0, _palettes.size() - 1)]
-	randomization.apply_to(flare, _rng)
 	flare.position = _random_spawn_position()
 
 	flare.finished.connect(_on_flare_finished.bind(flare))

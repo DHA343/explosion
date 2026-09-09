@@ -33,7 +33,6 @@
 | Autoplay | 実行時に自動で1回再生 |
 | Stepped | 既定は無効。有効時は指定FPSの実時間サンプルで全体を更新 |
 | Stepped FPS | Stepped時のサンプリングFPS（1〜60） |
-| Preview Progress | エディター内の静止プレビュー位置（0〜1） |
 
 基本モーションは寿命0〜1の正規化時間で評価する。Stepped時は形状、回転、リング、分裂、
 フェード、発光、Gradient移動を同じ実時間サンプルで評価する。
@@ -49,13 +48,12 @@
 継続生成する確認用Scene。Preview上のUIや固定比較表示は持たない。
 
 Paletteは `cross_flare/palettes/` 直下のShaderMaterial `.tres` を起動時に自動取得する。
-各個体のVariant、Size、Brightness、Angle、Duration、Color Flow Offset、Breakup、Halo等は
-`cross_flare_preview_randomization.tres` を使って決定する。
+Palette、Spawn位置、Spawn間隔はPreviewが決定する。CrossFlareのVariant、Size、Brightness、
+Angle、Duration、Color Flow Offset、Breakup、Halo等の個体差は、CrossFlare自身が生成時に決定する。
 初期個体は再生時刻をずらして生成され、通常Spawnは0秒から再生する。
 終了したCrossFlareはPreview側で自動解放する。
 
-Palette、Randomization Resource、初期生成数、最大同時数、Spawn間隔、画面端Margin、
-SeedなどはPreview本体またはResourceのInspectorで調整する。
+初期生成数、最大同時数、Spawn間隔、画面端Margin、SeedなどはPreview本体のInspectorで調整する。
 
 ## 配色の編集
 
@@ -71,10 +69,9 @@ Flow Width Offsetで個体ごとに補正する。PaletteのShaderMaterial自体
 
 ## 個体ランダム化
 
-`CrossFlareRandomization` は、CrossFlareへ適用するランダム化設定だけを保持するResource。
-`apply_to(flare, rng)` を外部から明示的に呼び出したときだけ、渡された
-`RandomNumberGenerator` で値をサンプリングする。CrossFlare自身は自動的に乱数を生成せず、
-`play()` を繰り返しても設定値を再抽選しない。同じSeedを渡せば同じ個体設定を再現できる。
+CrossFlareは各パラメータの直後にRandom幅を持つ。RuntimeでNodeが生成された際に一度だけ、
+元の値へ±Random幅を加えて個体値を確定する。Random幅が0ならその値は固定される。
+`play()` や `seek()` では再抽選しない。Editorではランダム化せず、Inspectorの値をそのまま使用する。
 
 ## 回転と欠け
 
