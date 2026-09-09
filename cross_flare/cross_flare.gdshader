@@ -10,10 +10,13 @@ uniform float flow_position = 0.0;
 uniform float flow_width = 1.4;
 uniform float ring_color_offset : hint_range(0.0, 1.0) = 0.0;
 uniform float inner_color_offset : hint_range(0.0, 1.0) = 0.15;
+uniform float ring_peak_width : hint_range(0.01, 0.12) = 0.065;
+uniform float ring_min_width_ratio : hint_range(0.1, 0.8) = 0.4;
 instance uniform int variant = 1;
 instance uniform float flare_size = 1.0;
 instance uniform float brightness = 1.6;
-instance uniform float initial_angle = 0.0;
+// Initial angle, total rotation multiplier, deceleration start, strength.
+instance uniform vec4 rotation_profile = vec4(0.0, 1.0, 0.25, 0.9);
 instance uniform bool stepped = false;
 instance uniform float stepped_fps = 24.0;
 instance uniform float duration = 0.5;
@@ -46,7 +49,7 @@ float noise_value(float index) {
 	return fract(sin(index * 127.1 + breakup_seed * 311.7) * 43758.5453);
 }
 
-float arc_distance(float azimuth, float radius, float amount, float sector, float center) {
+float ring_weakness(float azimuth, float sector, float center) {
 	float count = clamp(floor(breakup_shape.z + 0.5), 3.0, 5.0);
 	float total_weight = 0.0;
 	for (int i = 0; i < 5; i++) {
@@ -55,21 +58,25 @@ float arc_distance(float azimuth, float radius, float amount, float sector, floa
 		}
 	}
 	float cursor = center - sector * 0.5;
-	float nearest_gap = 10.0;
+	float weakness = 0.0;
 	for (int i = 0; i < 5; i++) {
 		if (float(i) < count) {
 			float weight = mix(1.0, mix(0.35, 1.65, noise_value(float(i) + 31.0)), breakup_shape.w);
 			float cell = sector * weight / total_weight;
 			float jitter = (noise_value(float(i) + 1.0) - 0.5) * 0.18 * breakup_shape.w;
 			float location = cursor + (0.5 + jitter) * cell;
-			float half_gap = cell * breakup_time.z * 0.5
-				* mix(1.0, mix(0.25, 1.0, noise_value(float(i) + 11.0)), breakup_shape.w) * amount;
+			float spread = cell * mix(0.12, 0.42, breakup_time.z / 0.65)
+				* mix(1.0, mix(0.55, 1.0, noise_value(float(i) + 11.0)), breakup_shape.w);
 			float delta = abs(atan(sin(azimuth - location), cos(azimuth - location)));
-			nearest_gap = min(nearest_gap, (delta - half_gap) * radius);
+			float strength = mix(1.0, mix(0.6, 1.4, noise_value(float(i) + 51.0)), breakup_shape.w);
+			weakness += strength * exp(-pow(delta / max(spread, 0.001), 2.0));
 			cursor += cell;
 		}
 	}
-	return -nearest_gap;
+	float from_center = abs(atan(sin(azimuth - center), cos(azimuth - center)));
+	float sector_mask = sector > 6.28 ? 1.0
+		: 1.0 - smoothstep(sector * 0.45, sector * 0.5, from_center);
+	return weakness * sector_mask;
 }
 
 vec2 rotate_point(vec2 point, float angle) {
@@ -78,22 +85,42 @@ vec2 rotate_point(vec2 point, float angle) {
 	return mat2(vec2(c, -s), vec2(s, c)) * point;
 }
 
+float rotation_progress(float age) {
+	float start = clamp(rotation_profile.z, 0.0, 0.8);
+	float strength = clamp(rotation_profile.w, 0.0, 0.95);
+	strength *= variant == 1 ? 1.0 : (variant == 2 ? 0.85 : 0.9);
+	float span = 1.0 - start;
+	float u = clamp((age - start) / span, 0.0, 1.0);
+	// Integral of a smooth speed reduction; normalize to retain the total angle.
+	float travel = age - strength * span * (u * u * u - 0.5 * u * u * u * u);
+	float total = 1.0 - strength * span * 0.5;
+	float acceleration = variant == 0 ? min(0.16, start * 0.8) : 0.0;
+	if (acceleration > 0.0) {
+		float a = clamp(age / acceleration, 0.0, 1.0);
+		float ramp = a - a * a * a + 0.5 * a * a * a * a;
+		travel -= 0.65 * acceleration * ramp;
+		total -= 0.65 * acceleration * 0.5;
+	}
+	return travel / total * rotation_profile.y;
+}
+
 vec4 motion_at(float age) {
+	float rotation = rotation_progress(age);
 	float growth = smoothstep(0.0, 0.36, age);
 	float contraction = 1.0 - smoothstep(0.76, 1.0, age);
 	float shortening = 1.0 - smoothstep(0.46, 0.9, age);
 	float long_arm = max(0.001, 0.68 * growth * contraction);
 	float short_arm = max(0.001, long_arm * mix(0.015, 0.93, shortening));
 	float width = max(0.001, 0.055 * growth * (1.0 - smoothstep(0.38, 1.0, age)));
-	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * age);
+	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * rotation);
 	if (variant == 1) {
-		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * age);
+		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * rotation);
 	} else if (variant == 2) {
 		float squash = smoothstep(0.045, 0.13, age) * (1.0 - smoothstep(0.24, 0.34, age));
 		float burst = exp(-pow((age - 0.36) / 0.075, 2.0));
 		pose.y *= mix(1.0, 0.22, squash);
 		pose.z += 0.09 * squash + 0.23 * burst;
-		pose.w = 1.7 * age;
+		pose.w = 1.7 * rotation;
 	}
 	return pose;
 }
@@ -106,23 +133,30 @@ float cross_distance(vec2 point, vec2 reach, float width) {
 }
 
 vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
-		float breakup, float palette_offset, float sector, float center,
+		float decay_start, float decay_end, float palette_offset, float sector, float center,
 		float sampled_elapsed) {
 	float azimuth = atan(point.y, point.x);
 	float thickness_bias = pow(0.5 + 0.5 * cos(azimuth - thick_angle), 1.2);
-	float taper = mix(mix(0.28, 0.10, breakup), 1.0, thickness_bias);
-	float width = 0.042 * taper;
+	float age = sampled_elapsed / duration;
+	float taper = mix(0.28, 1.0, thickness_bias);
+	float growth = smoothstep(0.015, max(0.04, min(0.22, decay_start)), age);
+	float decay = smoothstep(decay_start, decay_end, age);
+	float weakness = ring_weakness(azimuth, sector, center);
+	// Preserve the angular thickness profile; below the width floor, fade coverage instead.
+	float remaining = max(0.0, taper * (1.0 - decay) - weakness * decay * 0.8);
+	float energy = remaining / taper;
+	float width_energy = max(ring_min_width_ratio, energy);
+	float opacity = smoothstep(0.0, ring_min_width_ratio, energy);
+	float width = ring_peak_width * growth * taper * width_energy;
 	float ring_distance = abs(length(point) - radius) - width;
-	if (breakup > 0.0) {
-		float cut = arc_distance(azimuth, radius, breakup, sector, center);
-		ring_distance = mix(ring_distance, max(ring_distance, cut), smoothstep(0.0, 0.15, breakup));
-	}
-	float aa = max(fwidth(ring_distance), 0.001) + edge_style.x;
+	float pixel_width = 0.5 * (length(dFdx(point)) + length(dFdy(point)));
+	float aa = max(pixel_width, 0.001) + edge_style.x;
 	float line = 1.0 - smoothstep(-aa, aa, ring_distance);
 	float outside = max(ring_distance, 0.0);
-	float haze = exp(-outside * outside / 0.0004) * edge_style.y * taper;
+	float haze_width = max(0.002, 0.02 * sqrt(width_energy) * growth);
+	float haze = exp(-pow(outside / haze_width, 2.0)) * edge_style.y * taper;
 	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
-	return tint * (line + haze);
+	return tint * (line + haze) * growth * opacity;
 }
 
 void vertex() {
@@ -147,7 +181,7 @@ void fragment() {
 
 	vec4 pose = motion_at(sampled_progress);
 	vec2 color_plane = (UV * 2.0 - 1.0) * 1.2;
-	vec2 point = rotate_point(color_plane, initial_angle);
+	vec2 point = rotate_point(color_plane, rotation_profile.x);
 	vec2 q = rotate_point(point, pose.w);
 	float shape_distance = cross_distance(q, pose.xy, pose.z);
 	// abs/min at the thin centerline cancel screen derivatives. Use the
@@ -170,10 +204,8 @@ void fragment() {
 	if (variant > 0) {
 		float expansion = smoothstep(0.0666667, 0.3866667, sampled_progress);
 		float radius = mix(0.07, 0.77, expansion);
-		float ring_fade = smoothstep(0.0533333, 0.1333333, sampled_progress)
-			* (1.0 - smoothstep(0.3333333, 0.4666667, sampled_progress));
-		float breakup = smoothstep(breakup_time.x, max(breakup_time.x + 0.001, breakup_time.y),
-			sampled_progress);
+		float decay_start = max(0.04, breakup_time.x - 0.035);
+		float decay_end = max(decay_start + 0.08, breakup_time.y + 0.07);
 		vec2 ring_point = point;
 		float thick_angle = 0.0;
 		if (variant == 1) {
@@ -187,15 +219,13 @@ void fragment() {
 		if (variant == 2 && breakup_time.w < 0.5) {
 			sector = TAU;
 		}
-		radiance += crescent(ring_point, color_plane, radius, thick_angle, breakup,
-			ring_color_offset, sector, thick_angle + breakup_shape.x, sampled_elapsed) * ring_fade;
+		radiance += crescent(ring_point, color_plane, radius, thick_angle, decay_start, decay_end,
+			ring_color_offset, sector, thick_angle + breakup_shape.x, sampled_elapsed);
 		if (variant == 2) {
 			float inner_radius = radius * 0.53;
-			float inner_fade = 1.0 - smoothstep(0.2666667, 0.3333333, sampled_progress);
 			radiance += crescent(ring_point, color_plane, inner_radius, thick_angle + PI,
-				smoothstep(0.2666667, 0.3333333, sampled_progress),
-				ring_color_offset + inner_color_offset, 2.8, thick_angle + TAU, sampled_elapsed)
-				* ring_fade * inner_fade;
+				decay_start * 0.72, decay_end * 0.72,
+				ring_color_offset + inner_color_offset, 2.8, thick_angle + TAU, sampled_elapsed);
 		}
 	}
 	float border = 1.0 - smoothstep(1.1, 1.2, max(abs(color_plane.x), abs(color_plane.y)));

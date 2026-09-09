@@ -42,9 +42,24 @@ const MIN_DURATION: float = 0.1
 @export_range(-180.0, 180.0, 1.0, "degrees") var angle: float = 0.0:
 	set(value):
 		angle = value
-		set_instance_shader_parameter(&"initial_angle", deg_to_rad(value))
+		_update_rotation()
 
 @export_range(0.0, 180.0, 1.0, "degrees") var angle_random: float = 180.0
+
+@export_range(0.0, 2.0, 0.01) var rotation_amount: float = 1.0:
+	set(value):
+		rotation_amount = value
+		_update_rotation()
+
+@export_range(0.0, 0.8, 0.01) var rotation_slowdown_start: float = 0.25:
+	set(value):
+		rotation_slowdown_start = value
+		_update_rotation()
+
+@export_range(0.0, 0.95, 0.01) var rotation_slowdown_strength: float = 0.9:
+	set(value):
+		rotation_slowdown_strength = value
+		_update_rotation()
 
 @export_range(MIN_DURATION, 1.0, 0.01, "suffix:s") var duration: float = 0.5:
 	set(value):
@@ -225,7 +240,7 @@ func _ready() -> void:
 	set_instance_shader_parameter(&"variant", variant)
 	set_instance_shader_parameter(&"flare_size", size)
 	set_instance_shader_parameter(&"brightness", brightness)
-	set_instance_shader_parameter(&"initial_angle", deg_to_rad(angle))
+	_update_rotation()
 	set_instance_shader_parameter(&"stepped", stepped)
 	set_instance_shader_parameter(&"stepped_fps", stepped_fps)
 	set_instance_shader_parameter(&"duration", duration)
@@ -266,3 +281,8 @@ func _update_style() -> void:
 		Vector4(split_start, split_end, gap_ratio, 0.0 if double_full_circle else 1.0))
 	set_instance_shader_parameter(&"breakup_seed", float(split_seed))
 	set_instance_shader_parameter(&"edge_style", Vector2(edge_softness, halo_strength))
+
+
+func _update_rotation() -> void:
+	set_instance_shader_parameter(&"rotation_profile", Vector4(deg_to_rad(angle),
+		rotation_amount, rotation_slowdown_start, rotation_slowdown_strength))

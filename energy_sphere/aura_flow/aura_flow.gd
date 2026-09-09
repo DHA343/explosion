@@ -253,15 +253,15 @@ var view_falloff_power: float = 2.1:
 
 @export_group("Particles")
 
-@export_range(256, 6000, 1)
-var cyan_amount: int = 1100:
+@export_range(1, 6000, 1)
+var cyan_amount: int = 2000:
 	set(value):
 		cyan_amount = value
 		if is_node_ready():
 			_sync_effect()
 
-@export_range(256, 6000, 1)
-var purple_amount: int = 850:
+@export_range(1, 6000, 1)
+var purple_amount: int = 2000:
 	set(value):
 		purple_amount = value
 		if is_node_ready():

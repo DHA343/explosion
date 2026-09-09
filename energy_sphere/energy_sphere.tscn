@@ -230,11 +230,7 @@ haze_lifetime_fade_start = 0.0
 haze_dilution_power = 1.0
 view_front_visibility = 0.25
 view_falloff_power = 1.3
-cyan_amount = 3000
-purple_amount = 3000
-particle_size_min_ratio = 0.01
-particle_size_max_ratio = 0.024
-particle_opacity = 0.35
+particle_opacity = 0.6
 particle_emission_strength = 2.0
 
 [node name="DistortionShell" type="MeshInstance3D" parent="." unique_id=165995023]
