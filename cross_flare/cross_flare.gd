@@ -15,14 +15,14 @@ const MIN_DURATION: float = 0.1
 @export var variant: Variant = Variant.SINGLE_RING:
 	set(value):
 		variant = value
-		set_instance_shader_parameter(&"variant", value)
+		_update_variant_size_parameters()
 
 @export var variant_random: bool = true
 
 @export_range(0.05, 20.0, 0.05, "suffix:m") var size: float = 1.0:
 	set(value):
 		size = value
-		set_instance_shader_parameter(&"flare_size", value)
+		_update_variant_size_parameters()
 		custom_aabb = AABB(Vector3.ONE * -value * 1.5, Vector3.ONE * value * 3.0)
 
 @export_range(0.0, 20.0, 0.05, "suffix:m") var size_random: float = 0.225
@@ -74,12 +74,12 @@ const MIN_DURATION: float = 0.1
 @export var stepped: bool = false:
 	set(value):
 		stepped = value
-		set_instance_shader_parameter(&"stepped", value)
+		_update_stepped_parameters()
 
 @export_range(1.0, 60.0, 1.0, "suffix:fps") var stepped_fps: float = 24.0:
 	set(value):
 		stepped_fps = clampf(value, 1.0, 60.0)
-		set_instance_shader_parameter(&"stepped_fps", stepped_fps)
+		_update_stepped_parameters()
 
 @export_group("Color Flow")
 @export var flow_speed_offset: float = 0.0:
@@ -237,12 +237,10 @@ func _ready() -> void:
 		material_override = palette
 
 	_update_style()
-	set_instance_shader_parameter(&"variant", variant)
-	set_instance_shader_parameter(&"flare_size", size)
+	_update_variant_size_parameters()
 	set_instance_shader_parameter(&"brightness", brightness)
 	_update_rotation()
-	set_instance_shader_parameter(&"stepped", stepped)
-	set_instance_shader_parameter(&"stepped_fps", stepped_fps)
+	_update_stepped_parameters()
 	set_instance_shader_parameter(&"duration", duration)
 	set_instance_shader_parameter(&"flow_speed_offset", flow_speed_offset)
 	set_instance_shader_parameter(&"flow_direction_offset", deg_to_rad(flow_direction_offset))
@@ -284,7 +282,16 @@ func _update_style() -> void:
 
 
 func _update_halo_parameters() -> void:
-	set_instance_shader_parameter(&"halo_parameters", Vector2(halo_strength, halo_width))
+	set_instance_shader_parameter(&"halo_strength", halo_strength)
+	set_instance_shader_parameter(&"halo_width", halo_width)
+
+
+func _update_variant_size_parameters() -> void:
+	set_instance_shader_parameter(&"variant_size", Vector2(variant, size))
+
+
+func _update_stepped_parameters() -> void:
+	set_instance_shader_parameter(&"stepped_parameters", Vector2(1.0 if stepped else 0.0, stepped_fps))
 
 
 func _update_rotation() -> void:

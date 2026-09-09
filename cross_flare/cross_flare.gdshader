@@ -12,13 +12,10 @@ uniform float ring_color_offset : hint_range(0.0, 1.0) = 0.0;
 uniform float inner_color_offset : hint_range(0.0, 1.0) = 0.15;
 uniform float ring_peak_width : hint_range(0.01, 0.12) = 0.065;
 uniform float ring_min_width_ratio : hint_range(0.1, 0.8) = 0.4;
-instance uniform int variant = 1;
-instance uniform float flare_size = 1.0;
+instance uniform vec2 variant_size = vec2(1.0, 1.0);
 instance uniform float brightness = 1.6;
 // Initial angle, total rotation multiplier, deceleration start, strength.
 instance uniform vec4 rotation_profile = vec4(0.0, 1.0, 0.25, 0.9);
-instance uniform bool stepped = false;
-instance uniform float stepped_fps = 24.0;
 instance uniform float duration = 0.5;
 instance uniform float flow_speed_offset = 0.0;
 instance uniform float flow_direction_offset = 0.0;
@@ -28,9 +25,10 @@ instance uniform float flow_width_offset = 0.0;
 instance uniform vec4 breakup_shape = vec4(3.14159, 2.8, 4.0, 0.65);
 instance uniform vec4 breakup_time = vec4(0.29, 0.40, 0.55, 0.0);
 instance uniform float breakup_seed = 1.0;
-// Godot supports 16 instance uniform slots; keep both per-instance Halo values
-// together so the existing CrossFlare instance API can fit within that limit.
-instance uniform vec2 halo_parameters = vec2(0.3, 0.03);
+// Stepped state and its sampling rate are updated together by CrossFlare.
+instance uniform vec2 stepped_parameters = vec2(0.0, 24.0);
+instance uniform float halo_strength = 0.3;
+instance uniform float halo_width = 0.03;
 
 vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
 		float extra_offset, float sampled_elapsed) {
@@ -45,6 +43,10 @@ vec3 sample_flow_gradient(sampler2D gradient_texture, vec2 point,
 		+ extra_offset
 		- centered_elapsed * final_flow_speed;
 	return texture(gradient_texture, vec2(clamp(position, 0.0, 1.0), 0.5)).rgb;
+}
+
+int variant_value() {
+	return int(variant_size.x + 0.5);
 }
 
 float noise_value(float index) {
@@ -90,13 +92,13 @@ vec2 rotate_point(vec2 point, float angle) {
 float rotation_progress(float age) {
 	float start = clamp(rotation_profile.z, 0.0, 0.8);
 	float strength = clamp(rotation_profile.w, 0.0, 0.95);
-	strength *= variant == 1 ? 1.0 : (variant == 2 ? 0.85 : 0.9);
+	strength *= variant_value() == 1 ? 1.0 : (variant_value() == 2 ? 0.85 : 0.9);
 	float span = 1.0 - start;
 	float u = clamp((age - start) / span, 0.0, 1.0);
 	// Integral of a smooth speed reduction; normalize to retain the total angle.
 	float travel = age - strength * span * (u * u * u - 0.5 * u * u * u * u);
 	float total = 1.0 - strength * span * 0.5;
-	float acceleration = variant == 0 ? min(0.16, start * 0.8) : 0.0;
+	float acceleration = variant_value() == 0 ? min(0.16, start * 0.8) : 0.0;
 	if (acceleration > 0.0) {
 		float a = clamp(age / acceleration, 0.0, 1.0);
 		float ramp = a - a * a * a + 0.5 * a * a * a * a;
@@ -115,9 +117,9 @@ vec4 motion_at(float age) {
 	float short_arm = max(0.001, long_arm * mix(0.015, 0.93, shortening));
 	float width = max(0.001, 0.055 * growth * (1.0 - smoothstep(0.38, 1.0, age)));
 	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + 2.0 * rotation);
-	if (variant == 1) {
+	if (variant_value() == 1) {
 		pose = vec4(short_arm, long_arm, width, -0.8 + 1.6 * rotation);
-	} else if (variant == 2) {
+	} else if (variant_value() == 2) {
 		float squash = smoothstep(0.045, 0.13, age) * (1.0 - smoothstep(0.24, 0.34, age));
 		float burst = exp(-pow((age - 0.36) / 0.075, 2.0));
 		pose.y *= mix(1.0, 0.22, squash);
@@ -159,13 +161,12 @@ vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
 	float opacity = smoothstep(0.0, ring_min_width_ratio, energy);
 	float width = ring_peak_width * growth * taper * width_energy;
 	float ring_distance = abs(length(point) - radius) - width;
-	float pixel_width = 0.5 * (length(dFdx(point)) + length(dFdy(point)));
-	float aa = max(pixel_width, 0.001);
+	float aa = max(fwidth(ring_distance), 0.001);
 	float line = 1.0 - smoothstep(-aa, aa, ring_distance);
 	float outside = max(ring_distance, 0.0);
-	float ring_halo_width = max(halo_parameters.y * 0.7, 0.001);
+	float ring_halo_width = max(halo_width * 0.7, 0.001);
 	float halo_distance = outside / ring_halo_width;
-	float haze = exp(-halo_distance * halo_distance) * halo_parameters.x * taper;
+	float haze = exp(-halo_distance * halo_distance) * halo_strength * taper;
 	vec3 tint = sample_flow_gradient(ring_gradient, color_point, palette_offset, sampled_elapsed);
 	return tint * (line + haze) * growth * opacity;
 }
@@ -175,15 +176,15 @@ void vertex() {
 		length(MODEL_MATRIX[2].xyz));
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0] * world_scale.x,
 		INV_VIEW_MATRIX[1] * world_scale.y, INV_VIEW_MATRIX[2] * world_scale.z, MODEL_MATRIX[3]);
-	VERTEX *= flare_size * 1.2;
+	VERTEX *= variant_size.y * 1.2;
 }
 
 void fragment() {
 	float raw_progress = clamp(progress, 0.0, 1.0);
 	float raw_elapsed = raw_progress * duration;
 	float sampled_elapsed = raw_elapsed;
-	if (stepped) {
-		sampled_elapsed = floor(raw_elapsed * stepped_fps + 0.00001) / stepped_fps;
+	if (stepped_parameters.x > 0.5) {
+		sampled_elapsed = floor(raw_elapsed * stepped_parameters.y + 0.00001) / stepped_parameters.y;
 	}
 	sampled_elapsed = min(sampled_elapsed, duration);
 	float sampled_progress = duration > 0.0
@@ -201,8 +202,8 @@ void fragment() {
 	float aa = max(pixel_width, 0.001);
 	float body = 1.0 - smoothstep(-aa, aa, shape_distance);
 	float outside = max(shape_distance, 0.0);
-	float halo_distance = outside / max(halo_parameters.y, 0.001);
-	float halo = exp(-halo_distance * halo_distance) * halo_parameters.x;
+	float halo_distance = outside / max(halo_width, 0.001);
+	float halo = exp(-halo_distance * halo_distance) * halo_strength;
 	vec3 tint = sample_flow_gradient(cross_gradient, color_plane, 0.0, sampled_elapsed);
 	vec3 center_tint = sample_flow_gradient(cross_gradient, vec2(0.0), 0.0, sampled_elapsed);
 	float fade = smoothstep(0.0, 0.0466667, sampled_progress)
@@ -212,14 +213,14 @@ void fragment() {
 	radiance += mix(center_tint, vec3(1.0), 0.5) * spark
 		* (1.0 - smoothstep(0.0, 0.1333333, sampled_progress))
 		* smoothstep(0.0, 0.015, sampled_progress);
-	if (variant > 0) {
+	if (variant_value() > 0) {
 		float expansion = smoothstep(0.0666667, 0.3866667, sampled_progress);
 		float radius = mix(0.07, 0.77, expansion);
 		float decay_start = max(0.04, breakup_time.x - 0.035);
 		float decay_end = max(decay_start + 0.08, breakup_time.y + 0.07);
 		vec2 ring_point = point;
 		float thick_angle = 0.0;
-		if (variant == 1) {
+		if (variant_value() == 1) {
 			ring_point = rotate_point(point, mix(-0.7, 0.15, expansion));
 			ring_point.x /= mix(0.35, 0.92, expansion);
 			thick_angle = -0.5;
@@ -227,12 +228,12 @@ void fragment() {
 			ring_point.x /= 0.86;
 		}
 		float sector = breakup_shape.y;
-		if (variant == 2 && breakup_time.w < 0.5) {
+		if (variant_value() == 2 && breakup_time.w < 0.5) {
 			sector = TAU;
 		}
 		radiance += crescent(ring_point, color_plane, radius, thick_angle, decay_start, decay_end,
 			ring_color_offset, sector, thick_angle + breakup_shape.x, sampled_elapsed);
-		if (variant == 2) {
+		if (variant_value() == 2) {
 			float inner_radius = radius * 0.53;
 			radiance += crescent(ring_point, color_plane, inner_radius, thick_angle + PI,
 				decay_start * 0.72, decay_end * 0.72,
