@@ -8,19 +8,22 @@ const FLARE_HALF_EXTENT_SCALE: float = 1.5
 @export var enabled: bool = true
 @export_range(0.0, 1000.0, 1.0, "suffix:/s") var spawn_rate: float = 10.0
 @export_range(0.0, 1.0, 0.01) var spawn_interval_random_ratio: float = 0.2
-@export_range(1, 100, 1) var max_active_count: int = 50
+@export_range(1, 500, 1) var max_active_count: int = 100
 
 @export_group("Spawn Area")
 @export_node_path("Node3D") var energy_sphere_path: NodePath = NodePath("../EnergySphere")
-@export_range(0.0, 100.0, 0.1) var spawn_distance_min: float = 0.5
-@export_range(0.0, 100.0, 0.1) var spawn_distance_max: float = 10.0
+@export_range(0.0, 10.0, 0.1, "suffix:m") var inner_radius: float = 0.5
+@export_range(0.0, 10.0, 0.1, "suffix:m") var outer_radius: float = 10.0
+@export_range(0.0, 10.0, 0.1, "suffix:m") var top_height: float = 1.0
+@export_range(-10.0, 0.0, 0.1, "suffix:m") var bottom_height: float = -1.0
 @export var ground_y: float = 0.0
-@export_range(0.0, 1.0, 0.01) var ground_clearance: float = 0.1
+@export_range(0.0, 1.0, 0.01, "suffix:m") var ground_clearance: float = 0.1
 
 var _active_flares: Array[CrossFlare] = []
 var _spawn_time_remaining: float = 0.0
 var _rng := RandomNumberGenerator.new()
 var _reported_missing_energy_sphere: bool = false
+var _reported_invalid_spawn_area: bool = false
 @onready var _energy_sphere: Node3D = get_node_or_null(energy_sphere_path)
 
 
@@ -73,33 +76,54 @@ func _spawn_one() -> void:
 
 	flare.autoplay = false
 	add_child(flare)
-	flare.global_position = _get_spawn_position(flare)
+	var spawn_position: Variant = _get_spawn_position(flare)
+	if spawn_position == null:
+		flare.queue_free()
+		return
+
+	flare.global_position = spawn_position
 	flare.finished.connect(_on_flare_finished.bind(flare))
 	_active_flares.append(flare)
 	flare.play()
 
 
-func _get_spawn_position(flare: CrossFlare) -> Vector3:
-	var minimum_distance := maxf(spawn_distance_min, 0.0)
-	var maximum_distance := maxf(spawn_distance_max, 0.0)
-	if minimum_distance > maximum_distance:
-		var distance_swap := minimum_distance
-		minimum_distance = maximum_distance
-		maximum_distance = distance_swap
+func _get_spawn_position(flare: CrossFlare) -> Variant:
+	var minimum_radius := maxf(inner_radius, 0.0)
+	var maximum_radius := maxf(outer_radius, 0.0)
+	if minimum_radius > maximum_radius:
+		var radius_swap := minimum_radius
+		minimum_radius = maximum_radius
+		maximum_radius = radius_swap
 
-	var direction := Vector3.ZERO
-	while direction.length_squared() < 0.0001:
-		direction = Vector3(
-			_rng.randf_range(-1.0, 1.0),
-			_rng.randf_range(-1.0, 1.0),
-			_rng.randf_range(-1.0, 1.0))
-	direction = direction.normalized()
+	var minimum_height := bottom_height
+	var maximum_height := top_height
+	if minimum_height > maximum_height:
+		var height_swap := minimum_height
+		minimum_height = maximum_height
+		maximum_height = height_swap
 
-	var position := _energy_sphere.global_position + direction * _rng.randf_range(
-		minimum_distance, maximum_distance)
-	var minimum_center_y := ground_y + _get_flare_half_extent(flare) + maxf(ground_clearance, 0.0)
-	position.y = maxf(position.y, minimum_center_y)
-	return position
+	var center := _energy_sphere.global_position
+	var minimum_ground_y := (
+		ground_y
+		+ _get_flare_half_extent(flare)
+		+ maxf(ground_clearance, 0.0)
+	)
+	var effective_bottom_y := maxf(center.y + minimum_height, minimum_ground_y)
+	var effective_top_y := center.y + maximum_height
+	if effective_bottom_y > effective_top_y:
+		_report_invalid_spawn_area_warning()
+		return null
+
+	var radius_squared := _rng.randf_range(
+		minimum_radius * minimum_radius,
+		maximum_radius * maximum_radius
+	)
+	var radius := sqrt(radius_squared)
+	var angle := _rng.randf_range(0.0, TAU)
+	return Vector3(
+		center.x + cos(angle) * radius,
+		_rng.randf_range(effective_bottom_y, effective_top_y),
+		center.z + sin(angle) * radius)
 
 
 func _get_next_spawn_interval() -> float:
@@ -134,3 +158,10 @@ func _report_missing_energy_sphere() -> void:
 		return
 	_reported_missing_energy_sphere = true
 	push_error("CrossFlareSpawner requires an EnergySphere Node3D reference.")
+
+
+func _report_invalid_spawn_area_warning() -> void:
+	if _reported_invalid_spawn_area:
+		return
+	_reported_invalid_spawn_area = true
+	push_warning("CrossFlareSpawner has no spawnable height above the ground.")

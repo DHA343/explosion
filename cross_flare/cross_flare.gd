@@ -38,6 +38,8 @@ const MIN_TIMING_SPAN: float = 0.001
 		palette = value
 		material_override = value
 
+@export var palettes: Array[CrossFlarePalette] = []
+
 @export_group("Rotation")
 @export_range(-180.0, 180.0, 1.0, "degrees") var angle: float = 0.0:
 	set(value):
@@ -248,6 +250,10 @@ var _flow_position: float = 0.0
 
 func _ready() -> void:
 	if not Engine.is_editor_hint():
+		var selected_palette := _select_random_palette()
+		if selected_palette != null:
+			palette = selected_palette
+
 		if variant_random:
 			variant = randi_range(Variant.CROSS_ONLY, Variant.DOUBLE_RING)
 		size *= 1.0 + randf_range(-size_random_ratio, size_random_ratio)
@@ -267,8 +273,6 @@ func _ready() -> void:
 
 	if palette == null:
 		push_error("CrossFlare requires a CrossFlarePalette resource.")
-	else:
-		material_override = palette
 
 	_update_style()
 	_update_variant_size_parameters()
@@ -303,6 +307,27 @@ func seek(seconds: float) -> void:
 	_elapsed = clampf(seconds, 0.0, duration)
 	var progress := _elapsed / duration
 	set_instance_shader_parameter(&"progress", progress)
+
+
+func _select_random_palette() -> CrossFlarePalette:
+	var total_weight: float = 0.0
+	for candidate in palettes:
+		if candidate != null:
+			total_weight += maxf(candidate.selection_weight, 0.0)
+
+	if total_weight <= 0.0:
+		return null
+
+	var roll := randf() * total_weight
+	for candidate in palettes:
+		if candidate == null or candidate.selection_weight <= 0.0:
+			continue
+
+		roll -= maxf(candidate.selection_weight, 0.0)
+		if roll <= 0.0:
+			return candidate
+
+	return null
 
 
 func _update_style() -> void:

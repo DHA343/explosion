@@ -2,6 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dhc0c3xw47qt8" path="res://cross_flare/cross_flare.gd" id="1"]
 [ext_resource type="Material" uid="uid://dmuu2sah4gduj" path="res://cross_flare/palettes/cmy.tres" id="2"]
+[ext_resource type="Material" uid="uid://fesc4vkflwgp" path="res://cross_flare/palettes/magenta.tres" id="3"]
+[ext_resource type="Script" uid="uid://cefvi7v5pswad" path="res://cross_flare/cross_flare_palette.gd" id="3_xxy16"]
+[ext_resource type="Material" uid="uid://cnifme7i5l3us" path="res://cross_flare/palettes/orange.tres" id="4"]
+[ext_resource type="Material" uid="uid://ex131y84oy52" path="res://cross_flare/palettes/white.tres" id="5"]
+[ext_resource type="Material" uid="uid://336ffap8lfvw" path="res://cross_flare/palettes/yellow.tres" id="6"]
 
 [sub_resource type="QuadMesh" id="Quad"]
 size = Vector2(2, 2)
@@ -9,7 +14,7 @@ size = Vector2(2, 2)
 [node name="CrossFlare" type="MeshInstance3D" unique_id=1361283627]
 material_override = ExtResource("2")
 cast_shadow = 0
-custom_aabb = AABB(-0.3, -0.3, -0.3, 0.6, 0.6, 0.6)
+custom_aabb = AABB(-0.375, -0.375, -0.375, 0.75, 0.75, 0.75)
 instance_shader_parameters/breakup_seed = 1.0
 instance_shader_parameters/breakup_shape = Vector4(3.1415927, 2.7925267, 4, 0.65)
 instance_shader_parameters/breakup_time = Vector4(0.18, 0.55, 0.85, 0)
@@ -25,15 +30,18 @@ instance_shader_parameters/rotation_slowdown = Vector2(0.4, 1.6)
 instance_shader_parameters/rotation_speed_radians = 7.5
 instance_shader_parameters/stepped_parameters = Vector2(1, 24)
 instance_shader_parameters/tail_parameters = Vector4(0, 0.84, 6, 0.65)
-instance_shader_parameters/variant_size = Vector2(1, 0.2)
+instance_shader_parameters/variant_size = Vector2(1, 0.25)
 mesh = SubResource("Quad")
 script = ExtResource("1")
-size = 0.2
+size = 0.25
+size_random_ratio = 0.5
 palette = ExtResource("2")
+palettes = Array[ExtResource("3_xxy16")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6")])
 rotation_speed = 7.5
 rotation_final_speed_ratio = 0.4
 rotation_slowdown_power = 1.6
 duration = 0.4
+duration_random_ratio = 0.2
 ring_peak_width = 0.12
 ring_min_width_ratio = 0.25
 split_start = 0.18
