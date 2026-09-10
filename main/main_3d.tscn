@@ -66,10 +66,10 @@ script = ExtResource("1_main")
 environment = SubResource("Environment_night")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=792399058]
-transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 160)
+transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 147.20157)
 cull_mask = 1048573
 current = true
-fov = 52.0
+fov = 50.0
 far = 2000.0
 script = ExtResource("5_camera")
 focus_point = Vector3(0, 60, 0)
@@ -90,12 +90,12 @@ mesh = SubResource("PlaneMesh_ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75, 0)
 
 [node name="EnergySphere" parent="." unique_id=252090666 instance=ExtResource("6_energy_sphere")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 158.14853)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 145.3501)
 radius = 0.15000000000000002
 
 [node name="CrossFlareSpawner" type="Node3D" parent="." unique_id=1893553781]
 script = ExtResource("7_cross_flare_spawner")
-spawn_rate = 259.0
+spawn_rate = 54.0
 spawn_interval_random_ratio = 0.5
 max_active_count = 500
 inner_radius = 0.3

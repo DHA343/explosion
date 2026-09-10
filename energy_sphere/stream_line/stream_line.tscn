@@ -1,0 +1,322 @@
+[gd_scene format=4 uid="uid://gcp83y8ofbnc"]
+
+[ext_resource type="Script" uid="uid://bv4edtefr0jia" path="res://energy_sphere/stream_line/stream_line.gd" id="1_stream"]
+[ext_resource type="Script" uid="uid://d10pq6abbbqtk" path="res://energy_sphere/stream_line/stream_line_element.gd" id="2_element"]
+[ext_resource type="Shader" uid="uid://x370j51q0bvc" path="res://energy_sphere/stream_line/stream_line.gdshader" id="2_l0hyw"]
+
+[sub_resource type="Curve3D" id="Curve3D_guide"]
+_data = {
+"points": PackedVector3Array(-2.4, 1.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t6ugu"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.08, 0.72, 1, 1)
+shader_parameter/line_intensity = 2.0
+shader_parameter/line_kind = 0.0
+shader_parameter/line_width = 0.07
+shader_parameter/line_offset = -0.09
+shader_parameter/line_wave_amplitude = 0.025
+shader_parameter/line_wave_phase = 0.03
+shader_parameter/line_noise_offset = Vector2(4.73, 9.89)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_4b30j"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 3, 1e-05, 1e-05),
+"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAP/Hw8DwAAAAA8fDwPAAAgD/x8HA9AAAAAPHwcD0AAIA/tbS0PQAAAAC1tLQ9AACAP/Hw8D0AAAAA8fDwPQAAgD+XlhY+AAAAAJeWFj4AAIA/tbQ0PgAAAAC1tDQ+AACAP9PSUj4AAAAA09JSPgAAgD/x8HA+AAAAAPHwcD4AAIA/iIeHPgAAAACIh4c+AACAP5eWlj4AAAAAl5aWPgAAgD+mpaU+AAAAAKalpT4AAIA/tbS0PgAAAAC1tLQ+AACAP8TDwz4AAAAAxMPDPgAAgD/T0tI+AAAAANPS0j4AAIA/4uHhPgAAAADi4eE+AACAP/Hw8D4AAAAA8fDwPgAAgD8AAAA/AAAAAAAAAD8AAIA/iIcHPwAAAACIhwc/AACAPw8PDz8AAAAADw8PPwAAgD+XlhY/AAAAAJeWFj8AAIA/Hh4ePwAAAAAeHh4/AACAP6alJT8AAAAApqUlPwAAgD8tLS0/AAAAAC0tLT8AAIA/tbQ0PwAAAAC1tDQ/AACAPzw8PD8AAAAAPDw8PwAAgD/Ew0M/AAAAAMTDQz8AAIA/S0tLPwAAAABLS0s/AACAP9PSUj8AAAAA09JSPwAAgD9aWlo/AAAAAFpaWj8AAIA/4uFhPwAAAADi4WE/AACAP2lpaT8AAAAAaWlpPwAAgD/x8HA/AAAAAPHwcD8AAIA/eHh4PwAAAAB4eHg/AACAPwAAgD8AAAAAAACAPwAAgD8="),
+"format": 34359742487,
+"index_count": 204,
+"index_data": PackedByteArray("AAABAAIAAQADAAIAAgADAAQAAwAFAAQABAAFAAYABQAHAAYABgAHAAgABwAJAAgACAAJAAoACQALAAoACgALAAwACwANAAwADAANAA4ADQAPAA4ADgAPABAADwARABAAEAARABIAEQATABIAEgATABQAEwAVABQAFAAVABYAFQAXABYAFgAXABgAFwAZABgAGAAZABoAGQAbABoAGgAbABwAGwAdABwAHAAdAB4AHQAfAB4AHgAfACAAHwAhACAAIAAhACIAIQAjACIAIgAjACQAIwAlACQAJAAlACYAJQAnACYAJgAnACgAJwApACgAKAApACoAKQArACoAKgArACwAKwAtACwALAAtAC4ALQAvAC4ALgAvADAALwAxADAAMAAxADIAMQAzADIAMgAzADQAMwA1ADQANAA1ADYANQA3ADYANgA3ADgANwA5ADgAOAA5ADoAOQA7ADoAOgA7ADwAOwA9ADwAPAA9AD4APQA/AD4APgA/AEAAPwBBAEAAQABBAEIAQQBDAEIAQgBDAEQAQwBFAEQA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 70,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQNSoPQAAAAAAAAAAQNSoPQAAAAAAAAAAWK8xPgAAAAAAAAAAWK8xPgAAAAAAAAAAjLiGPgAAAAAAAAAAjLiGPgAAAAAAAAAAABS1PgAAAAAAAAAAABS1PgAAAAAAAAAAqebjPgAAAAAAAAAAqebjPgAAAAAAAAAAsI4IPwAAAAAAAAAAsI4IPwAAAAAAAAAAuugdPwAAAAAAAAAAuugdPwAAAAAAAAAAyqQ0PwAAAAAAAAAAyqQ0PwAAAAAAAAAAiSxLPwAAAAAAAAAAiSxLPwAAAAAAAAAAR7lhPwAAAAAAAAAAR7lhPwAAAAAAAAAA7GV4PwAAAAAAAAAA7GV4PwAAAAAAAAAACn+HPwAAAAAAAAAACn+HPwAAAAAAAAAAeseSPwAAAAAAAAAAeseSPwAAAAAAAAAA1RqePwAAAAAAAAAA1RqePwAAAAAAAAAAEWWpPwAAAAAAAAAAEWWpPwAAAAAAAAAAEbK0PwAAAAAAAAAAEbK0PwAAAAAAAAAAAADAPwAAAAAAAAAAAADAPwAAAAAAAAAA703LPwAAAAAAAAAA703LPwAAAAAAAAAA7prWPwAAAAAAAAAA7prWPwAAAAAAAAAAK+XhPwAAAAAAAAAAK+XhPwAAAAAAAAAAhzjtPwAAAAAAAAAAhzjtPwAAAAAAAAAA94D4PwAAAAAAAAAA94D4PwAAAAAAAAAAheYBQAAAAAAAAAAAheYBQAAAAAAAAAAAr5EHQAAAAAAAAAAAr5EHQAAAAAAAAAAA3jQNQAAAAAAAAAAA3jQNQAAAAAAAAAAAztYSQAAAAAAAAAAAztYSQAAAAAAAAAAA0YUYQAAAAAAAAAAA0YUYQAAAAAAAAAAAVNwdQAAAAAAAAAAAVNwdQAAAAAAAAAAAK4MjQAAAAAAAAAAAK4MjQAAAAAAAAAAAgF0pQAAAAAAAAAAAgF0pQAAAAAAAAAAA7igvQAAAAAAAAAAA7igvQAAAAAAAAAAACuU0QAAAAAAAAAAACuU0QAAAAAAAAAAAXrk6QAAAAAAAAAAAXrk6QAAAAAAAAAAAAABAQAAAAAAAAAAAAABAQAAAAAAAAAAA////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//78=")
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qg26"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.08, 0.72, 1, 1)
+shader_parameter/line_intensity = 2.0
+shader_parameter/line_kind = 0.0
+shader_parameter/line_width = 0.055
+shader_parameter/line_offset = 0.12
+shader_parameter/line_wave_amplitude = 0.03
+shader_parameter/line_wave_phase = 0.37
+shader_parameter/line_noise_offset = Vector2(9.46, 18.08)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_em02n"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.08, 0.72, 1, 1)
+shader_parameter/line_intensity = 2.0
+shader_parameter/line_kind = 0.0
+shader_parameter/line_width = 0.062
+shader_parameter/line_offset = -0.015
+shader_parameter/line_wave_amplitude = 0.022
+shader_parameter/line_wave_phase = 0.71
+shader_parameter/line_noise_offset = Vector2(14.19, 26.27)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xbpp3"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.015, 0.12, 0.36, 1)
+shader_parameter/line_intensity = 1.2
+shader_parameter/line_kind = 1.0
+shader_parameter/line_width = 0.043
+shader_parameter/line_offset = 0.045
+shader_parameter/line_wave_amplitude = 0.019
+shader_parameter/line_wave_phase = 0.18
+shader_parameter/line_noise_offset = Vector2(18.92, 34.46)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n1kd8"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.015, 0.12, 0.36, 1)
+shader_parameter/line_intensity = 1.2
+shader_parameter/line_kind = 1.0
+shader_parameter/line_width = 0.035
+shader_parameter/line_offset = -0.145
+shader_parameter/line_wave_amplitude = 0.017
+shader_parameter/line_wave_phase = 0.53
+shader_parameter/line_noise_offset = Vector2(23.65, 42.65)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3og0c"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.015, 0.12, 0.36, 1)
+shader_parameter/line_intensity = 1.2
+shader_parameter/line_kind = 1.0
+shader_parameter/line_width = 0.039
+shader_parameter/line_offset = 0.18
+shader_parameter/line_wave_amplitude = 0.021
+shader_parameter/line_wave_phase = 0.86
+shader_parameter/line_noise_offset = Vector2(28.38, 50.84)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2sh4e"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_l0hyw")
+shader_parameter/line_color = Color(0.88, 0.98, 1, 1)
+shader_parameter/line_intensity = 3.0
+shader_parameter/line_kind = 2.0
+shader_parameter/line_width = 0.018
+shader_parameter/line_offset = 0.075
+shader_parameter/line_wave_amplitude = 0.012
+shader_parameter/line_wave_phase = 0.26
+shader_parameter/line_noise_offset = Vector2(33.11, 59.03)
+shader_parameter/stream_wave_amplitude = 0.2
+shader_parameter/stream_wave_cycles = 1.5
+shader_parameter/stream_wave_speed = 0.5
+shader_parameter/stream_wave_outer_scale = 0.6
+shader_parameter/stream_wave_peak_position = 0.45
+shader_parameter/stream_wave_inner_scale = 0.1
+shader_parameter/line_wave_cycles = 2.5
+shader_parameter/line_wave_speed = 0.8
+shader_parameter/line_wave_noise_amount = 0.2
+shader_parameter/end_offset_scale = 0.5
+shader_parameter/start_fade_length = 0.08
+shader_parameter/end_taper_length = 0.18
+shader_parameter/end_taper_power = 1.8
+shader_parameter/end_fade_length = 0.12
+shader_parameter/end_erosion_strength = 0.25
+shader_parameter/white_segment_length = 0.12
+shader_parameter/white_segments = PackedVector4Array(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="StreamLine" type="Node3D" unique_id=1213835783]
+script = ExtResource("1_stream")
+mesh_sample_interval = 0.03
+
+[node name="GuidePath" type="Path3D" parent="." unique_id=1477875259]
+curve = SubResource("Curve3D_guide")
+
+[node name="CyanLine01" type="MeshInstance3D" parent="." unique_id=577454999]
+material_override = SubResource("ShaderMaterial_t6ugu")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+width = 0.07
+offset = -0.09
+line_wave_phase = 0.03
+
+[node name="CyanLine02" type="MeshInstance3D" parent="." unique_id=1709847921]
+material_override = SubResource("ShaderMaterial_5qg26")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+width = 0.055
+offset = 0.12
+line_wave_amplitude = 0.03
+line_wave_phase = 0.37
+
+[node name="CyanLine03" type="MeshInstance3D" parent="." unique_id=365476586]
+material_override = SubResource("ShaderMaterial_em02n")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+width = 0.062
+offset = -0.015
+line_wave_amplitude = 0.022
+line_wave_phase = 0.71
+
+[node name="NavyLine01" type="MeshInstance3D" parent="." unique_id=1210025375]
+material_override = SubResource("ShaderMaterial_xbpp3")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+line_kind = 1
+width = 0.043
+offset = 0.045
+line_wave_amplitude = 0.019
+line_wave_phase = 0.18
+
+[node name="NavyLine02" type="MeshInstance3D" parent="." unique_id=609914925]
+material_override = SubResource("ShaderMaterial_n1kd8")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+line_kind = 1
+width = 0.035
+offset = -0.145
+line_wave_amplitude = 0.017
+line_wave_phase = 0.53
+
+[node name="NavyLine03" type="MeshInstance3D" parent="." unique_id=2042794563]
+material_override = SubResource("ShaderMaterial_3og0c")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+line_kind = 1
+width = 0.039
+offset = 0.18
+line_wave_amplitude = 0.021
+line_wave_phase = 0.86
+
+[node name="WhiteLine" type="MeshInstance3D" parent="." unique_id=1015569162]
+material_override = SubResource("ShaderMaterial_2sh4e")
+cast_shadow = 0
+custom_aabb = AABB(-0.6, -0.6, -0.6, 4.2, 1.2000101, 1.2000101)
+mesh = SubResource("ArrayMesh_4b30j")
+script = ExtResource("2_element")
+line_kind = 2
+width = 0.018
+offset = 0.075
+line_wave_amplitude = 0.012
+line_wave_phase = 0.26
