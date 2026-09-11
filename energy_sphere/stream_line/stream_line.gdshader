@@ -22,12 +22,13 @@ uniform float line_wave_cycles : hint_range(1.0, 5.0, 0.10) = 2.5;
 uniform float line_wave_speed : hint_range(0.0, 3.0, 0.05) = 0.80;
 uniform float line_wave_noise_amount : hint_range(0.0, 0.50, 0.05) = 0.20;
 
-uniform float end_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
-uniform float start_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
-uniform float end_taper_length : hint_range(0.05, 0.35, 0.01) = 0.18;
-uniform float end_taper_power : hint_range(1.0, 4.0, 0.1) = 1.8;
-uniform float end_fade_length : hint_range(0.03, 0.25, 0.01) = 0.12;
-uniform float end_erosion_strength : hint_range(0.0, 0.60, 0.05) = 0.25;
+uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
+uniform float outer_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
+uniform float inner_taper_length : hint_range(0.05, 0.35, 0.01) = 0.18;
+uniform float inner_taper_power : hint_range(1.0, 4.0, 0.1) = 1.8;
+uniform float inner_fade_length : hint_range(0.03, 0.25, 0.01) = 0.12;
+uniform float inner_erosion_strength : hint_range(0.0, 0.60, 0.05) = 0.25;
+uniform float radius_scale = 1.0;
 
 uniform float white_segment_length : hint_range(0.05, 0.25, 0.01) = 0.12;
 uniform vec4 white_segments[3];
@@ -59,45 +60,51 @@ float stream_envelope(float progress) {
 }
 
 
-float stream_wave_at(float progress) {
-	return sin(progress * stream_wave_cycles * TAU - TIME * stream_wave_speed * TAU)
-		* stream_wave_amplitude * stream_envelope(progress);
+float stream_wave_at(float flow_progress) {
+	return sin(flow_progress * stream_wave_cycles * TAU - TIME * stream_wave_speed * TAU)
+		* stream_wave_amplitude * stream_envelope(flow_progress) * radius_scale;
 }
 
 
-float line_wave_at(float progress) {
-	float phase = progress * line_wave_cycles * TAU - TIME * line_wave_speed * TAU
+float line_wave_at(float flow_progress) {
+	const float NOISE_FREQUENCY = 11.0;
+	const float NOISE_SPEED = 0.22;
+	float phase = flow_progress * line_wave_cycles * TAU - TIME * line_wave_speed * TAU
 		+ line_wave_phase * TAU;
 	float sine_wave = sin(phase);
-	float noise = smooth_noise(progress * 11.0 + TIME * 0.22);
+	float noise = smooth_noise(flow_progress * NOISE_FREQUENCY - TIME * NOISE_SPEED);
 	return (sine_wave + (noise * 2.0 - 1.0) * line_wave_noise_amount)
-		* line_wave_amplitude;
+		* line_wave_amplitude * radius_scale;
 }
 
 
-float end_width_factor(float progress) {
-	float taper_start = 1.0 - end_taper_length;
-	if (progress <= taper_start) {
+float inner_width_factor(float flow_progress) {
+	float taper_start = 1.0 - inner_taper_length;
+	if (flow_progress <= taper_start) {
 		return 1.0;
 	}
 
-	float taper_progress = clamp((1.0 - progress) / max(end_taper_length, 0.001), 0.0, 1.0);
-	return pow(taper_progress, end_taper_power);
+	float taper_progress = clamp(
+		(1.0 - flow_progress) / max(inner_taper_length, 0.001),
+		0.0,
+		1.0
+	);
+	return pow(taper_progress, inner_taper_power);
 }
 
 
-float endpoint_alpha(float progress) {
-	float start_alpha = smoothstep(0.0, start_fade_length, progress);
-	float end_alpha = 1.0 - smoothstep(1.0 - end_fade_length, 1.0, progress);
-	float end_region = smoothstep(1.0 - end_fade_length, 1.0, progress);
-	float erosion_noise = smooth_noise(progress * 48.0 + line_noise_offset.y);
-	float erosion = end_region * end_erosion_strength
+float endpoint_alpha(float flow_progress) {
+	float outer_alpha = smoothstep(0.0, outer_fade_length, flow_progress);
+	float inner_alpha = 1.0 - smoothstep(1.0 - inner_fade_length, 1.0, flow_progress);
+	float inner_region = smoothstep(1.0 - inner_fade_length, 1.0, flow_progress);
+	float erosion_noise = smooth_noise(flow_progress * 48.0 + line_noise_offset.y);
+	float erosion = inner_region * inner_erosion_strength
 		* smoothstep(0.48, 0.92, erosion_noise);
-	return start_alpha * end_alpha * (1.0 - erosion);
+	return outer_alpha * inner_alpha * (1.0 - erosion);
 }
 
 
-float white_segment_mask(float progress) {
+float white_segment_mask(float flow_progress) {
 	if (line_kind < 1.5) {
 		return 1.0;
 	}
@@ -109,8 +116,8 @@ float white_segment_mask(float progress) {
 		float active = step(0.5, segment.y);
 		float start = segment.x;
 		float finish = start + white_segment_length;
-		float leading = smoothstep(start, start + softness, progress);
-		float trailing = 1.0 - smoothstep(finish - softness, finish, progress);
+		float leading = smoothstep(start, start + softness, flow_progress);
+		float trailing = 1.0 - smoothstep(finish - softness, finish, flow_progress);
 		mask = max(mask, leading * trailing * active);
 	}
 	return mask;
@@ -118,7 +125,8 @@ float white_segment_mask(float progress) {
 
 
 void vertex() {
-	float progress = clamp(UV.x, 0.0, 1.0);
+	float path_progress = clamp(UV.x, 0.0, 1.0);
+	float flow_progress = 1.0 - path_progress;
 	vec3 world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec3 world_tangent = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	vec3 view_direction = normalize(CAMERA_POSITION_WORLD - world_position);
@@ -126,14 +134,19 @@ void vertex() {
 	if (length(ribbon_direction) < 0.001) {
 		ribbon_direction = cross(world_tangent, vec3(0.0, 1.0, 0.0));
 	}
+	if (length(ribbon_direction) < 0.001) {
+		ribbon_direction = cross(world_tangent, vec3(1.0, 0.0, 0.0));
+	}
 	ribbon_direction = normalize(ribbon_direction);
 
 	float side = UV.y * 2.0 - 1.0;
-	float width_factor = end_width_factor(progress);
-	float center_displacement = stream_wave_at(progress)
-		+ line_offset * mix(1.0, end_offset_scale, smoothstep(0.0, 1.0, progress))
-		+ line_wave_at(progress);
-	float displacement = center_displacement + side * line_width * 0.5 * width_factor;
+	float width_factor = inner_width_factor(flow_progress);
+	float offset_scale = mix(1.0, inner_offset_scale, smoothstep(0.0, 1.0, flow_progress));
+	float center_displacement = stream_wave_at(flow_progress)
+		+ line_offset * offset_scale * radius_scale
+		+ line_wave_at(flow_progress);
+	float width = line_width * width_factor * radius_scale;
+	float displacement = center_displacement + side * width * 0.5;
 	world_position += ribbon_direction * displacement;
 
 	vec3 view_position = (VIEW_MATRIX * vec4(world_position, 1.0)).xyz;
@@ -143,11 +156,12 @@ void vertex() {
 
 
 void fragment() {
-	float progress = clamp(UV.x, 0.0, 1.0);
+	float path_progress = clamp(UV.x, 0.0, 1.0);
+	float flow_progress = 1.0 - path_progress;
 	float edge_width = max(fwidth(UV.y) * 1.5, 0.002);
 	float edge_alpha = smoothstep(0.0, edge_width, UV.y)
 		* (1.0 - smoothstep(1.0 - edge_width, 1.0, UV.y));
-	float alpha = endpoint_alpha(progress) * edge_alpha * white_segment_mask(progress);
+	float alpha = endpoint_alpha(flow_progress) * edge_alpha * white_segment_mask(flow_progress);
 
 	vec3 radiance = line_color.rgb * line_intensity;
 	ALBEDO = radiance;

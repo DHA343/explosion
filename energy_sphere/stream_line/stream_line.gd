@@ -2,7 +2,8 @@
 class_name StreamLine
 extends Node3D
 
-const STREAM_SHADER: Shader = preload("res://stream_line/stream_line.gdshader")
+const STREAM_SHADER: Shader = preload("res://energy_sphere/stream_line/stream_line.gdshader")
+const BASE_RADIUS: float = 0.5
 const WHITE_SEGMENT_CAPACITY: int = 3
 const MIN_CURVE_LENGTH: float = 0.001
 const LINE_KIND_CYAN: int = 0
@@ -67,9 +68,9 @@ const LINE_KIND_WHITE: int = 2
 
 @export_group("Offset")
 
-@export_range(0.25, 1.0, 0.05) var end_offset_scale: float = 0.50:
+@export_range(0.25, 1.0, 0.05) var inner_offset_scale: float = 0.50:
 	set(value):
-		end_offset_scale = clampf(value, 0.25, 1.0)
+		inner_offset_scale = clampf(value, 0.25, 1.0)
 		_request_parameter_sync()
 
 @export_group("Appearance")
@@ -135,30 +136,36 @@ const LINE_KIND_WHITE: int = 2
 
 @export_group("Ends")
 
-@export_range(0.02, 0.20, 0.01) var start_fade_length: float = 0.08:
+@export_range(0.02, 0.20, 0.01) var outer_fade_length: float = 0.08:
 	set(value):
-		start_fade_length = clampf(value, 0.02, 0.20)
+		outer_fade_length = clampf(value, 0.02, 0.20)
 		_request_parameter_sync()
 
-@export_range(0.05, 0.35, 0.01) var end_taper_length: float = 0.18:
+@export_range(0.05, 0.35, 0.01) var inner_taper_length: float = 0.18:
 	set(value):
-		end_taper_length = clampf(value, 0.05, 0.35)
+		inner_taper_length = clampf(value, 0.05, 0.35)
 		_request_parameter_sync()
 
-@export_range(1.0, 4.0, 0.1) var end_taper_power: float = 1.8:
+@export_range(1.0, 4.0, 0.1) var inner_taper_power: float = 1.8:
 	set(value):
-		end_taper_power = clampf(value, 1.0, 4.0)
+		inner_taper_power = clampf(value, 1.0, 4.0)
 		_request_parameter_sync()
 
-@export_range(0.03, 0.25, 0.01) var end_fade_length: float = 0.12:
+@export_range(0.03, 0.25, 0.01) var inner_fade_length: float = 0.12:
 	set(value):
-		end_fade_length = clampf(value, 0.03, 0.25)
+		inner_fade_length = clampf(value, 0.03, 0.25)
 		_request_parameter_sync()
 
-@export_range(0.0, 0.60, 0.05) var end_erosion_strength: float = 0.25:
+@export_range(0.0, 0.60, 0.05) var inner_erosion_strength: float = 0.25:
 	set(value):
-		end_erosion_strength = clampf(value, 0.0, 0.60)
+		inner_erosion_strength = clampf(value, 0.0, 0.60)
 		_request_parameter_sync()
+
+var radius: float = BASE_RADIUS:
+	set(value):
+		radius = maxf(value, 0.001)
+		if is_node_ready():
+			_sync_radius()
 
 var _connected_curve: Curve3D
 var _mesh_rebuild_pending: bool = false
@@ -171,6 +178,7 @@ var _random := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	scale = Vector3.ONE * _radius_scale()
 	_collect_elements()
 	_reset_white_segments()
 	_connect_curve()
@@ -200,6 +208,17 @@ func refresh_element(element: MeshInstance3D) -> void:
 		_collect_elements()
 	_sync_material(element)
 	_update_custom_aabbs()
+
+
+func _sync_radius() -> void:
+	scale = Vector3.ONE * _radius_scale()
+	_sync_all_materials()
+	_update_custom_aabbs()
+	_request_mesh_rebuild()
+
+
+func _radius_scale() -> float:
+	return radius / BASE_RADIUS
 
 
 func _request_mesh_rebuild() -> void:
@@ -282,7 +301,8 @@ func _build_ribbon_mesh() -> ArrayMesh:
 	if curve_length <= MIN_CURVE_LENGTH:
 		return null
 
-	var sample_count := maxi(2, ceili(1.0 / mesh_sample_interval) + 1)
+	var scaled_curve_length := curve_length * _radius_scale()
+	var sample_count := maxi(2, ceili(scaled_curve_length / mesh_sample_interval) + 1)
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var uvs := PackedVector2Array()
@@ -332,11 +352,13 @@ func _make_custom_aabb(ribbon_mesh: ArrayMesh) -> AABB:
 	var bounds := ribbon_mesh.get_aabb()
 	var largest_line_amplitude := 0.0
 	var largest_width := 0.0
+	var largest_offset := 0.0
 	for element in _elements:
 		largest_line_amplitude = maxf(largest_line_amplitude, element.get("line_wave_amplitude"))
 		largest_width = maxf(largest_width, element.get("width"))
+		largest_offset = maxf(largest_offset, absf(element.get("offset")))
 
-	var margin := stream_wave_amplitude + 0.30 + largest_line_amplitude + largest_width
+	var margin := stream_wave_amplitude + largest_offset + largest_line_amplitude + largest_width
 	bounds.position -= Vector3.ONE * margin
 	bounds.size += Vector3.ONE * margin * 2.0
 	return bounds
@@ -385,12 +407,13 @@ func _sync_material(element: MeshInstance3D) -> void:
 	material.set_shader_parameter(&"line_wave_cycles", line_wave_cycles)
 	material.set_shader_parameter(&"line_wave_speed", line_wave_speed)
 	material.set_shader_parameter(&"line_wave_noise_amount", line_wave_noise_amount)
-	material.set_shader_parameter(&"end_offset_scale", end_offset_scale)
-	material.set_shader_parameter(&"start_fade_length", start_fade_length)
-	material.set_shader_parameter(&"end_taper_length", end_taper_length)
-	material.set_shader_parameter(&"end_taper_power", end_taper_power)
-	material.set_shader_parameter(&"end_fade_length", end_fade_length)
-	material.set_shader_parameter(&"end_erosion_strength", end_erosion_strength)
+	material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
+	material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
+	material.set_shader_parameter(&"inner_taper_length", inner_taper_length)
+	material.set_shader_parameter(&"inner_taper_power", inner_taper_power)
+	material.set_shader_parameter(&"inner_fade_length", inner_fade_length)
+	material.set_shader_parameter(&"inner_erosion_strength", inner_erosion_strength)
+	material.set_shader_parameter(&"radius_scale", _radius_scale())
 	material.set_shader_parameter(&"white_segment_length", white_segment_length)
 	material.set_shader_parameter(&"white_segments", _white_segment_values())
 
@@ -408,6 +431,7 @@ func _reset_white_segments() -> void:
 
 
 func _update_white_segments(delta: float) -> void:
+	var active_count_before := _active_white_segment_count()
 	for index in WHITE_SEGMENT_CAPACITY:
 		var segment := _white_segments[index]
 		if segment.y <= 0.5:
@@ -418,10 +442,16 @@ func _update_white_segments(delta: float) -> void:
 			segment = Vector4(-1.0, 0.0, 0.0, 0.0)
 		_white_segments[index] = segment
 
-	_white_spawn_cooldown -= delta
-	if _white_spawn_cooldown <= 0.0 and _active_white_segment_count() < white_max_segments:
-		_spawn_white_segment()
+	var active_count_after := _active_white_segment_count()
+	if active_count_before >= white_max_segments and active_count_after < white_max_segments:
 		_white_spawn_cooldown = _random_interval()
+	elif active_count_after >= white_max_segments:
+		_white_spawn_cooldown = maxf(_white_spawn_cooldown, 0.0)
+	else:
+		_white_spawn_cooldown -= delta
+		if _white_spawn_cooldown <= 0.0:
+			_spawn_white_segment()
+			_white_spawn_cooldown = _random_interval()
 
 	_sync_white_materials()
 
