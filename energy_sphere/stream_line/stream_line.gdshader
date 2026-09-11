@@ -22,7 +22,7 @@ uniform float stream_wave_inner_scale : hint_range(0.0, 0.50, 0.05) = 0.10;
 uniform float line_wave_cycles : hint_range(1.0, 5.0, 0.10) = 2.5;
 uniform float line_wave_speed : hint_range(0.0, 3.0, 0.05) = 0.80;
 uniform float line_wave_noise_amount : hint_range(0.0, 0.50, 0.05) = 0.20;
-uniform float line_wave_inner_scale : hint_range(0.0, 1.0, 0.05) = 0.20;
+uniform float line_wave_inner_amplitude : hint_range(0.0, 0.03, 0.001) = 0.005;
 
 uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
 uniform float outer_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
@@ -76,13 +76,14 @@ float line_wave_at(float flow_progress) {
 		+ line_wave_phase * TAU;
 	float sine_wave = sin(phase);
 	float noise = smooth_noise(flow_progress * NOISE_FREQUENCY - TIME * NOISE_SPEED);
-	float inner_damping = mix(
+	float inner_blend = smoothstep(
+		1.0 - inner_taper_length,
 		1.0,
-		line_wave_inner_scale,
-		smoothstep(1.0 - inner_taper_length, 1.0, flow_progress)
+		flow_progress
 	);
+	float amplitude = mix(line_wave_amplitude, line_wave_inner_amplitude, inner_blend);
 	return (sine_wave + (noise * 2.0 - 1.0) * line_wave_noise_amount)
-		* line_wave_amplitude * radius_scale * inner_damping;
+		* amplitude * radius_scale;
 }
 
 

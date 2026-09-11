@@ -14,14 +14,14 @@ script = ExtResource("1_stream")
 mesh_sample_interval = 0.03
 line_wave_speed = 1.7
 line_wave_noise_amount = 0.45
+line_wave_inner_amplitude = null
 cyan_line_wave_amplitude = 0.1
 navy_count = 4
 navy_intensity = 2.0
-navy_width = 0.09999999999999999
+navy_width = 0.1
 navy_line_wave_amplitude = 0.1
 white_width = 0.05
 white_segment_length = 0.25
-white_speed = 3.0
 
 [node name="GuidePath" type="Path3D" parent="." unique_id=1477875259]
 curve = SubResource("Curve3D_guide")

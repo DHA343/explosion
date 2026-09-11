@@ -67,9 +67,9 @@ const LINE_KIND_UNASSIGNED: int = -1
 		line_wave_noise_amount = value
 		_request_parameter_sync()
 
-@export_range(0.0, 1.0, 0.05) var line_wave_inner_scale: float = 0.20:
+@export_range(0.0, 0.03, 0.001) var line_wave_inner_amplitude: float = 0.005:
 	set(value):
-		line_wave_inner_scale = value
+		line_wave_inner_amplitude = value
 		_request_parameter_sync()
 
 @export_group("Cyan Lines")
@@ -643,7 +643,7 @@ func _sync_shared_material() -> void:
 	_shared_material.set_shader_parameter(&"line_wave_cycles", line_wave_cycles)
 	_shared_material.set_shader_parameter(&"line_wave_speed", line_wave_speed)
 	_shared_material.set_shader_parameter(&"line_wave_noise_amount", line_wave_noise_amount)
-	_shared_material.set_shader_parameter(&"line_wave_inner_scale", line_wave_inner_scale)
+	_shared_material.set_shader_parameter(&"line_wave_inner_amplitude", line_wave_inner_amplitude)
 	_shared_material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
 	_shared_material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
 	_shared_material.set_shader_parameter(&"inner_taper_length", inner_taper_length)
