@@ -135,6 +135,104 @@ use_colors = true
 use_custom_data = true
 mesh = ExtResource("10_bnioy")
 
+[sub_resource type="Curve3D" id="Curve3D_stream_01"]
+_data = {
+"points": PackedVector3Array(0.46644, -0.23322, 0.17492, -0.46644, 0.23322, -0.17492, -0.2968, 0.1484, -0.1113, 1.0347, -0.31935, -0.39115, -1.0347, 0.31935, 0.39115, -1.33333, 0.66667, -0.5, 1.83333, -0.05867, -1.32, -1.83333, 0.05867, 1.32, -5, 1.6, 1.66667, 2.42, 0.05867, -1.98, -2.42, -0.05867, 1.98, -9.66667, 0.93333, 5.5, 2.21667, -0.14, -1.80833, -2.21667, 0.14, 1.80833, -16, 1.33333, 10.66667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_02"]
+_data = {
+"points": PackedVector3Array(0.18966, -0.53342, -0.17781, -0.18966, 0.53342, 0.17781, -0.11187, 0.31462, 0.10487, 1.33206, -0.11412, -0.52693, -1.33206, 0.11412, 0.52693, -0.53333, 1.5, 0.5, 1.67933, 0.418, -1.43, -1.67933, -0.418, 1.43, -6.16667, 0.83333, 2.5, 0.99, 0.14667, -2.16333, -0.99, -0.14667, 2.16333, -8.16667, -0.4, 7, 0.875, -0.19833, -1.86667, -0.875, 0.19833, 1.86667, -10.66667, 0.16667, 12.33333),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_03"]
+_data = {
+"points": PackedVector3Array(0.58264, 0.12138, -0.30346, -0.58264, -0.12138, 0.30346, -0.30525, -0.06359, 0.15899, 0.84951, 0.19134, -0.58836, -0.84951, -0.19134, 0.58836, -1.6, -0.33333, 0.83333, 1.92133, -0.20533, -0.84333, -1.92133, 0.20533, 0.84333, -4.16667, -0.93333, 2.83333, 2.97, -0.05867, -1.43, -2.97, 0.05867, 1.43, -10.33333, 0.6, 4.66667, 2.56667, 0.44333, -1.63333, -2.56667, -0.44333, 1.63333, -17.66667, -0.66667, 9.33333),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_04"]
+_data = {
+"points": PackedVector3Array(0.14032, 0.52621, -0.11694, -0.14032, -0.52621, 0.11694, -0.08817, -0.33065, 0.07348, 1.22727, -0.03607, -0.7905, -1.22727, 0.03607, 0.7905, -0.4, -1.5, 0.33333, 1.96533, 0.14667, -1.54, -1.96533, -0.14667, 1.54, -5.66667, -0.16667, 3.66667, 1.76, 0.58667, -1.68667, -1.76, -0.58667, 1.68667, -9.33333, -2.16667, 7.33333, 1.51667, 0.23333, -1.4, -1.51667, -0.23333, 1.4, -13.66667, -2.83333, 11.33333),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_05"]
+_data = {
+"points": PackedVector3Array(0.42549, -0.46196, 0.24314, -0.42549, 0.46196, -0.24314, -0.22112, 0.24008, -0.12636, 1.16135, -0.37252, -0.3358, -1.16135, 0.37252, 0.3358, -1.16667, 1.26667, -0.66667, 1.46667, -0.10267, -1.06333, -1.46667, 0.10267, 1.06333, -5.5, 1.93333, 1.4, 1.57667, -0.05133, -1.37867, -1.57667, 0.05133, 1.37867, -7.83333, 1.73333, 4.16667, 1.69167, -0.15167, -1.225, -1.69167, 0.15167, 1.225, -12.66667, 2.16667, 7.66667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_06"]
+_data = {
+"points": PackedVector3Array(0.33992, 0.4249, -0.38848, -0.33992, -0.4249, 0.38848, -0.17795, -0.22243, 0.20337, 0.80418, 0.30306, -0.39526, -0.80418, -0.30306, 0.39526, -0.93333, -1.16667, 1.06667, 1.26133, 0.03667, -1.08533, -1.26133, -0.03667, 1.08533, -3.83333, -1.6, 2, 1.87, 0.088, -1.68667, -1.87, -0.088, 1.68667, -6.66667, -1.33333, 6, 1.98333, 0.23333, -1.28333, -1.98333, -0.23333, 1.28333, -12.33333, -2, 9.66667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_07"]
+_data = {
+"points": PackedVector3Array(-0.42368, -0.16724, -0.0223, 0.42368, 0.16724, 0.0223, 0.32516, 0.12835, 0.01711, -1.1018, -0.08909, -0.28957, 1.1018, 0.08909, 0.28957, 1.26667, 0.5, 0.06667, -1.628, -0.38867, -0.97533, 1.628, 0.38867, 0.97533, 5.33333, 0.53333, 1.33333, -2.27333, -0.176, -1.83333, 2.27333, 0.176, 1.83333, 8.66667, 2.26667, 4.5, -2.45, 0.32667, -1.80833, 2.45, -0.32667, 1.80833, 15.66667, 1.33333, 9.66667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_08"]
+_data = {
+"points": PackedVector3Array(-0.20911, -0.44146, -0.23235, 0.20911, 0.44146, 0.23235, 0.1353, 0.28564, 0.15034, -0.96023, -0.26716, -0.62693, 0.96023, 0.26716, 0.62693, 0.6, 1.26667, 0.66667, -2.288, 0.09533, -1.1, 2.288, -0.09533, 1.1, 4.5, 1.5, 3, -2.97, -0.07333, -1.76, 2.97, 0.07333, 1.76, 11, 0.83333, 5.66667, -2.45, -0.35, -1.86667, 2.45, 0.35, 1.86667, 18, 1.83333, 11),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_09"]
+_data = {
+"points": PackedVector3Array(-0.46133, 0.09227, 0.23066, 0.46133, -0.09227, -0.23066, 0.30816, -0.06163, -0.15408, -1.32554, 0.20644, -0.4739, 1.32554, -0.20644, 0.4739, 1.33333, -0.26667, -0.66667, -1.54, -0.132, -1.61333, 1.54, 0.132, 1.61333, 6.33333, -1, 2, -1.46667, -0.03667, -2.23667, 1.46667, 0.03667, 2.23667, 8.33333, 0.33333, 6.66667, -1.63333, 0.40833, -1.925, 1.63333, -0.40833, 1.925, 13, -0.83333, 12.16667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_10"]
+_data = {
+"points": PackedVector3Array(-0.23779, 0.49936, -0.23779, 0.23779, -0.49936, 0.23779, 0.13824, -0.29031, 0.13824, -0.88625, 0.26613, -0.51959, 0.88625, -0.26613, 0.51959, 0.66667, -1.4, 0.66667, -2.05333, -0.14667, -0.91667, 2.05333, 0.14667, 0.91667, 4.16667, -1.5, 2.5, -2.67667, 0.03667, -1.24667, 2.67667, -0.03667, 1.24667, 10, -0.73333, 4.83333, -2.21667, 0.32667, -1.16667, 2.21667, -0.32667, 1.16667, 16.33333, -1.66667, 8.16667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_11"]
+_data = {
+"points": PackedVector3Array(-0.14199, -0.56798, 0.05916, 0.14199, 0.56798, -0.05916, 0.08446, 0.33783, -0.03519, -1.52142, -0.40234, -0.37441, 1.52142, 0.40234, 0.37441, 0.4, 1.6, -0.16667, -2.14867, 0.05867, -0.91667, 2.14867, -0.05867, 0.91667, 7, 2.16667, 1.66667, -1.54, -0.03667, -1.21, 1.54, 0.03667, 1.21, 10.16667, 1.33333, 4, -1.34167, -0.35, -1.10833, 1.34167, 0.35, 1.10833, 14, 2.33333, 7.16667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_12"]
+_data = {
+"points": PackedVector3Array(-0.32496, 0.4062, 0.13927, 0.32496, -0.4062, -0.13927, 0.2112, -0.26401, -0.09052, -1.01687, 0.19859, -0.27658, 1.01687, -0.19859, 0.27658, 0.93333, -1.16667, -0.4, -1.33467, 0.29333, -1.188, 1.33467, -0.29333, 1.188, 4.83333, -1.16667, 1.16667, -1.21, 0.47667, -2.05333, 1.21, -0.47667, 2.05333, 7, -2.5, 5, -1.16667, 0.29167, -1.925, 1.16667, -0.29167, 1.925, 10.33333, -3.33333, 10.5),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_13"]
+_data = {
+"points": PackedVector3Array(-0.58775, -0.09796, -0.36735, 0.58775, 0.09796, 0.36735, 0.29388, 0.04898, 0.18367, -1.21868, -0.07722, -0.69292, 1.21868, 0.07722, 0.69292, 1.6, 0.26667, 1, -1.77467, 0.16867, -1.32, 1.77467, -0.16867, 1.32, 5.83333, 0.4, 3.33333, -2.09, 0.088, -1.83333, 2.09, -0.088, 1.83333, 9.66667, -0.5, 7, -1.98333, -0.175, -1.63333, 1.98333, 0.175, 1.63333, 15.33333, 0, 11.66667),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Curve3D" id="Curve3D_stream_14"]
+_data = {
+"points": PackedVector3Array(-0.35307, 0.28245, -0.35307, 0.35307, -0.28245, 0.35307, 0.21541, -0.17233, 0.21541, -1.63928, -0.00124, -0.53928, 1.63928, 0.00124, 0.53928, 1, -0.8, 1, -2.34667, 0.19067, -0.77, 2.34667, -0.19067, 0.77, 7.66667, -0.16667, 2.66667, -2.42, 0.22, -1.39333, 2.42, -0.22, 1.39333, 11.66667, -1.66667, 4.5, -2.45, -0.175, -1.575, 2.45, 0.175, 1.575, 18.66667, -1.16667, 9),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
 
@@ -274,6 +372,172 @@ layers = 2
 instance_shader_parameters/inner_radius = 0.46499999999999997
 multimesh = SubResource("MultiMesh_6b1ja")
 
-[node name="StreamLine" parent="." unique_id=1213835783 instance=ExtResource("21_b0480")]
-stream_wave_amplitude = 0.3
-line_wave_inner_amplitude = 0.005
+[node name="Streams" type="Node3D" parent="."]
+
+[node name="Stream01" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.5
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.2
+stream_wave_speed = 0.65
+
+[node name="GuidePath" parent="Streams/Stream01" index="0"]
+curve = SubResource("Curve3D_stream_01")
+
+[node name="Stream02" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.65
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.5
+stream_wave_speed = 0.75
+
+[node name="GuidePath" parent="Streams/Stream02" index="0"]
+curve = SubResource("Curve3D_stream_02")
+
+[node name="Stream03" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.8
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.8
+stream_wave_speed = 0.85
+
+[node name="GuidePath" parent="Streams/Stream03" index="0"]
+curve = SubResource("Curve3D_stream_03")
+
+[node name="Stream04" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.95
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.2
+stream_wave_speed = 0.95
+
+[node name="GuidePath" parent="Streams/Stream04" index="0"]
+curve = SubResource("Curve3D_stream_04")
+
+[node name="Stream05" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.5
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.5
+stream_wave_speed = 0.65
+
+[node name="GuidePath" parent="Streams/Stream05" index="0"]
+curve = SubResource("Curve3D_stream_05")
+
+[node name="Stream06" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.65
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.8
+stream_wave_speed = 0.75
+
+[node name="GuidePath" parent="Streams/Stream06" index="0"]
+curve = SubResource("Curve3D_stream_06")
+
+[node name="Stream07" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.8
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.2
+stream_wave_speed = 0.85
+
+[node name="GuidePath" parent="Streams/Stream07" index="0"]
+curve = SubResource("Curve3D_stream_07")
+
+[node name="Stream08" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.95
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.5
+stream_wave_speed = 0.95
+
+[node name="GuidePath" parent="Streams/Stream08" index="0"]
+curve = SubResource("Curve3D_stream_08")
+
+[node name="Stream09" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.5
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.8
+stream_wave_speed = 0.65
+
+[node name="GuidePath" parent="Streams/Stream09" index="0"]
+curve = SubResource("Curve3D_stream_09")
+
+[node name="Stream10" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.65
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.2
+stream_wave_speed = 0.75
+
+[node name="GuidePath" parent="Streams/Stream10" index="0"]
+curve = SubResource("Curve3D_stream_10")
+
+[node name="Stream11" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.8
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.5
+stream_wave_speed = 0.85
+
+[node name="GuidePath" parent="Streams/Stream11" index="0"]
+curve = SubResource("Curve3D_stream_11")
+
+[node name="Stream12" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.95
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.8
+stream_wave_speed = 0.95
+
+[node name="GuidePath" parent="Streams/Stream12" index="0"]
+curve = SubResource("Curve3D_stream_12")
+
+[node name="Stream13" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.5
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.2
+stream_wave_speed = 0.65
+
+[node name="GuidePath" parent="Streams/Stream13" index="0"]
+curve = SubResource("Curve3D_stream_13")
+
+[node name="Stream14" parent="Streams" instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.65
+inner_taper_length = 0.05
+inner_fade_length = 0.03
+stream_wave_cycles = 1.5
+stream_wave_speed = 0.75
+
+[node name="GuidePath" parent="Streams/Stream14" index="0"]
+curve = SubResource("Curve3D_stream_14")
+
+[editable path="Streams/Stream01"]
+
+[editable path="Streams/Stream02"]
+
+[editable path="Streams/Stream03"]
+
+[editable path="Streams/Stream04"]
+
+[editable path="Streams/Stream05"]
+
+[editable path="Streams/Stream06"]
+
+[editable path="Streams/Stream07"]
+
+[editable path="Streams/Stream08"]
+
+[editable path="Streams/Stream09"]
+
+[editable path="Streams/Stream10"]
+
+[editable path="Streams/Stream11"]
+
+[editable path="Streams/Stream12"]
+
+[editable path="Streams/Stream13"]
+
+[editable path="Streams/Stream14"]

@@ -26,8 +26,8 @@ uniform float line_wave_inner_amplitude : hint_range(0.0, 0.03, 0.001) = 0.005;
 uniform float edge_softness : hint_range(0.0, 0.40, 0.01) = 0.12;
 uniform float edge_erosion_strength : hint_range(0.0, 1.0, 0.05) = 0.30;
 uniform float body_variation_strength : hint_range(0.0, 0.60, 0.05) = 0.15;
-uniform float width_gradient_strength : hint_range(0.0, 1.0, 0.05) = 0.45;
-uniform float width_gradient_power : hint_range(0.5, 3.0, 0.1) = 1.4;
+uniform sampler2D light_width_gradient : source_color;
+uniform sampler2D dark_width_gradient : source_color;
 uniform float width_noise_strength : hint_range(0.0, 0.35, 0.01) = 0.10;
 
 uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
@@ -241,20 +241,22 @@ void vertex() {
 	}
 	ribbon_width_direction = normalized_or_fallback(ribbon_width_direction, local_y_world);
 
-	const float WIDTH_NOISE_FREQUENCY = 4.0;
-	const float WIDTH_NOISE_FLOW_SPEED = 0.10;
-	const float WIDTH_NOISE_OFFSET_SCALE = 0.21;
+	const float WIDTH_NOISE_FREQUENCY = 3.5;
+	const float WIDTH_NOISE_SPEED = 0.10;
+	const float WIDTH_NOISE_OFFSET_SCALE = 0.23;
 	float width_noise = smooth_noise(
 		flow_progress * WIDTH_NOISE_FREQUENCY
-		- TIME * WIDTH_NOISE_FLOW_SPEED
-		+ line_noise_offset.x * WIDTH_NOISE_OFFSET_SCALE
+		- TIME * WIDTH_NOISE_SPEED
+		+ line_noise_offset.y * WIDTH_NOISE_OFFSET_SCALE
 	);
-	float width_noise_factor = 1.0
-		+ (width_noise * 2.0 - 1.0) * width_noise_strength;
-	float colored_width_noise_factor = line_kind > 1.5 ? 1.0 : width_noise_factor;
+	float width_noise_factor = 1.0;
+	if (line_kind < 1.5) {
+		float width_noise_signed = width_noise * 2.0 - 1.0;
+		width_noise_factor += width_noise_signed * width_noise_strength;
+	}
 	float white_shape = white_segment_shape(flow_progress);
 	float width = line_width
-		* colored_width_noise_factor
+		* width_noise_factor
 		* inner_width_factor(flow_progress)
 		* white_shape
 		* radius_scale;
@@ -310,20 +312,19 @@ void fragment() {
 	);
 	float body_variation = 1.0
 		+ (body_noise * 2.0 - 1.0) * body_variation_strength;
-	float width_gradient = pow(
-		max(1.0 - center_distance, 0.0),
-		width_gradient_power
-	);
-	float width_radiance_factor = mix(
-		1.0 - width_gradient_strength,
-		1.0,
-		width_gradient
-	);
+	float width_position = abs(UV.y * 2.0 - 1.0);
+	vec3 width_color;
+	if (line_kind < 0.5) {
+		width_color = texture(light_width_gradient, vec2(width_position, 0.5)).rgb;
+	} else if (line_kind < 1.5) {
+		width_color = texture(dark_width_gradient, vec2(width_position, 0.5)).rgb;
+	} else {
+		width_color = line_color.rgb;
+	}
 
-	vec3 radiance = line_color.rgb
+	vec3 radiance = width_color
 		* line_intensity
-		* body_variation
-		* width_radiance_factor;
+		* body_variation;
 	ALBEDO = radiance;
 	EMISSION = radiance;
 	ALPHA = alpha;

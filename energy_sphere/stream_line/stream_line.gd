@@ -6,8 +6,8 @@ const STREAM_SHADER: Shader = preload("res://energy_sphere/stream_line/stream_li
 const BASE_RADIUS: float = 0.5
 const WHITE_SEGMENT_CAPACITY: int = 3
 const MIN_CURVE_LENGTH: float = 0.001
-const LINE_KIND_CYAN: int = 0
-const LINE_KIND_NAVY: int = 1
+const LINE_KIND_LIGHT: int = 0
+const LINE_KIND_DARK: int = 1
 const LINE_KIND_WHITE: int = 2
 const LINE_KIND_UNASSIGNED: int = -1
 
@@ -72,58 +72,58 @@ const LINE_KIND_UNASSIGNED: int = -1
 		line_wave_inner_amplitude = value
 		_request_parameter_sync()
 
-@export_group("Cyan Lines")
+@export_group("Light Lines")
 
-@export_range(0, 8, 1) var cyan_count: int = 3:
+@export_range(0, 8, 1) var light_count: int = 3:
 	set(value):
-		cyan_count = value
+		light_count = value
 		_request_line_rebuild()
 
-@export_color_no_alpha var cyan_color: Color = Color(0.08, 0.72, 1.0, 1.0):
+@export var light_width_gradient: GradientTexture1D:
 	set(value):
-		cyan_color = value
+		light_width_gradient = value
+		_request_parameter_sync()
+
+@export_range(0.5, 4.0, 0.1) var light_intensity: float = 2.0:
+	set(value):
+		light_intensity = value
 		_request_variant_refresh()
 
-@export_range(0.5, 4.0, 0.1) var cyan_intensity: float = 2.0:
+@export_range(0.01, 0.18, 0.005) var light_width: float = 0.06:
 	set(value):
-		cyan_intensity = value
+		light_width = value
 		_request_variant_refresh()
 
-@export_range(0.01, 0.18, 0.005) var cyan_width: float = 0.06:
+@export_range(0.0, 0.50, 0.005) var light_line_wave_amplitude: float = 0.01:
 	set(value):
-		cyan_width = value
+		light_line_wave_amplitude = value
 		_request_variant_refresh()
 
-@export_range(0.0, 0.10, 0.005) var cyan_line_wave_amplitude: float = 0.025:
-	set(value):
-		cyan_line_wave_amplitude = value
-		_request_variant_refresh()
+@export_group("Dark Lines")
 
-@export_group("Navy Lines")
-
-@export_range(0, 8, 1) var navy_count: int = 3:
+@export_range(0, 8, 1) var dark_count: int = 3:
 	set(value):
-		navy_count = value
+		dark_count = value
 		_request_line_rebuild()
 
-@export_color_no_alpha var navy_color: Color = Color(0.015, 0.12, 0.36, 1.0):
+@export var dark_width_gradient: GradientTexture1D:
 	set(value):
-		navy_color = value
+		dark_width_gradient = value
+		_request_parameter_sync()
+
+@export_range(0.5, 3.0, 0.1) var dark_intensity: float = 1.2:
+	set(value):
+		dark_intensity = value
 		_request_variant_refresh()
 
-@export_range(0.5, 3.0, 0.1) var navy_intensity: float = 1.2:
+@export_range(0.01, 0.18, 0.005) var dark_width: float = 0.04:
 	set(value):
-		navy_intensity = value
+		dark_width = value
 		_request_variant_refresh()
 
-@export_range(0.01, 0.18, 0.005) var navy_width: float = 0.04:
+@export_range(0.0, 0.50, 0.005) var dark_line_wave_amplitude: float = 0.01:
 	set(value):
-		navy_width = value
-		_request_variant_refresh()
-
-@export_range(0.0, 0.10, 0.005) var navy_line_wave_amplitude: float = 0.02:
-	set(value):
-		navy_line_wave_amplitude = value
+		dark_line_wave_amplitude = value
 		_request_variant_refresh()
 
 @export_group("Line Variation")
@@ -158,16 +158,6 @@ const LINE_KIND_UNASSIGNED: int = -1
 @export_range(0.0, 0.60, 0.05) var body_variation_strength: float = 0.15:
 	set(value):
 		body_variation_strength = value
-		_request_parameter_sync()
-
-@export_range(0.0, 1.0, 0.05) var width_gradient_strength: float = 0.45:
-	set(value):
-		width_gradient_strength = value
-		_request_parameter_sync()
-
-@export_range(0.5, 3.0, 0.1) var width_gradient_power: float = 1.4:
-	set(value):
-		width_gradient_power = value
 		_request_parameter_sync()
 
 @export_range(0.0, 0.35, 0.01) var width_noise_strength: float = 0.10:
@@ -484,9 +474,9 @@ func _rebuild_line_instances() -> void:
 	_clear_generated_line_instances()
 	_ensure_shared_material()
 
-	var colored_count := cyan_count + navy_count
-	for index in range(colored_count):
-		_add_generated_line("ColoredLine%02d" % (index + 1), LINE_KIND_UNASSIGNED)
+	var band_count := light_count + dark_count
+	for index in range(band_count):
+		_add_generated_line("Line%02d" % (index + 1), LINE_KIND_UNASSIGNED)
 
 	_add_generated_line("WhiteLine", LINE_KIND_WHITE)
 
@@ -521,12 +511,12 @@ func _ensure_shared_material() -> void:
 	_shared_material.resource_local_to_scene = true
 
 
-func _shuffled_color_kinds() -> Array[int]:
+func _shuffled_line_kinds() -> Array[int]:
 	var kinds: Array[int] = []
-	for _index in range(cyan_count):
-		kinds.append(LINE_KIND_CYAN)
-	for _index in range(navy_count):
-		kinds.append(LINE_KIND_NAVY)
+	for _index in range(light_count):
+		kinds.append(LINE_KIND_LIGHT)
+	for _index in range(dark_count):
+		kinds.append(LINE_KIND_DARK)
 
 	var rng := RandomNumberGenerator.new()
 	rng.seed = line_seed
@@ -538,18 +528,18 @@ func _shuffled_color_kinds() -> Array[int]:
 	return kinds
 
 
-func _generate_cross_offsets(colored_count: int) -> Array[Vector2]:
+func _generate_cross_offsets(band_count: int) -> Array[Vector2]:
 	var positions: Array[Vector2] = []
-	if colored_count <= 0:
+	if band_count <= 0:
 		return positions
 
 	var rng := RandomNumberGenerator.new()
 	rng.seed = line_seed
 	var spread := maxf(line_spread_radius, 0.0)
-	var minimum_distance := spread * 0.55 / sqrt(float(maxi(colored_count, 1)))
+	var minimum_distance := spread * 0.55 / sqrt(float(maxi(band_count, 1)))
 	const MAX_POSITION_ATTEMPTS: int = 24
 
-	for _index in range(colored_count):
+	for _index in range(band_count):
 		var candidate := Vector2.ZERO
 		for _attempt in range(MAX_POSITION_ATTEMPTS):
 			var angle := rng.randf_range(0.0, TAU)
@@ -578,24 +568,24 @@ func _refresh_line_variants() -> void:
 	if _generated_line_nodes.is_empty():
 		return
 
-	var colored_count := _generated_line_nodes.size() - 1
-	var cross_offsets := _generate_cross_offsets(colored_count)
-	var kinds := _shuffled_color_kinds()
+	var band_count := _generated_line_nodes.size() - 1
+	var cross_offsets := _generate_cross_offsets(band_count)
+	var kinds := _shuffled_line_kinds()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = line_seed
-	var cyan_index := 0
-	var navy_index := 0
+	var light_index := 0
+	var dark_index := 0
 
-	for index in range(colored_count):
+	for index in range(band_count):
 		var kind := kinds[index]
 		_generated_line_kinds[index] = kind
 		var line := _generated_line_nodes[index]
-		if kind == LINE_KIND_CYAN:
-			cyan_index += 1
-			line.name = "CyanLine%02d" % cyan_index
+		if kind == LINE_KIND_LIGHT:
+			light_index += 1
+			line.name = "LightLine%02d" % light_index
 		else:
-			navy_index += 1
-			line.name = "NavyLine%02d" % navy_index
+			dark_index += 1
+			line.name = "DarkLine%02d" % dark_index
 		var variation_factor := 1.0 + rng.randf_range(-line_variation, line_variation)
 		var phase := rng.randf()
 		var wave_angle := rng.randf_range(0.0, TAU)
@@ -605,11 +595,9 @@ func _refresh_line_variants() -> void:
 			rng.randf_range(-40.0, 40.0)
 		)
 
-		var color := cyan_color if kind == LINE_KIND_CYAN else navy_color
-		var intensity := cyan_intensity if kind == LINE_KIND_CYAN else navy_intensity
-		var base_width := cyan_width if kind == LINE_KIND_CYAN else navy_width
-		var base_amplitude := cyan_line_wave_amplitude if kind == LINE_KIND_CYAN else navy_line_wave_amplitude
-		line.set_instance_shader_parameter(&"line_color", color)
+		var intensity := light_intensity if kind == LINE_KIND_LIGHT else dark_intensity
+		var base_width := light_width if kind == LINE_KIND_LIGHT else dark_width
+		var base_amplitude := light_line_wave_amplitude if kind == LINE_KIND_LIGHT else dark_line_wave_amplitude
 		line.set_instance_shader_parameter(&"line_intensity", intensity)
 		line.set_instance_shader_parameter(&"line_kind", float(kind))
 		line.set_instance_shader_parameter(&"line_width", base_width * variation_factor)
@@ -650,10 +638,12 @@ func _update_custom_aabbs() -> void:
 func _make_custom_aabb(ribbon_mesh: ArrayMesh) -> AABB:
 	var bounds := ribbon_mesh.get_aabb()
 	var largest_amplitude := maxf(
-		maxf(cyan_line_wave_amplitude, navy_line_wave_amplitude),
+		maxf(light_line_wave_amplitude, dark_line_wave_amplitude),
 		white_line_wave_amplitude
 	)
-	var largest_width := maxf(maxf(cyan_width, navy_width), white_width)
+	var largest_width := maxf(light_width, dark_width)
+	largest_width *= 1.0 + width_noise_strength
+	largest_width = maxf(largest_width, white_width)
 	var largest_offset := maxf(line_spread_radius, absf(white_offset))
 	var margin := absf(stream_wave_amplitude) + largest_offset + largest_amplitude + largest_width
 	bounds.position -= Vector3.ONE * margin
@@ -679,8 +669,8 @@ func _sync_shared_material() -> void:
 	_shared_material.set_shader_parameter(&"edge_softness", edge_softness)
 	_shared_material.set_shader_parameter(&"edge_erosion_strength", edge_erosion_strength)
 	_shared_material.set_shader_parameter(&"body_variation_strength", body_variation_strength)
-	_shared_material.set_shader_parameter(&"width_gradient_strength", width_gradient_strength)
-	_shared_material.set_shader_parameter(&"width_gradient_power", width_gradient_power)
+	_shared_material.set_shader_parameter(&"light_width_gradient", light_width_gradient)
+	_shared_material.set_shader_parameter(&"dark_width_gradient", dark_width_gradient)
 	_shared_material.set_shader_parameter(&"width_noise_strength", width_noise_strength)
 	_shared_material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
 	_shared_material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
