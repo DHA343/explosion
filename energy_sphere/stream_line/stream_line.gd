@@ -20,7 +20,7 @@ const LINE_KIND_UNASSIGNED: int = -1
 
 @export_group("Stream Wave")
 
-@export_range(0.0, 0.60, 0.01, "suffix:m") var stream_wave_amplitude: float = 0.20:
+@export_range(0.0, 1.0, 0.01, "suffix:m") var stream_wave_amplitude: float = 0.20:
 	set(value):
 		stream_wave_amplitude = value
 		_request_parameter_sync()
@@ -158,6 +158,21 @@ const LINE_KIND_UNASSIGNED: int = -1
 @export_range(0.0, 0.60, 0.05) var body_variation_strength: float = 0.15:
 	set(value):
 		body_variation_strength = value
+		_request_parameter_sync()
+
+@export_range(0.0, 1.0, 0.05) var width_gradient_strength: float = 0.45:
+	set(value):
+		width_gradient_strength = value
+		_request_parameter_sync()
+
+@export_range(0.5, 3.0, 0.1) var width_gradient_power: float = 1.4:
+	set(value):
+		width_gradient_power = value
+		_request_parameter_sync()
+
+@export_range(0.0, 0.35, 0.01) var width_noise_strength: float = 0.10:
+	set(value):
+		width_noise_strength = value
 		_request_parameter_sync()
 
 @export_group("Offset")
@@ -664,6 +679,9 @@ func _sync_shared_material() -> void:
 	_shared_material.set_shader_parameter(&"edge_softness", edge_softness)
 	_shared_material.set_shader_parameter(&"edge_erosion_strength", edge_erosion_strength)
 	_shared_material.set_shader_parameter(&"body_variation_strength", body_variation_strength)
+	_shared_material.set_shader_parameter(&"width_gradient_strength", width_gradient_strength)
+	_shared_material.set_shader_parameter(&"width_gradient_power", width_gradient_power)
+	_shared_material.set_shader_parameter(&"width_noise_strength", width_noise_strength)
 	_shared_material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
 	_shared_material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
 	_shared_material.set_shader_parameter(&"inner_taper_length", inner_taper_length)

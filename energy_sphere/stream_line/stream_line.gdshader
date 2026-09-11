@@ -26,6 +26,9 @@ uniform float line_wave_inner_amplitude : hint_range(0.0, 0.03, 0.001) = 0.005;
 uniform float edge_softness : hint_range(0.0, 0.40, 0.01) = 0.12;
 uniform float edge_erosion_strength : hint_range(0.0, 1.0, 0.05) = 0.30;
 uniform float body_variation_strength : hint_range(0.0, 0.60, 0.05) = 0.15;
+uniform float width_gradient_strength : hint_range(0.0, 1.0, 0.05) = 0.45;
+uniform float width_gradient_power : hint_range(0.5, 3.0, 0.1) = 1.4;
+uniform float width_noise_strength : hint_range(0.0, 0.35, 0.01) = 0.10;
 
 uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
 uniform float outer_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
@@ -238,8 +241,23 @@ void vertex() {
 	}
 	ribbon_width_direction = normalized_or_fallback(ribbon_width_direction, local_y_world);
 
+	const float WIDTH_NOISE_FREQUENCY = 4.0;
+	const float WIDTH_NOISE_FLOW_SPEED = 0.10;
+	const float WIDTH_NOISE_OFFSET_SCALE = 0.21;
+	float width_noise = smooth_noise(
+		flow_progress * WIDTH_NOISE_FREQUENCY
+		- TIME * WIDTH_NOISE_FLOW_SPEED
+		+ line_noise_offset.x * WIDTH_NOISE_OFFSET_SCALE
+	);
+	float width_noise_factor = 1.0
+		+ (width_noise * 2.0 - 1.0) * width_noise_strength;
+	float colored_width_noise_factor = line_kind > 1.5 ? 1.0 : width_noise_factor;
 	float white_shape = white_segment_shape(flow_progress);
-	float width = line_width * inner_width_factor(flow_progress) * white_shape * radius_scale;
+	float width = line_width
+		* colored_width_noise_factor
+		* inner_width_factor(flow_progress)
+		* white_shape
+		* radius_scale;
 	float side = UV.y * 2.0 - 1.0;
 	vec3 final_world_position = center_world_position
 		+ ribbon_width_direction * (side * width * 0.5);
@@ -292,8 +310,20 @@ void fragment() {
 	);
 	float body_variation = 1.0
 		+ (body_noise * 2.0 - 1.0) * body_variation_strength;
+	float width_gradient = pow(
+		max(1.0 - center_distance, 0.0),
+		width_gradient_power
+	);
+	float width_radiance_factor = mix(
+		1.0 - width_gradient_strength,
+		1.0,
+		width_gradient
+	);
 
-	vec3 radiance = line_color.rgb * line_intensity * body_variation;
+	vec3 radiance = line_color.rgb
+		* line_intensity
+		* body_variation
+		* width_radiance_factor;
 	ALBEDO = radiance;
 	EMISSION = radiance;
 	ALPHA = alpha;

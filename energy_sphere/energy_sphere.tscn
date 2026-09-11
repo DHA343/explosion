@@ -60,7 +60,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -75,7 +75,7 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -90,7 +90,7 @@ radial_velocity_max = -500.0
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_t144h"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eoufh"]
 shader = ExtResource("1_q0apk")
 shader_parameter/zenith_color = Color(0.003, 0.007, 0.025, 1)
 shader_parameter/horizon_color = Color(0.025, 0.045, 0.11, 1)
@@ -99,12 +99,12 @@ shader_parameter/star_density = 0.009
 shader_parameter/star_intensity = 2.2
 shader_parameter/milky_way_intensity = 0.12
 
-[sub_resource type="Sky" id="Sky_q1nrn"]
-sky_material = SubResource("ShaderMaterial_t144h")
+[sub_resource type="Sky" id="Sky_t144h"]
+sky_material = SubResource("ShaderMaterial_eoufh")
 process_mode = 2
 
-[sub_resource type="Environment" id="Environment_nplok"]
-sky = SubResource("Sky_q1nrn")
+[sub_resource type="Environment" id="Environment_q1nrn"]
+sky = SubResource("Sky_t144h")
 ambient_light_source = 2
 ambient_light_color = Color(0.065, 0.09, 0.18, 1)
 ambient_light_energy = 0.32
@@ -162,13 +162,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_8v5r3")
+process_material = SubResource("ParticleProcessMaterial_b0480")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_eoufh")
+process_material = SubResource("ParticleProcessMaterial_8v5r3")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -188,7 +188,7 @@ render_target_update_mode = 4
 [node name="DistortionCamera" type="Camera3D" parent="DistortionCapture/DistortionViewport" unique_id=165995022]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.747)
 cull_mask = 2
-environment = SubResource("Environment_nplok")
+environment = SubResource("Environment_q1nrn")
 current = true
 
 [node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
@@ -275,3 +275,5 @@ instance_shader_parameters/inner_radius = 0.46499999999999997
 multimesh = SubResource("MultiMesh_6b1ja")
 
 [node name="StreamLine" parent="." unique_id=1213835783 instance=ExtResource("21_b0480")]
+stream_wave_amplitude = 0.3
+line_wave_inner_amplitude = 0.005

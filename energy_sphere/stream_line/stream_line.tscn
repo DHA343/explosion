@@ -4,22 +4,30 @@
 
 [sub_resource type="Curve3D" id="Curve3D_guide"]
 _data = {
-"points": PackedVector3Array(3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5.17, 0, 0),
-"tilts": PackedFloat32Array(0, 0)
+"points": PackedVector3Array(3, 0, 0, 0.5, 1.75, -2.135, 0, 0, 0, -2.82, 0, -4.475, 3.565, -1.065, 2.015, 10.815, 2.62, 0, -4.69, 0, -2.9, 0, 0, 0, 14.335, 0, 11.11),
+"tilts": PackedFloat32Array(0, 0, 0)
 }
-point_count = 2
+point_count = 3
 
 [node name="StreamLine" type="Node3D" unique_id=1213835783]
 script = ExtResource("1_stream")
-mesh_sample_interval = 0.03
-line_wave_speed = 1.7
+stream_wave_amplitude = 0.75
+stream_wave_cycles = 2.3
+stream_wave_speed = 1.2
+stream_wave_outer_scale = 0.25
+stream_wave_peak_position = 0.35
+stream_wave_inner_scale = 0.0
+line_wave_cycles = 3.0
+line_wave_speed = 2.2
 line_wave_noise_amount = 0.45
-line_wave_inner_amplitude = null
 cyan_line_wave_amplitude = 0.1
 navy_count = 4
 navy_intensity = 2.0
 navy_width = 0.1
 navy_line_wave_amplitude = 0.1
+edge_softness = 0.3
+edge_erosion_strength = 1.0
+body_variation_strength = 0.55
 white_width = 0.05
 white_segment_length = 0.25
 
