@@ -249,13 +249,31 @@ var _flow_position: float = 0.0
 
 
 func _ready() -> void:
+	var palette_selection_failed := false
+
 	if not Engine.is_editor_hint():
-		var selected_palette := _select_random_palette()
-		if selected_palette != null:
-			palette = selected_palette
+		palette = null
 
 		if variant_random:
-			variant = randi_range(Variant.CROSS_ONLY, Variant.DOUBLE_RING)
+			var available_variants := _get_available_variants()
+			if available_variants.is_empty():
+				push_error(
+					"CrossFlare cannot select a Variant because no usable CrossFlarePalette exists. "
+					+ "Check palettes, selection_weight, and allowed_variants.")
+				palette_selection_failed = true
+			else:
+				variant = available_variants[randi_range(0, available_variants.size() - 1)]
+
+		if not palette_selection_failed:
+			var selected_palette := _select_random_palette_for_variant(variant)
+			if selected_palette == null:
+				push_error(
+					"CrossFlare has no usable CrossFlarePalette for the configured Variant. "
+					+ "Check allowed_variants and selection_weight.")
+				palette_selection_failed = true
+			else:
+				palette = selected_palette
+
 		size *= 1.0 + randf_range(-size_random_ratio, size_random_ratio)
 		size = clampf(size, 0.1, 5.0)
 		rotation_speed *= 1.0 + randf_range(-rotation_speed_random_ratio,
@@ -271,7 +289,7 @@ func _ready() -> void:
 		if split_seed_random:
 			split_seed = randi_range(0, 9999)
 
-	if palette == null:
+	if palette == null and not palette_selection_failed:
 		push_error("CrossFlare requires a CrossFlarePalette resource.")
 
 	_update_style()
@@ -309,10 +327,27 @@ func seek(seconds: float) -> void:
 	set_instance_shader_parameter(&"progress", progress)
 
 
-func _select_random_palette() -> CrossFlarePalette:
+func _get_available_variants() -> Array[int]:
+	var available_variants: Array[int] = []
+	for candidate_variant in [Variant.CROSS_ONLY, Variant.SINGLE_RING, Variant.DOUBLE_RING]:
+		if _has_available_palette_for_variant(candidate_variant):
+			available_variants.append(candidate_variant)
+	return available_variants
+
+
+func _has_available_palette_for_variant(candidate_variant: int) -> bool:
+	for candidate in palettes:
+		if (candidate != null and candidate.is_variant_allowed(candidate_variant)
+				and candidate.selection_weight > 0.0):
+			return true
+	return false
+
+
+func _select_random_palette_for_variant(candidate_variant: int) -> CrossFlarePalette:
 	var total_weight: float = 0.0
 	for candidate in palettes:
-		if candidate != null:
+		if (candidate != null and candidate.is_variant_allowed(candidate_variant)
+				and candidate.selection_weight > 0.0):
 			total_weight += maxf(candidate.selection_weight, 0.0)
 
 	if total_weight <= 0.0:
@@ -320,7 +355,8 @@ func _select_random_palette() -> CrossFlarePalette:
 
 	var roll := randf() * total_weight
 	for candidate in palettes:
-		if candidate == null or candidate.selection_weight <= 0.0:
+		if (candidate == null or not candidate.is_variant_allowed(candidate_variant)
+				or candidate.selection_weight <= 0.0):
 			continue
 
 		roll -= maxf(candidate.selection_weight, 0.0)

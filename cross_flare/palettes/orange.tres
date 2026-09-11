@@ -18,3 +18,4 @@ shader_parameter/ring_use_cross_gradient = true
 shader_parameter/flow_speed = 1.0000000149012
 shader_parameter/flow_width = 2.0
 script = ExtResource("2_palette")
+allowed_variants = 1

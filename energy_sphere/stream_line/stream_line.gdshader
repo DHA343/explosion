@@ -1,14 +1,15 @@
 shader_type spatial;
 
-render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
+render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, fog_disabled;
 
 instance uniform vec4 line_color : source_color = vec4(0.08, 0.72, 1.0, 1.0);
 instance uniform float line_intensity = 2.0;
 instance uniform float line_kind = 0.0;
 instance uniform float line_width : hint_range(0.01, 0.18, 0.005) = 0.06;
-instance uniform float line_offset : hint_range(-0.30, 0.30, 0.01) = 0.0;
+instance uniform vec2 line_cross_offset = vec2(0.0);
 instance uniform float line_wave_amplitude : hint_range(0.0, 0.10, 0.005) = 0.025;
 instance uniform float line_wave_phase : hint_range(0.0, 1.0, 0.01) = 0.0;
+instance uniform vec2 line_wave_direction = vec2(1.0, 0.0);
 instance uniform vec2 line_noise_offset = vec2(0.0);
 
 uniform float stream_wave_amplitude : hint_range(0.0, 0.60, 0.01) = 0.20;
@@ -51,7 +52,7 @@ float smooth_noise(float value) {
 
 
 float stream_envelope(float progress) {
-	float peak = clamp(stream_wave_peak_position, 0.20, 0.70);
+	float peak = stream_wave_peak_position;
 	if (progress < peak) {
 		float outer_to_peak = smoothstep(0.0, peak, progress);
 		return mix(stream_wave_outer_scale, 1.0, outer_to_peak);
@@ -117,17 +118,33 @@ float white_segment_mask(float flow_progress) {
 	}
 
 	float mask = 0.0;
-	float softness = min(0.025, white_segment_length * 0.25);
 	for (int index = 0; index < 3; index++) {
 		vec4 segment = white_segments[index];
 		float active = step(0.5, segment.y);
 		float start = segment.x;
 		float finish = start + white_segment_length;
-		float leading = smoothstep(start, start + softness, flow_progress);
-		float trailing = 1.0 - smoothstep(finish - softness, finish, flow_progress);
-		mask = max(mask, leading * trailing * active);
+		float inside = step(start, flow_progress) * step(flow_progress, finish);
+		mask = max(mask, inside * active);
 	}
 	return mask;
+}
+
+
+float white_segment_shape(float flow_progress) {
+	if (line_kind < 1.5) {
+		return 1.0;
+	}
+
+	float shape = 0.0;
+	for (int index = 0; index < 3; index++) {
+		vec4 segment = white_segments[index];
+		float active = step(0.5, segment.y);
+		float segment_progress = (flow_progress - segment.x) / max(white_segment_length, 0.001);
+		float inside = step(0.0, segment_progress) * step(segment_progress, 1.0);
+		float tip_factor = 1.0 - abs(segment_progress * 2.0 - 1.0);
+		shape = max(shape, max(tip_factor, 0.0) * inside * active);
+	}
+	return shape;
 }
 
 
@@ -147,38 +164,48 @@ void vertex() {
 	vec3 world_tangent = (MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz;
 	vec3 local_x_world = (MODEL_MATRIX * vec4(vec3(1.0, 0.0, 0.0), 0.0)).xyz;
 	vec3 local_y_world = (MODEL_MATRIX * vec4(vec3(0.0, 1.0, 0.0), 0.0)).xyz;
-	vec3 plane_normal_world = (MODEL_MATRIX * vec4(vec3(0.0, 0.0, 1.0), 0.0)).xyz;
+	vec3 local_z_world = (MODEL_MATRIX * vec4(vec3(0.0, 0.0, 1.0), 0.0)).xyz;
 	world_tangent = normalized_or_fallback(world_tangent, local_x_world);
-	plane_normal_world = normalized_or_fallback(plane_normal_world, vec3(0.0, 0.0, 1.0));
 	local_x_world = normalized_or_fallback(local_x_world, vec3(1.0, 0.0, 0.0));
 	local_y_world = normalized_or_fallback(local_y_world, vec3(0.0, 1.0, 0.0));
+	local_z_world = normalized_or_fallback(local_z_world, vec3(0.0, 0.0, 1.0));
 
-	// Stream and line waves are constrained to the fixed local XY wave plane.
-	vec3 deform_direction = cross(plane_normal_world, world_tangent);
-	if (length(deform_direction) <= 0.001) {
-		deform_direction = cross(local_y_world, world_tangent);
+	// Build a camera-independent 2D cross-section around the path tangent.
+	vec3 cross_axis_b = local_z_world - world_tangent * dot(local_z_world, world_tangent);
+	if (length(cross_axis_b) <= 0.001) {
+		cross_axis_b = local_y_world - world_tangent * dot(local_y_world, world_tangent);
 	}
-	if (length(deform_direction) <= 0.001) {
-		deform_direction = cross(local_x_world, world_tangent);
+	if (length(cross_axis_b) <= 0.001) {
+		cross_axis_b = local_x_world - world_tangent * dot(local_x_world, world_tangent);
 	}
-	deform_direction = normalized_or_fallback(deform_direction, local_y_world);
+	cross_axis_b = normalized_or_fallback(cross_axis_b, local_y_world);
+	vec3 cross_axis_a = normalized_or_fallback(
+		cross(world_tangent, cross_axis_b),
+		local_x_world
+	);
 
-	float side = UV.y * 2.0 - 1.0;
-	float width_factor = inner_width_factor(flow_progress);
 	float offset_scale = mix(1.0, inner_offset_scale, smoothstep(0.0, 1.0, flow_progress));
-	float center_displacement = stream_wave_at(flow_progress)
-		+ line_offset * offset_scale * radius_scale
-		+ line_wave_at(flow_progress);
-	vec3 center_world_position = world_position + deform_direction * center_displacement;
+	vec3 stream_displacement = cross_axis_a * stream_wave_at(flow_progress);
+	vec3 cross_offset = (
+		cross_axis_a * line_cross_offset.x
+		+ cross_axis_b * line_cross_offset.y
+	) * offset_scale * radius_scale;
+	vec3 line_wave_direction_world = normalized_or_fallback(
+		cross_axis_a * line_wave_direction.x
+		+ cross_axis_b * line_wave_direction.y,
+		cross_axis_a
+	);
+	vec3 line_displacement = line_wave_direction_world * line_wave_at(flow_progress);
+	vec3 center_world_position = world_position + stream_displacement + cross_offset + line_displacement;
 
-	// Only ribbon width follows the camera to keep the ribbon visible edge-on.
+	// Only ribbon width follows the camera; its center and all wave directions do not.
 	vec3 view_direction = normalized_or_fallback(
 		CAMERA_POSITION_WORLD - center_world_position,
-		plane_normal_world
+		local_z_world
 	);
 	vec3 ribbon_width_direction = cross(world_tangent, view_direction);
 	if (length(ribbon_width_direction) <= 0.001) {
-		ribbon_width_direction = cross(world_tangent, plane_normal_world);
+		ribbon_width_direction = cross(world_tangent, local_z_world);
 	}
 	if (length(ribbon_width_direction) <= 0.001) {
 		ribbon_width_direction = cross(world_tangent, local_y_world);
@@ -188,7 +215,9 @@ void vertex() {
 	}
 	ribbon_width_direction = normalized_or_fallback(ribbon_width_direction, local_y_world);
 
-	float width = line_width * width_factor * radius_scale;
+	float white_shape = white_segment_shape(flow_progress);
+	float width = line_width * inner_width_factor(flow_progress) * white_shape * radius_scale;
+	float side = UV.y * 2.0 - 1.0;
 	vec3 final_world_position = center_world_position
 		+ ribbon_width_direction * (side * width * 0.5);
 	vec3 view_position = (VIEW_MATRIX * vec4(final_world_position, 1.0)).xyz;
@@ -208,5 +237,5 @@ void fragment() {
 	vec3 radiance = line_color.rgb * line_intensity;
 	ALBEDO = radiance;
 	EMISSION = radiance;
-	ALPHA = alpha * line_color.a;
+	ALPHA = alpha;
 }

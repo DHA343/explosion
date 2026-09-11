@@ -14,127 +14,127 @@ const LINE_KIND_WHITE: int = 2
 
 @export_range(0.02, 0.10, 0.005) var mesh_sample_interval: float = 0.04:
 	set(value):
-		mesh_sample_interval = clampf(value, 0.02, 0.10)
+		mesh_sample_interval = value
 		_request_mesh_rebuild()
 
 @export_group("Stream Wave")
 
 @export_range(0.0, 0.60, 0.01, "suffix:m") var stream_wave_amplitude: float = 0.20:
 	set(value):
-		stream_wave_amplitude = clampf(value, 0.0, 0.60)
+		stream_wave_amplitude = value
 		_request_parameter_sync()
 
 @export_range(0.5, 3.0, 0.05) var stream_wave_cycles: float = 1.5:
 	set(value):
-		stream_wave_cycles = clampf(value, 0.5, 3.0)
+		stream_wave_cycles = value
 		_request_parameter_sync()
 
 @export_range(0.0, 2.0, 0.05, "suffix:/s") var stream_wave_speed: float = 0.50:
 	set(value):
-		stream_wave_speed = clampf(value, 0.0, 2.0)
+		stream_wave_speed = value
 		_request_parameter_sync()
 
 @export_range(0.0, 1.0, 0.05) var stream_wave_outer_scale: float = 0.60:
 	set(value):
-		stream_wave_outer_scale = clampf(value, 0.0, 1.0)
+		stream_wave_outer_scale = value
 		_request_parameter_sync()
 
 @export_range(0.20, 0.70, 0.01) var stream_wave_peak_position: float = 0.45:
 	set(value):
-		stream_wave_peak_position = clampf(value, 0.20, 0.70)
+		stream_wave_peak_position = value
 		_request_parameter_sync()
 
 @export_range(0.0, 0.50, 0.05) var stream_wave_inner_scale: float = 0.10:
 	set(value):
-		stream_wave_inner_scale = clampf(value, 0.0, 0.50)
+		stream_wave_inner_scale = value
 		_request_parameter_sync()
 
 @export_group("Line Wave")
 
 @export_range(1.0, 5.0, 0.10) var line_wave_cycles: float = 2.5:
 	set(value):
-		line_wave_cycles = clampf(value, 1.0, 5.0)
+		line_wave_cycles = value
 		_request_parameter_sync()
 
 @export_range(0.0, 3.0, 0.05, "suffix:/s") var line_wave_speed: float = 0.80:
 	set(value):
-		line_wave_speed = clampf(value, 0.0, 3.0)
+		line_wave_speed = value
 		_request_parameter_sync()
 
 @export_range(0.0, 0.50, 0.05) var line_wave_noise_amount: float = 0.20:
 	set(value):
-		line_wave_noise_amount = clampf(value, 0.0, 0.50)
+		line_wave_noise_amount = value
 		_request_parameter_sync()
 
 @export_range(0.0, 1.0, 0.05) var line_wave_inner_scale: float = 0.20:
 	set(value):
-		line_wave_inner_scale = clampf(value, 0.0, 1.0)
+		line_wave_inner_scale = value
 		_request_parameter_sync()
 
 @export_group("Cyan Lines")
 
 @export_range(0, 8, 1) var cyan_count: int = 3:
 	set(value):
-		cyan_count = clampi(value, 0, 8)
+		cyan_count = value
 		_request_line_rebuild()
 
-@export var cyan_color: Color = Color(0.08, 0.72, 1.0, 1.0):
+@export_color_no_alpha var cyan_color: Color = Color(0.08, 0.72, 1.0, 1.0):
 	set(value):
 		cyan_color = value
 		_request_variant_refresh()
 
 @export_range(0.5, 4.0, 0.1) var cyan_intensity: float = 2.0:
 	set(value):
-		cyan_intensity = clampf(value, 0.5, 4.0)
+		cyan_intensity = value
 		_request_variant_refresh()
 
 @export_range(0.01, 0.18, 0.005) var cyan_width: float = 0.06:
 	set(value):
-		cyan_width = clampf(value, 0.01, 0.18)
+		cyan_width = value
 		_request_variant_refresh()
 
 @export_range(0.0, 0.10, 0.005) var cyan_line_wave_amplitude: float = 0.025:
 	set(value):
-		cyan_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		cyan_line_wave_amplitude = value
 		_request_variant_refresh()
 
 @export_group("Navy Lines")
 
 @export_range(0, 8, 1) var navy_count: int = 3:
 	set(value):
-		navy_count = clampi(value, 0, 8)
+		navy_count = value
 		_request_line_rebuild()
 
-@export var navy_color: Color = Color(0.015, 0.12, 0.36, 1.0):
+@export_color_no_alpha var navy_color: Color = Color(0.015, 0.12, 0.36, 1.0):
 	set(value):
 		navy_color = value
 		_request_variant_refresh()
 
 @export_range(0.5, 3.0, 0.1) var navy_intensity: float = 1.2:
 	set(value):
-		navy_intensity = clampf(value, 0.5, 3.0)
+		navy_intensity = value
 		_request_variant_refresh()
 
 @export_range(0.01, 0.18, 0.005) var navy_width: float = 0.04:
 	set(value):
-		navy_width = clampf(value, 0.01, 0.18)
+		navy_width = value
 		_request_variant_refresh()
 
 @export_range(0.0, 0.10, 0.005) var navy_line_wave_amplitude: float = 0.02:
 	set(value):
-		navy_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		navy_line_wave_amplitude = value
 		_request_variant_refresh()
 
 @export_group("Line Variation")
 
-@export_range(0.05, 0.30, 0.01) var line_offset_spread: float = 0.18:
+@export_range(0.05, 0.30, 0.01) var line_spread_radius: float = 0.18:
 	set(value):
-		line_offset_spread = clampf(value, 0.05, 0.30)
+		line_spread_radius = value
 		_request_variant_refresh()
 
 @export_range(0.0, 0.35, 0.05) var line_variation: float = 0.15:
 	set(value):
-		line_variation = clampf(value, 0.0, 0.35)
+		line_variation = value
 		_request_variant_refresh()
 
 @export var line_seed: int = 17041:
@@ -146,98 +146,99 @@ const LINE_KIND_WHITE: int = 2
 
 @export_range(0.25, 1.0, 0.05) var inner_offset_scale: float = 0.50:
 	set(value):
-		inner_offset_scale = clampf(value, 0.25, 1.0)
+		inner_offset_scale = value
 		_request_parameter_sync()
 
 @export_group("White Line")
 
-@export var white_color: Color = Color(0.88, 0.98, 1.0, 1.0):
+@export_color_no_alpha var white_color: Color = Color(0.88, 0.98, 1.0, 1.0):
 	set(value):
 		white_color = value
 		_request_white_sync()
 
 @export_range(1.0, 5.0, 0.1) var white_intensity: float = 3.0:
 	set(value):
-		white_intensity = clampf(value, 1.0, 5.0)
+		white_intensity = value
 		_request_white_sync()
 
 @export_range(0.01, 0.08, 0.005) var white_width: float = 0.018:
 	set(value):
-		white_width = clampf(value, 0.01, 0.08)
+		white_width = value
 		_request_white_sync()
 
 @export_range(-0.30, 0.30, 0.01) var white_offset: float = 0.075:
 	set(value):
-		white_offset = clampf(value, -0.30, 0.30)
+		white_offset = value
 		_request_white_sync()
 
 @export_range(0.0, 0.10, 0.005) var white_line_wave_amplitude: float = 0.012:
 	set(value):
-		white_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		white_line_wave_amplitude = value
 		_request_white_sync()
 
 @export_range(0.05, 0.25, 0.01) var white_segment_length: float = 0.12:
 	set(value):
-		white_segment_length = clampf(value, 0.05, 0.25)
+		white_segment_length = value
 		_request_white_sync()
 
 @export_range(0.50, 3.0, 0.05, "suffix:/s") var white_speed: float = 1.50:
 	set(value):
-		white_speed = clampf(value, 0.50, 3.0)
+		white_speed = value
 		_request_parameter_sync()
 
 @export_range(0.20, 2.0, 0.05, "suffix:s") var white_interval_min: float = 0.40:
 	set(value):
-		white_interval_min = clampf(value, 0.20, 2.0)
-		white_interval_max = maxf(white_interval_max, white_interval_min)
+		white_interval_min = value
 		_request_parameter_sync()
 
 @export_range(0.40, 3.0, 0.05, "suffix:s") var white_interval_max: float = 1.20:
 	set(value):
-		white_interval_max = clampf(value, 0.40, 3.0)
-		white_interval_max = maxf(white_interval_max, white_interval_min)
+		white_interval_max = value
 		_request_parameter_sync()
 
 @export_range(1, 3, 1) var white_max_segments: int = 2:
 	set(value):
-		white_max_segments = clampi(value, 1, WHITE_SEGMENT_CAPACITY)
+		white_max_segments = value
 		_request_parameter_sync()
 
 @export_range(0.0, 1.0, 0.01) var white_preview_position: float = 0.50:
 	set(value):
-		white_preview_position = clampf(value, 0.0, 1.0)
+		white_preview_position = value
 		_request_white_sync()
 
 @export_group("Ends")
 
 @export_range(0.02, 0.20, 0.01) var outer_fade_length: float = 0.08:
 	set(value):
-		outer_fade_length = clampf(value, 0.02, 0.20)
+		outer_fade_length = value
 		_request_parameter_sync()
 
 @export_range(0.05, 0.35, 0.01) var inner_taper_length: float = 0.18:
 	set(value):
-		inner_taper_length = clampf(value, 0.05, 0.35)
+		inner_taper_length = value
 		_request_parameter_sync()
 
 @export_range(1.0, 4.0, 0.1) var inner_taper_power: float = 1.8:
 	set(value):
-		inner_taper_power = clampf(value, 1.0, 4.0)
+		inner_taper_power = value
 		_request_parameter_sync()
 
 @export_range(0.03, 0.25, 0.01) var inner_fade_length: float = 0.12:
 	set(value):
-		inner_fade_length = clampf(value, 0.03, 0.25)
+		inner_fade_length = value
 		_request_parameter_sync()
 
 @export_range(0.0, 0.60, 0.05) var inner_erosion_strength: float = 0.25:
 	set(value):
-		inner_erosion_strength = clampf(value, 0.0, 0.60)
+		inner_erosion_strength = value
 		_request_parameter_sync()
 
 var radius: float = BASE_RADIUS:
 	set(value):
-		radius = maxf(value, 0.001)
+		if value <= 0.0:
+			push_error("StreamLine radius must be greater than zero.")
+			return
+		radius = value
 		if is_node_ready():
 			_sync_radius()
 
@@ -396,7 +397,8 @@ func _build_ribbon_mesh() -> ArrayMesh:
 		return null
 
 	var scaled_curve_length := curve_length * _radius_scale()
-	var sample_count := maxi(2, ceili(scaled_curve_length / mesh_sample_interval) + 1)
+	var sample_interval := maxf(mesh_sample_interval, 0.001)
+	var sample_count := maxi(2, ceili(scaled_curve_length / sample_interval) + 1)
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var uvs := PackedVector2Array()
@@ -519,15 +521,19 @@ func _refresh_line_variants() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = line_seed
 	var colored_count := _generated_line_nodes.size() - 1
+	var seed_rotation := rng.randf_range(0.0, TAU)
 
 	for index in range(colored_count):
 		var kind := _generated_line_kinds[index]
 		var line := _generated_line_nodes[index]
-		var slot_progress := 0.5 if colored_count <= 1 else float(index) / float(colored_count - 1)
-		var slot_offset := lerpf(-line_offset_spread, line_offset_spread, slot_progress)
-		var jitter := rng.randf_range(-line_offset_spread * 0.18, line_offset_spread * 0.18)
+		var angle_step := TAU * float(index) / float(maxi(colored_count, 1))
+		var angle := seed_rotation + angle_step + rng.randf_range(-0.14, 0.14)
+		var radial_distance := line_spread_radius * rng.randf_range(0.68, 1.0)
+		var cross_offset := Vector2(cos(angle), sin(angle)) * radial_distance
 		var variation_factor := 1.0 + rng.randf_range(-line_variation, line_variation)
 		var phase := rng.randf()
+		var wave_angle := rng.randf_range(0.0, TAU)
+		var wave_direction := Vector2(cos(wave_angle), sin(wave_angle))
 		var noise_offset := Vector2(
 			rng.randf_range(-40.0, 40.0),
 			rng.randf_range(-40.0, 40.0)
@@ -541,13 +547,16 @@ func _refresh_line_variants() -> void:
 		line.set_instance_shader_parameter(&"line_intensity", intensity)
 		line.set_instance_shader_parameter(&"line_kind", float(kind))
 		line.set_instance_shader_parameter(&"line_width", base_width * variation_factor)
-		line.set_instance_shader_parameter(&"line_offset", slot_offset + jitter)
+		line.set_instance_shader_parameter(&"line_cross_offset", cross_offset)
 		line.set_instance_shader_parameter(&"line_wave_amplitude", base_amplitude * variation_factor)
 		line.set_instance_shader_parameter(&"line_wave_phase", phase)
+		line.set_instance_shader_parameter(&"line_wave_direction", wave_direction)
 		line.set_instance_shader_parameter(&"line_noise_offset", noise_offset)
 
 	var white_line: MeshInstance3D = _generated_line_nodes.back()
 	var white_rng_phase := rng.randf()
+	var white_wave_angle := rng.randf_range(0.0, TAU)
+	var white_wave_direction := Vector2(cos(white_wave_angle), sin(white_wave_angle))
 	var white_noise_offset := Vector2(
 		rng.randf_range(-40.0, 40.0),
 		rng.randf_range(-40.0, 40.0)
@@ -556,9 +565,10 @@ func _refresh_line_variants() -> void:
 	white_line.set_instance_shader_parameter(&"line_intensity", white_intensity)
 	white_line.set_instance_shader_parameter(&"line_kind", float(LINE_KIND_WHITE))
 	white_line.set_instance_shader_parameter(&"line_width", white_width)
-	white_line.set_instance_shader_parameter(&"line_offset", white_offset)
+	white_line.set_instance_shader_parameter(&"line_cross_offset", Vector2(white_offset, 0.0))
 	white_line.set_instance_shader_parameter(&"line_wave_amplitude", white_line_wave_amplitude)
 	white_line.set_instance_shader_parameter(&"line_wave_phase", white_rng_phase)
+	white_line.set_instance_shader_parameter(&"line_wave_direction", white_wave_direction)
 	white_line.set_instance_shader_parameter(&"line_noise_offset", white_noise_offset)
 
 
@@ -578,7 +588,7 @@ func _make_custom_aabb(ribbon_mesh: ArrayMesh) -> AABB:
 		white_line_wave_amplitude
 	)
 	var largest_width := maxf(maxf(cyan_width, navy_width), white_width)
-	var largest_offset := maxf(line_offset_spread, absf(white_offset))
+	var largest_offset := maxf(line_spread_radius, absf(white_offset))
 	var margin := absf(stream_wave_amplitude) + largest_offset + largest_amplitude + largest_width
 	bounds.position -= Vector3.ONE * margin
 	bounds.size += Vector3.ONE * margin * 2.0
@@ -627,7 +637,7 @@ func _apply_white_preview() -> void:
 		0.0,
 		1.0 - white_segment_length
 	)
-	_white_segments[0] = Vector4(preview_start, 1.0, white_segment_length, 0.0)
+	_white_segments[0] = Vector4(preview_start, 1.0, 0.0, 0.0)
 
 
 func _update_white_segments(delta: float) -> void:
@@ -667,12 +677,14 @@ func _active_white_segment_count() -> int:
 func _spawn_white_segment() -> void:
 	for index in range(WHITE_SEGMENT_CAPACITY):
 		if _white_segments[index].y <= 0.5:
-			_white_segments[index] = Vector4(0.0, 1.0, white_segment_length, 0.0)
+			_white_segments[index] = Vector4(0.0, 1.0, 0.0, 0.0)
 			return
 
 
 func _random_interval() -> float:
-	return _random.randf_range(white_interval_min, maxf(white_interval_min, white_interval_max))
+	var interval_low := minf(white_interval_min, white_interval_max)
+	var interval_high := maxf(white_interval_min, white_interval_max)
+	return _random.randf_range(interval_low, interval_high)
 
 
 func _white_segment_values() -> PackedVector4Array:
