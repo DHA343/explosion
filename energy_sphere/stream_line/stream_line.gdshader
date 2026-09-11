@@ -2,14 +2,14 @@ shader_type spatial;
 
 render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
 
-uniform vec4 line_color : source_color = vec4(0.08, 0.72, 1.0, 1.0);
-uniform float line_intensity : hint_range(0.5, 5.0, 0.1) = 2.0;
-uniform float line_kind = 0.0;
-uniform float line_width : hint_range(0.01, 0.18, 0.005) = 0.06;
-uniform float line_offset : hint_range(-0.30, 0.30, 0.01) = 0.0;
-uniform float line_wave_amplitude : hint_range(0.0, 0.10, 0.005) = 0.025;
-uniform float line_wave_phase : hint_range(0.0, 1.0, 0.01) = 0.0;
-uniform vec2 line_noise_offset = vec2(0.0);
+instance uniform vec4 line_color : source_color = vec4(0.08, 0.72, 1.0, 1.0);
+instance uniform float line_intensity = 2.0;
+instance uniform float line_kind = 0.0;
+instance uniform float line_width : hint_range(0.01, 0.18, 0.005) = 0.06;
+instance uniform float line_offset : hint_range(-0.30, 0.30, 0.01) = 0.0;
+instance uniform float line_wave_amplitude : hint_range(0.0, 0.10, 0.005) = 0.025;
+instance uniform float line_wave_phase : hint_range(0.0, 1.0, 0.01) = 0.0;
+instance uniform vec2 line_noise_offset = vec2(0.0);
 
 uniform float stream_wave_amplitude : hint_range(0.0, 0.60, 0.01) = 0.20;
 uniform float stream_wave_cycles : hint_range(0.5, 3.0, 0.05) = 1.5;
@@ -21,6 +21,7 @@ uniform float stream_wave_inner_scale : hint_range(0.0, 0.50, 0.05) = 0.10;
 uniform float line_wave_cycles : hint_range(1.0, 5.0, 0.10) = 2.5;
 uniform float line_wave_speed : hint_range(0.0, 3.0, 0.05) = 0.80;
 uniform float line_wave_noise_amount : hint_range(0.0, 0.50, 0.05) = 0.20;
+uniform float line_wave_inner_scale : hint_range(0.0, 1.0, 0.05) = 0.20;
 
 uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
 uniform float outer_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
@@ -32,6 +33,7 @@ uniform float radius_scale = 1.0;
 
 uniform float white_segment_length : hint_range(0.05, 0.25, 0.01) = 0.12;
 uniform vec4 white_segments[3];
+
 
 float hash_value(float value) {
 	return fract(sin(value * 127.1 + line_noise_offset.x * 311.7)
@@ -73,8 +75,13 @@ float line_wave_at(float flow_progress) {
 		+ line_wave_phase * TAU;
 	float sine_wave = sin(phase);
 	float noise = smooth_noise(flow_progress * NOISE_FREQUENCY - TIME * NOISE_SPEED);
+	float inner_damping = mix(
+		1.0,
+		line_wave_inner_scale,
+		smoothstep(1.0 - inner_taper_length, 1.0, flow_progress)
+	);
 	return (sine_wave + (noise * 2.0 - 1.0) * line_wave_noise_amount)
-		* line_wave_amplitude * radius_scale;
+		* line_wave_amplitude * radius_scale * inner_damping;
 }
 
 
@@ -124,20 +131,37 @@ float white_segment_mask(float flow_progress) {
 }
 
 
+vec3 normalized_or_fallback(vec3 value, vec3 fallback) {
+	float value_length = length(value);
+	if (value_length > 0.001) {
+		return value / value_length;
+	}
+	return normalize(fallback);
+}
+
+
 void vertex() {
 	float path_progress = clamp(UV.x, 0.0, 1.0);
 	float flow_progress = 1.0 - path_progress;
 	vec3 world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	vec3 world_tangent = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	vec3 view_direction = normalize(CAMERA_POSITION_WORLD - world_position);
-	vec3 ribbon_direction = cross(world_tangent, view_direction);
-	if (length(ribbon_direction) < 0.001) {
-		ribbon_direction = cross(world_tangent, vec3(0.0, 1.0, 0.0));
+	vec3 world_tangent = (MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz;
+	vec3 local_x_world = (MODEL_MATRIX * vec4(vec3(1.0, 0.0, 0.0), 0.0)).xyz;
+	vec3 local_y_world = (MODEL_MATRIX * vec4(vec3(0.0, 1.0, 0.0), 0.0)).xyz;
+	vec3 plane_normal_world = (MODEL_MATRIX * vec4(vec3(0.0, 0.0, 1.0), 0.0)).xyz;
+	world_tangent = normalized_or_fallback(world_tangent, local_x_world);
+	plane_normal_world = normalized_or_fallback(plane_normal_world, vec3(0.0, 0.0, 1.0));
+	local_x_world = normalized_or_fallback(local_x_world, vec3(1.0, 0.0, 0.0));
+	local_y_world = normalized_or_fallback(local_y_world, vec3(0.0, 1.0, 0.0));
+
+	// Stream and line waves are constrained to the fixed local XY wave plane.
+	vec3 deform_direction = cross(plane_normal_world, world_tangent);
+	if (length(deform_direction) <= 0.001) {
+		deform_direction = cross(local_y_world, world_tangent);
 	}
-	if (length(ribbon_direction) < 0.001) {
-		ribbon_direction = cross(world_tangent, vec3(1.0, 0.0, 0.0));
+	if (length(deform_direction) <= 0.001) {
+		deform_direction = cross(local_x_world, world_tangent);
 	}
-	ribbon_direction = normalize(ribbon_direction);
+	deform_direction = normalized_or_fallback(deform_direction, local_y_world);
 
 	float side = UV.y * 2.0 - 1.0;
 	float width_factor = inner_width_factor(flow_progress);
@@ -145,11 +169,29 @@ void vertex() {
 	float center_displacement = stream_wave_at(flow_progress)
 		+ line_offset * offset_scale * radius_scale
 		+ line_wave_at(flow_progress);
-	float width = line_width * width_factor * radius_scale;
-	float displacement = center_displacement + side * width * 0.5;
-	world_position += ribbon_direction * displacement;
+	vec3 center_world_position = world_position + deform_direction * center_displacement;
 
-	vec3 view_position = (VIEW_MATRIX * vec4(world_position, 1.0)).xyz;
+	// Only ribbon width follows the camera to keep the ribbon visible edge-on.
+	vec3 view_direction = normalized_or_fallback(
+		CAMERA_POSITION_WORLD - center_world_position,
+		plane_normal_world
+	);
+	vec3 ribbon_width_direction = cross(world_tangent, view_direction);
+	if (length(ribbon_width_direction) <= 0.001) {
+		ribbon_width_direction = cross(world_tangent, plane_normal_world);
+	}
+	if (length(ribbon_width_direction) <= 0.001) {
+		ribbon_width_direction = cross(world_tangent, local_y_world);
+	}
+	if (length(ribbon_width_direction) <= 0.001) {
+		ribbon_width_direction = cross(world_tangent, local_x_world);
+	}
+	ribbon_width_direction = normalized_or_fallback(ribbon_width_direction, local_y_world);
+
+	float width = line_width * width_factor * radius_scale;
+	vec3 final_world_position = center_world_position
+		+ ribbon_width_direction * (side * width * 0.5);
+	vec3 view_position = (VIEW_MATRIX * vec4(final_world_position, 1.0)).xyz;
 	MODELVIEW_MATRIX = mat4(1.0);
 	VERTEX = view_position;
 }

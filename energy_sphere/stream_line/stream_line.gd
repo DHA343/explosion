@@ -66,6 +66,82 @@ const LINE_KIND_WHITE: int = 2
 		line_wave_noise_amount = clampf(value, 0.0, 0.50)
 		_request_parameter_sync()
 
+@export_range(0.0, 1.0, 0.05) var line_wave_inner_scale: float = 0.20:
+	set(value):
+		line_wave_inner_scale = clampf(value, 0.0, 1.0)
+		_request_parameter_sync()
+
+@export_group("Cyan Lines")
+
+@export_range(0, 8, 1) var cyan_count: int = 3:
+	set(value):
+		cyan_count = clampi(value, 0, 8)
+		_request_line_rebuild()
+
+@export var cyan_color: Color = Color(0.08, 0.72, 1.0, 1.0):
+	set(value):
+		cyan_color = value
+		_request_variant_refresh()
+
+@export_range(0.5, 4.0, 0.1) var cyan_intensity: float = 2.0:
+	set(value):
+		cyan_intensity = clampf(value, 0.5, 4.0)
+		_request_variant_refresh()
+
+@export_range(0.01, 0.18, 0.005) var cyan_width: float = 0.06:
+	set(value):
+		cyan_width = clampf(value, 0.01, 0.18)
+		_request_variant_refresh()
+
+@export_range(0.0, 0.10, 0.005) var cyan_line_wave_amplitude: float = 0.025:
+	set(value):
+		cyan_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		_request_variant_refresh()
+
+@export_group("Navy Lines")
+
+@export_range(0, 8, 1) var navy_count: int = 3:
+	set(value):
+		navy_count = clampi(value, 0, 8)
+		_request_line_rebuild()
+
+@export var navy_color: Color = Color(0.015, 0.12, 0.36, 1.0):
+	set(value):
+		navy_color = value
+		_request_variant_refresh()
+
+@export_range(0.5, 3.0, 0.1) var navy_intensity: float = 1.2:
+	set(value):
+		navy_intensity = clampf(value, 0.5, 3.0)
+		_request_variant_refresh()
+
+@export_range(0.01, 0.18, 0.005) var navy_width: float = 0.04:
+	set(value):
+		navy_width = clampf(value, 0.01, 0.18)
+		_request_variant_refresh()
+
+@export_range(0.0, 0.10, 0.005) var navy_line_wave_amplitude: float = 0.02:
+	set(value):
+		navy_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		_request_variant_refresh()
+
+@export_group("Line Variation")
+
+@export_range(0.05, 0.30, 0.01) var line_offset_spread: float = 0.18:
+	set(value):
+		line_offset_spread = clampf(value, 0.05, 0.30)
+		_request_variant_refresh()
+
+@export_range(0.0, 0.35, 0.05) var line_variation: float = 0.15:
+	set(value):
+		line_variation = clampf(value, 0.0, 0.35)
+		_request_variant_refresh()
+
+@export var line_seed: int = 17041:
+	set(value):
+		line_seed = value
+		_request_variant_refresh()
+
 @export_group("Offset")
 
 @export_range(0.25, 1.0, 0.05) var inner_offset_scale: float = 0.50:
@@ -73,44 +149,37 @@ const LINE_KIND_WHITE: int = 2
 		inner_offset_scale = clampf(value, 0.25, 1.0)
 		_request_parameter_sync()
 
-@export_group("Appearance")
-
-@export var cyan_color: Color = Color(0.08, 0.72, 1.0, 1.0):
-	set(value):
-		cyan_color = value
-		_request_parameter_sync()
-
-@export_range(0.5, 4.0, 0.1) var cyan_intensity: float = 2.0:
-	set(value):
-		cyan_intensity = clampf(value, 0.5, 4.0)
-		_request_parameter_sync()
-
-@export var navy_color: Color = Color(0.015, 0.12, 0.36, 1.0):
-	set(value):
-		navy_color = value
-		_request_parameter_sync()
-
-@export_range(0.5, 3.0, 0.1) var navy_intensity: float = 1.2:
-	set(value):
-		navy_intensity = clampf(value, 0.5, 3.0)
-		_request_parameter_sync()
+@export_group("White Line")
 
 @export var white_color: Color = Color(0.88, 0.98, 1.0, 1.0):
 	set(value):
 		white_color = value
-		_request_parameter_sync()
+		_request_white_sync()
 
 @export_range(1.0, 5.0, 0.1) var white_intensity: float = 3.0:
 	set(value):
 		white_intensity = clampf(value, 1.0, 5.0)
-		_request_parameter_sync()
+		_request_white_sync()
 
-@export_group("White Line")
+@export_range(0.01, 0.08, 0.005) var white_width: float = 0.018:
+	set(value):
+		white_width = clampf(value, 0.01, 0.08)
+		_request_white_sync()
+
+@export_range(-0.30, 0.30, 0.01) var white_offset: float = 0.075:
+	set(value):
+		white_offset = clampf(value, -0.30, 0.30)
+		_request_white_sync()
+
+@export_range(0.0, 0.10, 0.005) var white_line_wave_amplitude: float = 0.012:
+	set(value):
+		white_line_wave_amplitude = clampf(value, 0.0, 0.10)
+		_request_white_sync()
 
 @export_range(0.05, 0.25, 0.01) var white_segment_length: float = 0.12:
 	set(value):
 		white_segment_length = clampf(value, 0.05, 0.25)
-		_request_parameter_sync()
+		_request_white_sync()
 
 @export_range(0.50, 3.0, 0.05, "suffix:/s") var white_speed: float = 1.50:
 	set(value):
@@ -133,6 +202,11 @@ const LINE_KIND_WHITE: int = 2
 	set(value):
 		white_max_segments = clampi(value, 1, WHITE_SEGMENT_CAPACITY)
 		_request_parameter_sync()
+
+@export_range(0.0, 1.0, 0.01) var white_preview_position: float = 0.50:
+	set(value):
+		white_preview_position = clampf(value, 0.0, 1.0)
+		_request_white_sync()
 
 @export_group("Ends")
 
@@ -168,26 +242,35 @@ var radius: float = BASE_RADIUS:
 			_sync_radius()
 
 var _connected_curve: Curve3D
-var _mesh_rebuild_pending: bool = false
-var _elements: Array[MeshInstance3D] = []
+var _shared_mesh: ArrayMesh
+var _shared_material: ShaderMaterial
+var _generated_line_nodes: Array[MeshInstance3D] = []
+var _generated_line_kinds: Array[int] = []
 var _white_segments: Array[Vector4] = []
 var _white_spawn_cooldown: float = 0.0
+var _mesh_rebuild_pending: bool = false
+var _line_rebuild_pending: bool = false
 var _random := RandomNumberGenerator.new()
 
 @onready var _guide_path: Path3D = $GuidePath
+@onready var _generated_lines: Node3D = $GeneratedLines
 
 
 func _ready() -> void:
 	scale = Vector3.ONE * _radius_scale()
-	_collect_elements()
 	_reset_white_segments()
 	_connect_curve()
-	_rebuild_meshes()
-	_sync_all_materials()
+	_rebuild_ribbon_mesh()
+	_rebuild_line_instances()
+	_refresh_line_variants()
 
-	if not Engine.is_editor_hint():
+	if Engine.is_editor_hint():
+		_apply_white_preview()
+	else:
 		_random.randomize()
 		_white_spawn_cooldown = _random_interval()
+
+	_sync_shared_material()
 
 
 func _exit_tree() -> void:
@@ -201,18 +284,9 @@ func _process(delta: float) -> void:
 	_update_white_segments(delta)
 
 
-func refresh_element(element: MeshInstance3D) -> void:
-	if not is_inside_tree():
-		return
-	if not _elements.has(element):
-		_collect_elements()
-	_sync_material(element)
-	_update_custom_aabbs()
-
-
 func _sync_radius() -> void:
 	scale = Vector3.ONE * _radius_scale()
-	_sync_all_materials()
+	_sync_shared_material()
 	_update_custom_aabbs()
 	_request_mesh_rebuild()
 
@@ -222,27 +296,54 @@ func _radius_scale() -> float:
 
 
 func _request_mesh_rebuild() -> void:
-	if not is_inside_tree():
-		return
-	if _mesh_rebuild_pending:
+	if not is_inside_tree() or _mesh_rebuild_pending:
 		return
 
 	_mesh_rebuild_pending = true
-	call_deferred("_rebuild_meshes")
+	call_deferred("_deferred_rebuild_ribbon_mesh")
+
+
+func _deferred_rebuild_ribbon_mesh() -> void:
+	_mesh_rebuild_pending = false
+	_rebuild_ribbon_mesh()
+
+
+func _request_line_rebuild() -> void:
+	if not is_inside_tree() or _line_rebuild_pending:
+		return
+
+	_line_rebuild_pending = true
+	call_deferred("_deferred_rebuild_line_instances")
+
+
+func _deferred_rebuild_line_instances() -> void:
+	_line_rebuild_pending = false
+	_rebuild_line_instances()
+	_refresh_line_variants()
+	_sync_shared_material()
+
+
+func _request_variant_refresh() -> void:
+	if not is_inside_tree():
+		return
+	_refresh_line_variants()
+	_update_custom_aabbs()
+
+
+func _request_white_sync() -> void:
+	if not is_inside_tree():
+		return
+	if Engine.is_editor_hint():
+		_apply_white_preview()
+	_sync_shared_material()
+	_update_custom_aabbs()
 
 
 func _request_parameter_sync() -> void:
-	if is_inside_tree():
-		_sync_all_materials()
-		_update_custom_aabbs()
-
-
-func _collect_elements() -> void:
-	_elements.clear()
-	for child in get_children():
-		var element := child as MeshInstance3D
-		if element != null:
-			_elements.append(element)
+	if not is_inside_tree():
+		return
+	_sync_shared_material()
+	_update_custom_aabbs()
 
 
 func _connect_curve() -> void:
@@ -270,29 +371,22 @@ func _on_curve_changed() -> void:
 	_request_mesh_rebuild()
 
 
-func _rebuild_meshes() -> void:
-	_mesh_rebuild_pending = false
+func _rebuild_ribbon_mesh() -> void:
 	if not is_inside_tree():
 		return
 
 	_connect_curve()
-	var ribbon_mesh := _build_ribbon_mesh()
-	for element in _elements:
-		element.mesh = ribbon_mesh
-		element.visible = ribbon_mesh != null
+	_shared_mesh = _build_ribbon_mesh()
+	for line in _generated_line_nodes:
+		line.mesh = _shared_mesh
+		line.visible = _shared_mesh != null
 	_update_custom_aabbs()
-
-
-func _update_custom_aabbs() -> void:
-	for element in _elements:
-		var ribbon_mesh := element.mesh as ArrayMesh
-		if ribbon_mesh != null:
-			element.custom_aabb = _make_custom_aabb(ribbon_mesh)
 
 
 func _build_ribbon_mesh() -> ArrayMesh:
 	if _guide_path == null or _guide_path.curve == null:
 		return null
+
 	var curve := _guide_path.curve
 	if curve.point_count < 2:
 		return null
@@ -308,7 +402,7 @@ func _build_ribbon_mesh() -> ArrayMesh:
 	var uvs := PackedVector2Array()
 	var indices := PackedInt32Array()
 
-	for sample_index in sample_count:
+	for sample_index in range(sample_count):
 		var progress := float(sample_index) / float(sample_count - 1)
 		var distance := curve_length * progress
 		var position := curve.sample_baked(distance, true)
@@ -317,7 +411,7 @@ func _build_ribbon_mesh() -> ArrayMesh:
 		var next := curve.sample_baked(minf(distance + tangent_step, curve_length), true)
 		var tangent := next - previous
 		if tangent.length_squared() <= 0.000001:
-			tangent = Vector3.FORWARD
+			tangent = Vector3.RIGHT
 		tangent = tangent.normalized()
 
 		vertices.append(position)
@@ -348,91 +442,197 @@ func _build_ribbon_mesh() -> ArrayMesh:
 	return ribbon_mesh
 
 
+func _rebuild_line_instances() -> void:
+	if not is_inside_tree() or _generated_lines == null:
+		return
+
+	_clear_generated_line_instances()
+	_ensure_shared_material()
+
+	var kinds := _shuffled_color_kinds()
+	var cyan_index := 0
+	var navy_index := 0
+	for kind in kinds:
+		var line_name := ""
+		if kind == LINE_KIND_CYAN:
+			cyan_index += 1
+			line_name = "CyanLine%02d" % cyan_index
+		else:
+			navy_index += 1
+			line_name = "NavyLine%02d" % navy_index
+		_add_generated_line(line_name, kind)
+
+	_add_generated_line("WhiteLine", LINE_KIND_WHITE)
+
+
+func _clear_generated_line_instances() -> void:
+	for child in _generated_lines.get_children():
+		_generated_lines.remove_child(child)
+		child.free()
+	_generated_line_nodes.clear()
+	_generated_line_kinds.clear()
+
+
+func _add_generated_line(line_name: String, kind: int) -> void:
+	var line := MeshInstance3D.new()
+	line.name = line_name
+	line.mesh = _shared_mesh
+	line.material_override = _shared_material
+	line.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	line.visible = _shared_mesh != null
+	_generated_lines.add_child(line)
+	line.owner = null
+	_generated_line_nodes.append(line)
+	_generated_line_kinds.append(kind)
+
+
+func _ensure_shared_material() -> void:
+	if _shared_material != null and _shared_material.shader == STREAM_SHADER:
+		return
+
+	_shared_material = ShaderMaterial.new()
+	_shared_material.shader = STREAM_SHADER
+	_shared_material.resource_local_to_scene = true
+
+
+func _shuffled_color_kinds() -> Array[int]:
+	var kinds: Array[int] = []
+	for _index in range(cyan_count):
+		kinds.append(LINE_KIND_CYAN)
+	for _index in range(navy_count):
+		kinds.append(LINE_KIND_NAVY)
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = line_seed
+	for index in range(kinds.size() - 1, 0, -1):
+		var swap_index := rng.randi_range(0, index)
+		var temporary := kinds[index]
+		kinds[index] = kinds[swap_index]
+		kinds[swap_index] = temporary
+	return kinds
+
+
+func _refresh_line_variants() -> void:
+	if _generated_line_nodes.is_empty():
+		return
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = line_seed
+	var colored_count := _generated_line_nodes.size() - 1
+
+	for index in range(colored_count):
+		var kind := _generated_line_kinds[index]
+		var line := _generated_line_nodes[index]
+		var slot_progress := 0.5 if colored_count <= 1 else float(index) / float(colored_count - 1)
+		var slot_offset := lerpf(-line_offset_spread, line_offset_spread, slot_progress)
+		var jitter := rng.randf_range(-line_offset_spread * 0.18, line_offset_spread * 0.18)
+		var variation_factor := 1.0 + rng.randf_range(-line_variation, line_variation)
+		var phase := rng.randf()
+		var noise_offset := Vector2(
+			rng.randf_range(-40.0, 40.0),
+			rng.randf_range(-40.0, 40.0)
+		)
+
+		var color := cyan_color if kind == LINE_KIND_CYAN else navy_color
+		var intensity := cyan_intensity if kind == LINE_KIND_CYAN else navy_intensity
+		var base_width := cyan_width if kind == LINE_KIND_CYAN else navy_width
+		var base_amplitude := cyan_line_wave_amplitude if kind == LINE_KIND_CYAN else navy_line_wave_amplitude
+		line.set_instance_shader_parameter(&"line_color", color)
+		line.set_instance_shader_parameter(&"line_intensity", intensity)
+		line.set_instance_shader_parameter(&"line_kind", float(kind))
+		line.set_instance_shader_parameter(&"line_width", base_width * variation_factor)
+		line.set_instance_shader_parameter(&"line_offset", slot_offset + jitter)
+		line.set_instance_shader_parameter(&"line_wave_amplitude", base_amplitude * variation_factor)
+		line.set_instance_shader_parameter(&"line_wave_phase", phase)
+		line.set_instance_shader_parameter(&"line_noise_offset", noise_offset)
+
+	var white_line: MeshInstance3D = _generated_line_nodes.back()
+	var white_rng_phase := rng.randf()
+	var white_noise_offset := Vector2(
+		rng.randf_range(-40.0, 40.0),
+		rng.randf_range(-40.0, 40.0)
+	)
+	white_line.set_instance_shader_parameter(&"line_color", white_color)
+	white_line.set_instance_shader_parameter(&"line_intensity", white_intensity)
+	white_line.set_instance_shader_parameter(&"line_kind", float(LINE_KIND_WHITE))
+	white_line.set_instance_shader_parameter(&"line_width", white_width)
+	white_line.set_instance_shader_parameter(&"line_offset", white_offset)
+	white_line.set_instance_shader_parameter(&"line_wave_amplitude", white_line_wave_amplitude)
+	white_line.set_instance_shader_parameter(&"line_wave_phase", white_rng_phase)
+	white_line.set_instance_shader_parameter(&"line_noise_offset", white_noise_offset)
+
+
+func _update_custom_aabbs() -> void:
+	if _shared_mesh == null:
+		return
+
+	var bounds := _make_custom_aabb(_shared_mesh)
+	for line in _generated_line_nodes:
+		line.custom_aabb = bounds
+
+
 func _make_custom_aabb(ribbon_mesh: ArrayMesh) -> AABB:
 	var bounds := ribbon_mesh.get_aabb()
-	var largest_line_amplitude := 0.0
-	var largest_width := 0.0
-	var largest_offset := 0.0
-	for element in _elements:
-		largest_line_amplitude = maxf(largest_line_amplitude, element.get("line_wave_amplitude"))
-		largest_width = maxf(largest_width, element.get("width"))
-		largest_offset = maxf(largest_offset, absf(element.get("offset")))
-
-	var margin := stream_wave_amplitude + largest_offset + largest_line_amplitude + largest_width
+	var largest_amplitude := maxf(
+		maxf(cyan_line_wave_amplitude, navy_line_wave_amplitude),
+		white_line_wave_amplitude
+	)
+	var largest_width := maxf(maxf(cyan_width, navy_width), white_width)
+	var largest_offset := maxf(line_offset_spread, absf(white_offset))
+	var margin := absf(stream_wave_amplitude) + largest_offset + largest_amplitude + largest_width
 	bounds.position -= Vector3.ONE * margin
 	bounds.size += Vector3.ONE * margin * 2.0
 	return bounds
 
 
-func _sync_all_materials() -> void:
-	for element in _elements:
-		_sync_material(element)
-
-
-func _sync_material(element: MeshInstance3D) -> void:
-	if element == null:
+func _sync_shared_material() -> void:
+	if not is_inside_tree():
 		return
 
-	var material := element.material_override as ShaderMaterial
-	if material == null or material.shader != STREAM_SHADER:
-		material = ShaderMaterial.new()
-		material.shader = STREAM_SHADER
-		material.resource_local_to_scene = true
-		element.material_override = material
+	_ensure_shared_material()
+	_shared_material.set_shader_parameter(&"stream_wave_amplitude", stream_wave_amplitude)
+	_shared_material.set_shader_parameter(&"stream_wave_cycles", stream_wave_cycles)
+	_shared_material.set_shader_parameter(&"stream_wave_speed", stream_wave_speed)
+	_shared_material.set_shader_parameter(&"stream_wave_outer_scale", stream_wave_outer_scale)
+	_shared_material.set_shader_parameter(&"stream_wave_peak_position", stream_wave_peak_position)
+	_shared_material.set_shader_parameter(&"stream_wave_inner_scale", stream_wave_inner_scale)
+	_shared_material.set_shader_parameter(&"line_wave_cycles", line_wave_cycles)
+	_shared_material.set_shader_parameter(&"line_wave_speed", line_wave_speed)
+	_shared_material.set_shader_parameter(&"line_wave_noise_amount", line_wave_noise_amount)
+	_shared_material.set_shader_parameter(&"line_wave_inner_scale", line_wave_inner_scale)
+	_shared_material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
+	_shared_material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
+	_shared_material.set_shader_parameter(&"inner_taper_length", inner_taper_length)
+	_shared_material.set_shader_parameter(&"inner_taper_power", inner_taper_power)
+	_shared_material.set_shader_parameter(&"inner_fade_length", inner_fade_length)
+	_shared_material.set_shader_parameter(&"inner_erosion_strength", inner_erosion_strength)
+	_shared_material.set_shader_parameter(&"radius_scale", _radius_scale())
+	_shared_material.set_shader_parameter(&"white_segment_length", white_segment_length)
+	_shared_material.set_shader_parameter(&"white_segments", _white_segment_values())
 
-	var line_kind: int = element.get("line_kind")
-	var line_color := cyan_color
-	var line_intensity := cyan_intensity
-	if line_kind == LINE_KIND_NAVY:
-		line_color = navy_color
-		line_intensity = navy_intensity
-	elif line_kind == LINE_KIND_WHITE:
-		line_color = white_color
-		line_intensity = white_intensity
-
-	material.set_shader_parameter(&"line_color", line_color)
-	material.set_shader_parameter(&"line_intensity", line_intensity)
-	material.set_shader_parameter(&"line_kind", float(line_kind))
-	material.set_shader_parameter(&"line_width", element.get("width"))
-	material.set_shader_parameter(&"line_offset", element.get("offset"))
-	material.set_shader_parameter(&"line_wave_amplitude", element.get("line_wave_amplitude"))
-	material.set_shader_parameter(&"line_wave_phase", element.get("line_wave_phase"))
-	material.set_shader_parameter(&"line_noise_offset", _noise_offset_for(element))
-	material.set_shader_parameter(&"stream_wave_amplitude", stream_wave_amplitude)
-	material.set_shader_parameter(&"stream_wave_cycles", stream_wave_cycles)
-	material.set_shader_parameter(&"stream_wave_speed", stream_wave_speed)
-	material.set_shader_parameter(&"stream_wave_outer_scale", stream_wave_outer_scale)
-	material.set_shader_parameter(&"stream_wave_peak_position", stream_wave_peak_position)
-	material.set_shader_parameter(&"stream_wave_inner_scale", stream_wave_inner_scale)
-	material.set_shader_parameter(&"line_wave_cycles", line_wave_cycles)
-	material.set_shader_parameter(&"line_wave_speed", line_wave_speed)
-	material.set_shader_parameter(&"line_wave_noise_amount", line_wave_noise_amount)
-	material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
-	material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
-	material.set_shader_parameter(&"inner_taper_length", inner_taper_length)
-	material.set_shader_parameter(&"inner_taper_power", inner_taper_power)
-	material.set_shader_parameter(&"inner_fade_length", inner_fade_length)
-	material.set_shader_parameter(&"inner_erosion_strength", inner_erosion_strength)
-	material.set_shader_parameter(&"radius_scale", _radius_scale())
-	material.set_shader_parameter(&"white_segment_length", white_segment_length)
-	material.set_shader_parameter(&"white_segments", _white_segment_values())
-
-
-func _noise_offset_for(element: MeshInstance3D) -> Vector2:
-	var element_index := _elements.find(element)
-	var value := float(element_index + 1)
-	return Vector2(value * 4.73, value * 8.19 + 1.7)
+	for line in _generated_line_nodes:
+		line.material_override = _shared_material
 
 
 func _reset_white_segments() -> void:
 	_white_segments.clear()
-	for _index in WHITE_SEGMENT_CAPACITY:
+	for _index in range(WHITE_SEGMENT_CAPACITY):
 		_white_segments.append(Vector4(-1.0, 0.0, 0.0, 0.0))
+
+
+func _apply_white_preview() -> void:
+	_reset_white_segments()
+	var preview_start := clampf(
+		white_preview_position - white_segment_length * 0.5,
+		0.0,
+		1.0 - white_segment_length
+	)
+	_white_segments[0] = Vector4(preview_start, 1.0, white_segment_length, 0.0)
 
 
 func _update_white_segments(delta: float) -> void:
 	var active_count_before := _active_white_segment_count()
-	for index in WHITE_SEGMENT_CAPACITY:
+	for index in range(WHITE_SEGMENT_CAPACITY):
 		var segment := _white_segments[index]
 		if segment.y <= 0.5:
 			continue
@@ -453,7 +653,7 @@ func _update_white_segments(delta: float) -> void:
 			_spawn_white_segment()
 			_white_spawn_cooldown = _random_interval()
 
-	_sync_white_materials()
+	_sync_white_segments()
 
 
 func _active_white_segment_count() -> int:
@@ -465,7 +665,7 @@ func _active_white_segment_count() -> int:
 
 
 func _spawn_white_segment() -> void:
-	for index in WHITE_SEGMENT_CAPACITY:
+	for index in range(WHITE_SEGMENT_CAPACITY):
 		if _white_segments[index].y <= 0.5:
 			_white_segments[index] = Vector4(0.0, 1.0, white_segment_length, 0.0)
 			return
@@ -477,12 +677,12 @@ func _random_interval() -> float:
 
 func _white_segment_values() -> PackedVector4Array:
 	var values := PackedVector4Array()
-	for index in WHITE_SEGMENT_CAPACITY:
+	for index in range(WHITE_SEGMENT_CAPACITY):
 		values.append(_white_segments[index])
 	return values
 
 
-func _sync_white_materials() -> void:
-	for element in _elements:
-		if element.get("line_kind") == LINE_KIND_WHITE:
-			_sync_material(element)
+func _sync_white_segments() -> void:
+	if _shared_material == null:
+		return
+	_shared_material.set_shader_parameter(&"white_segments", _white_segment_values())
