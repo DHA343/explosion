@@ -143,6 +143,23 @@ const LINE_KIND_UNASSIGNED: int = -1
 		line_seed = value
 		_request_variant_refresh()
 
+@export_group("Appearance")
+
+@export_range(0.0, 0.40, 0.01) var edge_softness: float = 0.12:
+	set(value):
+		edge_softness = value
+		_request_parameter_sync()
+
+@export_range(0.0, 1.0, 0.05) var edge_erosion_strength: float = 0.30:
+	set(value):
+		edge_erosion_strength = value
+		_request_parameter_sync()
+
+@export_range(0.0, 0.60, 0.05) var body_variation_strength: float = 0.15:
+	set(value):
+		body_variation_strength = value
+		_request_parameter_sync()
+
 @export_group("Offset")
 
 @export_range(0.25, 1.0, 0.05) var inner_offset_scale: float = 0.50:
@@ -644,6 +661,9 @@ func _sync_shared_material() -> void:
 	_shared_material.set_shader_parameter(&"line_wave_speed", line_wave_speed)
 	_shared_material.set_shader_parameter(&"line_wave_noise_amount", line_wave_noise_amount)
 	_shared_material.set_shader_parameter(&"line_wave_inner_amplitude", line_wave_inner_amplitude)
+	_shared_material.set_shader_parameter(&"edge_softness", edge_softness)
+	_shared_material.set_shader_parameter(&"edge_erosion_strength", edge_erosion_strength)
+	_shared_material.set_shader_parameter(&"body_variation_strength", body_variation_strength)
 	_shared_material.set_shader_parameter(&"inner_offset_scale", inner_offset_scale)
 	_shared_material.set_shader_parameter(&"outer_fade_length", outer_fade_length)
 	_shared_material.set_shader_parameter(&"inner_taper_length", inner_taper_length)

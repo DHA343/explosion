@@ -23,6 +23,9 @@ uniform float line_wave_cycles : hint_range(1.0, 5.0, 0.10) = 2.5;
 uniform float line_wave_speed : hint_range(0.0, 3.0, 0.05) = 0.80;
 uniform float line_wave_noise_amount : hint_range(0.0, 0.50, 0.05) = 0.20;
 uniform float line_wave_inner_amplitude : hint_range(0.0, 0.03, 0.001) = 0.005;
+uniform float edge_softness : hint_range(0.0, 0.40, 0.01) = 0.12;
+uniform float edge_erosion_strength : hint_range(0.0, 1.0, 0.05) = 0.30;
+uniform float body_variation_strength : hint_range(0.0, 0.60, 0.05) = 0.15;
 
 uniform float inner_offset_scale : hint_range(0.25, 1.0, 0.05) = 0.50;
 uniform float outer_fade_length : hint_range(0.02, 0.20, 0.01) = 0.08;
@@ -48,6 +51,25 @@ float smooth_noise(float value) {
 	float first = hash_value(cell);
 	float second = hash_value(cell + 1.0);
 	return mix(first, second, smoothstep(0.0, 1.0, fraction));
+}
+
+
+float hash_value_2d(vec2 value) {
+	return fract(sin(dot(value, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+
+float smooth_noise_2d(vec2 value) {
+	vec2 cell = floor(value);
+	vec2 fraction = fract(value);
+	vec2 smooth_fraction = smoothstep(vec2(0.0), vec2(1.0), fraction);
+	float lower_left = hash_value_2d(cell);
+	float lower_right = hash_value_2d(cell + vec2(1.0, 0.0));
+	float upper_left = hash_value_2d(cell + vec2(0.0, 1.0));
+	float upper_right = hash_value_2d(cell + vec2(1.0, 1.0));
+	float lower = mix(lower_left, lower_right, smooth_fraction.x);
+	float upper = mix(upper_left, upper_right, smooth_fraction.x);
+	return mix(lower, upper, smooth_fraction.y);
 }
 
 
@@ -230,12 +252,48 @@ void vertex() {
 void fragment() {
 	float path_progress = clamp(UV.x, 0.0, 1.0);
 	float flow_progress = 1.0 - path_progress;
+	const float EROSION_LENGTH_FREQUENCY = 5.0;
+	const float EROSION_WIDTH_FREQUENCY = 8.0;
+	const float EDGE_OFFSET_SCALE = 0.08;
+	const float BODY_FREQUENCY = 6.0;
+	const float BODY_FLOW_SPEED = 0.08;
+	float center_distance = abs(UV.y * 2.0 - 1.0);
+	float core_mask = 1.0 - smoothstep(0.25, 0.75, center_distance);
+	float erosion_noise = smooth_noise_2d(
+		vec2(
+			flow_progress * EROSION_LENGTH_FREQUENCY,
+			UV.y * EROSION_WIDTH_FREQUENCY
+		) + line_noise_offset
+	);
+	float edge_offset = (erosion_noise - 0.5)
+		* edge_erosion_strength * EDGE_OFFSET_SCALE;
+	float safe_edge_softness = max(edge_softness, 0.001);
+	float soft_edge = 1.0 - smoothstep(
+		1.0 - safe_edge_softness + edge_offset,
+		1.0 + edge_offset,
+		center_distance
+	);
+	float edge_region = 1.0 - core_mask;
+	float erosion_multiplier = line_kind > 1.5 ? 0.35 : 1.0;
+	float erosion = erosion_noise * edge_erosion_strength
+		* edge_region * erosion_multiplier;
 	float edge_width = max(fwidth(UV.y) * 1.5, 0.002);
-	float edge_alpha = smoothstep(0.0, edge_width, UV.y)
+	float edge_aa = smoothstep(0.0, edge_width, UV.y)
 		* (1.0 - smoothstep(1.0 - edge_width, 1.0, UV.y));
-	float alpha = endpoint_alpha(flow_progress) * edge_alpha * white_segment_mask(flow_progress);
+	float alpha = endpoint_alpha(flow_progress)
+		* edge_aa
+		* soft_edge
+		* (1.0 - erosion)
+		* white_segment_mask(flow_progress);
+	float body_noise = smooth_noise(
+		flow_progress * BODY_FREQUENCY
+		- TIME * BODY_FLOW_SPEED
+		+ line_noise_offset.y * 0.17
+	);
+	float body_variation = 1.0
+		+ (body_noise * 2.0 - 1.0) * body_variation_strength;
 
-	vec3 radiance = line_color.rgb * line_intensity;
+	vec3 radiance = line_color.rgb * line_intensity * body_variation;
 	ALBEDO = radiance;
 	EMISSION = radiance;
 	ALPHA = alpha;
