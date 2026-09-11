@@ -20,6 +20,11 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export var variant_random: bool = true
 
+@export_group("Variant Selection")
+@export_range(0.0, 10.0, 0.1) var cross_only_weight: float = 1.0
+@export_range(0.0, 10.0, 0.1) var single_ring_weight: float = 1.0
+@export_range(0.0, 10.0, 0.1) var double_ring_weight: float = 1.0
+
 @export_range(0.01, 1.0, 0.01, "suffix:m") var size: float = 0.5:
 	set(value):
 		size = value
@@ -255,14 +260,15 @@ func _ready() -> void:
 		palette = null
 
 		if variant_random:
-			var available_variants := _get_available_variants()
-			if available_variants.is_empty():
+			var selected_variant := _select_weighted_variant()
+			if selected_variant < 0:
 				push_error(
-					"CrossFlare cannot select a Variant because no usable CrossFlarePalette exists. "
-					+ "Check palettes, selection_weight, and allowed_variants.")
+					"CrossFlare cannot select a Variant because no weighted Variant with a usable "
+					+ "CrossFlarePalette exists. Check variant weights, palettes, selection_weight, "
+					+ "and allowed_variants.")
 				palette_selection_failed = true
 			else:
-				variant = available_variants[randi_range(0, available_variants.size() - 1)]
+				variant = selected_variant
 
 		if not palette_selection_failed:
 			var selected_palette := _select_random_palette_for_variant(variant)
@@ -341,6 +347,40 @@ func _has_available_palette_for_variant(candidate_variant: int) -> bool:
 				and candidate.selection_weight > 0.0):
 			return true
 	return false
+
+
+func _get_variant_weight(candidate_variant: int) -> float:
+	match candidate_variant:
+		Variant.CROSS_ONLY:
+			return cross_only_weight
+		Variant.SINGLE_RING:
+			return single_ring_weight
+		Variant.DOUBLE_RING:
+			return double_ring_weight
+	return 0.0
+
+
+func _select_weighted_variant() -> int:
+	var total_weight: float = 0.0
+	for candidate_variant in _get_available_variants():
+		var candidate_weight := _get_variant_weight(candidate_variant)
+		if candidate_weight > 0.0:
+			total_weight += candidate_weight
+
+	if total_weight <= 0.0:
+		return -1
+
+	var roll := randf() * total_weight
+	for candidate_variant in _get_available_variants():
+		var candidate_weight := _get_variant_weight(candidate_variant)
+		if candidate_weight <= 0.0:
+			continue
+
+		roll -= candidate_weight
+		if roll <= 0.0:
+			return candidate_variant
+
+	return -1
 
 
 func _select_random_palette_for_variant(candidate_variant: int) -> CrossFlarePalette:
