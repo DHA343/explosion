@@ -9,6 +9,7 @@ const MIN_CURVE_LENGTH: float = 0.001
 const LINE_KIND_CYAN: int = 0
 const LINE_KIND_NAVY: int = 1
 const LINE_KIND_WHITE: int = 2
+const LINE_KIND_UNASSIGNED: int = -1
 
 @export_group("Curve")
 
@@ -451,18 +452,9 @@ func _rebuild_line_instances() -> void:
 	_clear_generated_line_instances()
 	_ensure_shared_material()
 
-	var kinds := _shuffled_color_kinds()
-	var cyan_index := 0
-	var navy_index := 0
-	for kind in kinds:
-		var line_name := ""
-		if kind == LINE_KIND_CYAN:
-			cyan_index += 1
-			line_name = "CyanLine%02d" % cyan_index
-		else:
-			navy_index += 1
-			line_name = "NavyLine%02d" % navy_index
-		_add_generated_line(line_name, kind)
+	var colored_count := cyan_count + navy_count
+	for index in range(colored_count):
+		_add_generated_line("ColoredLine%02d" % (index + 1), LINE_KIND_UNASSIGNED)
 
 	_add_generated_line("WhiteLine", LINE_KIND_WHITE)
 
@@ -514,22 +506,64 @@ func _shuffled_color_kinds() -> Array[int]:
 	return kinds
 
 
+func _generate_cross_offsets(colored_count: int) -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	if colored_count <= 0:
+		return positions
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = line_seed
+	var spread := maxf(line_spread_radius, 0.0)
+	var minimum_distance := spread * 0.55 / sqrt(float(maxi(colored_count, 1)))
+	const MAX_POSITION_ATTEMPTS: int = 24
+
+	for _index in range(colored_count):
+		var candidate := Vector2.ZERO
+		for _attempt in range(MAX_POSITION_ATTEMPTS):
+			var angle := rng.randf_range(0.0, TAU)
+			var distance := sqrt(rng.randf()) * spread
+			candidate = Vector2(cos(angle), sin(angle)) * distance
+			if _is_cross_position_valid(candidate, positions, minimum_distance):
+				break
+		# The last candidate is still deterministic and remains inside the disk.
+		positions.append(candidate)
+
+	return positions
+
+
+func _is_cross_position_valid(
+	candidate: Vector2,
+	positions: Array[Vector2],
+	minimum_distance: float
+) -> bool:
+	for existing in positions:
+		if candidate.distance_to(existing) < minimum_distance:
+			return false
+	return true
+
+
 func _refresh_line_variants() -> void:
 	if _generated_line_nodes.is_empty():
 		return
 
+	var colored_count := _generated_line_nodes.size() - 1
+	var cross_offsets := _generate_cross_offsets(colored_count)
+	var kinds := _shuffled_color_kinds()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = line_seed
-	var colored_count := _generated_line_nodes.size() - 1
-	var seed_rotation := rng.randf_range(0.0, TAU)
+	var cyan_index := 0
+	var navy_index := 0
 
 	for index in range(colored_count):
-		var kind := _generated_line_kinds[index]
+		var kind := kinds[index]
+		_generated_line_kinds[index] = kind
 		var line := _generated_line_nodes[index]
-		var angle_step := TAU * float(index) / float(maxi(colored_count, 1))
-		var angle := seed_rotation + angle_step + rng.randf_range(-0.14, 0.14)
-		var radial_distance := line_spread_radius * rng.randf_range(0.68, 1.0)
-		var cross_offset := Vector2(cos(angle), sin(angle)) * radial_distance
+		if kind == LINE_KIND_CYAN:
+			cyan_index += 1
+			line.name = "CyanLine%02d" % cyan_index
+		else:
+			navy_index += 1
+			line.name = "NavyLine%02d" % navy_index
 		var variation_factor := 1.0 + rng.randf_range(-line_variation, line_variation)
 		var phase := rng.randf()
 		var wave_angle := rng.randf_range(0.0, TAU)
@@ -547,7 +581,7 @@ func _refresh_line_variants() -> void:
 		line.set_instance_shader_parameter(&"line_intensity", intensity)
 		line.set_instance_shader_parameter(&"line_kind", float(kind))
 		line.set_instance_shader_parameter(&"line_width", base_width * variation_factor)
-		line.set_instance_shader_parameter(&"line_cross_offset", cross_offset)
+		line.set_instance_shader_parameter(&"line_cross_offset", cross_offsets[index])
 		line.set_instance_shader_parameter(&"line_wave_amplitude", base_amplitude * variation_factor)
 		line.set_instance_shader_parameter(&"line_wave_phase", phase)
 		line.set_instance_shader_parameter(&"line_wave_direction", wave_direction)
