@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cfeam88s54kyk"]
+
+[ext_resource type="Shader" uid="uid://cncxffnyovdfh" path="res://main/sky_shader.tres" id="1_88rs2"]
+
+[sub_resource type="Gradient" id="Gradient_88rs2"]
+offsets = PackedFloat32Array(0, 0.07913669, 0.2266187)
+colors = PackedColorArray(0.5019608, 0.4117647, 0.64705884, 1, 0.38192, 0.3584, 0.56, 1, 0.30866665, 0.29500002, 0.5, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dp2ft"]
+gradient = SubResource("Gradient_88rs2")
+
+[resource]
+shader = ExtResource("1_88rs2")
+shader_parameter/sky_gradient = SubResource("GradientTexture1D_dp2ft")

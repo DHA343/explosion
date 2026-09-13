@@ -56,3 +56,5 @@ points = PackedVector2Array(100, 0, 99.87955, 4.906768, 99.51847, 9.801714, 98.9
 
 [node name="MagicCircleSpawnAnimator" type="Node" parent="." unique_id=1449867756]
 script = ExtResource("7_animator")
+
+[node name="RisingParticles" type="GPUParticles3D" parent="." unique_id=2122613048]
