@@ -1,5 +1,14 @@
 [gd_resource type="ParticleProcessMaterial" format=3 uid="uid://d0earmb4jg6de"]
 
+[sub_resource type="Curve" id="Curve_kjvk3"]
+_data = [Vector2(0, 0), 0.0, 10.0, 0, 1, Vector2(0.1, 1), 10.0, 0.0, 0, 0, Vector2(0.90000004, 1), 0.0, -10.000003, 0, 1, Vector2(1, 0), -10.000003, 0.0, 1, 0]
+point_count = 4
+metadata/_snap_enabled = true
+metadata/_snap_count = 20
+
+[sub_resource type="CurveTexture" id="CurveTexture_h4oct"]
+curve = SubResource("Curve_kjvk3")
+
 [resource]
 resource_local_to_scene = true
 emission_shape = 6
@@ -9,10 +18,9 @@ emission_ring_radius = 10.0
 emission_ring_inner_radius = 0.0
 emission_ring_cone_angle = 90.0
 direction = Vector3(0, 1, 0)
-spread = 20.0
+spread = 0.0
 initial_velocity_min = 8.0
 initial_velocity_max = 14.0
 gravity = Vector3(0, 0, 0)
 scale_min = 0.5
-scale_max = 1.25
-color = Color(1, 0.08, 0.01, 1)
+alpha_curve = SubResource("CurveTexture_h4oct")

@@ -18,9 +18,11 @@ func set_spawn_progress(progress: float) -> void:
 	var material := process_material as ParticleProcessMaterial
 	assert(material != null, "RisingParticles3D: ParticleProcessMaterialを設定してください。")
 
-	var current_height := final_height * clampf(progress, 0.0, 1.0)
+	var spawn_progress := clampf(progress, 0.0, 1.0)
+	var current_height := final_height * spawn_progress
 	var ground_local_y := to_local(Vector3.ZERO).y
 	var offset := material.emission_shape_offset
+	amount_ratio = spawn_progress
 	offset.y = ground_local_y + current_height * 0.5
 	material.emission_ring_height = current_height
 	material.emission_shape_offset = offset
