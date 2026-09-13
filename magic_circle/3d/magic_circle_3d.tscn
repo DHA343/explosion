@@ -4,36 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://d0gmmoygk3fs3" path="res://magic_circle/magic_circle.tscn" id="3_magic_circle"]
 [ext_resource type="PackedScene" path="res://magic_circle/inner_ring.tscn" id="4_inner_ring"]
 [ext_resource type="PackedScene" uid="uid://pnsy0x5qv1ib" path="res://magic_circle/inner_ring_glow.tscn" id="5_inner_ring_glow"]
-[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://component/circle_particle_shader.tres" id="6_agtrv"]
+[ext_resource type="Material" uid="uid://d0earmb4jg6de" path="res://magic_circle/3d/rising_particles/rising_particles_process_material.tres" id="6_rejc5"]
 [ext_resource type="Script" uid="uid://drdnjv2gsyi2l" path="res://magic_circle/animation/magic_circle_spawn_animator.gd" id="7_animator"]
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rising"]
-resource_local_to_scene = true
-emission_shape = 6
-emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 35.0
-emission_ring_radius = 85.0
-emission_ring_inner_radius = 65.0
-emission_ring_cone_angle = 90.0
-direction = Vector3(0, 1, 0)
-spread = 20.0
-initial_velocity_min = 8.0
-initial_velocity_max = 14.0
-gravity = Vector3(0, 0, 0)
-scale_min = 0.5
-scale_max = 1.25
-color = Color(1, 0.08, 0.01, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lxxnu"]
-render_priority = 0
-shader = ExtResource("6_agtrv")
-shader_parameter/color = Color(1, 1, 1, 1)
-shader_parameter/radius_ratio = 0.1
-shader_parameter/falloff = 2.0
-shader_parameter/intensity = 2.0
+[ext_resource type="Material" uid="uid://d1lpjccja18x5" path="res://magic_circle/3d/rising_particles/rising_particles_material.tres" id="7_dcbph"]
+[ext_resource type="Script" path="res://magic_circle/3d/rising_particles_3d.gd" id="8_rising_particles"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_rising"]
-material = SubResource("ShaderMaterial_lxxnu")
+material = ExtResource("7_dcbph")
 
 [node name="MagicCircle3D" type="Node3D" unique_id=2034230227]
 script = ExtResource("1_root")
@@ -87,9 +64,11 @@ points = PackedVector2Array(100, 0, 99.87955, 4.906768, 99.51847, 9.801714, 98.9
 script = ExtResource("7_animator")
 
 [node name="RisingParticles" type="GPUParticles3D" parent="." unique_id=2122613048]
+emitting = false
 amount = 96
 lifetime = 2.5
 randomness = 0.5
 visibility_aabb = AABB(-110, -100, -110, 220, 280, 220)
-process_material = SubResource("ParticleProcessMaterial_rising")
+process_material = ExtResource("6_rejc5")
 draw_pass_1 = SubResource("QuadMesh_rising")
+script = ExtResource("8_rising_particles")

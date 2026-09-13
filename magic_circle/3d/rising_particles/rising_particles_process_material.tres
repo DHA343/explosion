@@ -4,9 +4,9 @@
 resource_local_to_scene = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 35.0
-emission_ring_radius = 85.0
-emission_ring_inner_radius = 65.0
+emission_ring_height = 0.0
+emission_ring_radius = 10.0
+emission_ring_inner_radius = 0.0
 emission_ring_cone_angle = 90.0
 direction = Vector3(0, 1, 0)
 spread = 20.0

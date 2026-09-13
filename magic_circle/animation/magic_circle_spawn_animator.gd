@@ -2,6 +2,7 @@ class_name MagicCircleSpawnAnimator
 extends Node
 
 signal effect_weight_changed(effect_weight: float)
+signal spawn_started
 signal vertical_spawn_progress_changed(progress: float)
 signal spawn_finished
 
@@ -60,6 +61,7 @@ func play_spawn() -> void:
 		return
 
 	_prepare_spawn_state()
+	spawn_started.emit()
 	_playing = true
 	set_process(true)
 

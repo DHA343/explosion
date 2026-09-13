@@ -6,6 +6,6 @@
 render_priority = 0
 shader = ExtResource("1_lxu5l")
 shader_parameter/color = Color(1, 1, 1, 1)
-shader_parameter/radius_ratio = 0.1
+shader_parameter/radius_ratio = 0.999999977648
 shader_parameter/falloff = 2.0
 shader_parameter/intensity = 2.0
