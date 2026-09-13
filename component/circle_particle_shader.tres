@@ -19,8 +19,7 @@ operator = 2
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_pl5ec"]
 parameter_name = "radius_ratio"
 hint = 2
-max = 0.1
-step = 0.001
+step = 0.01
 default_value_enabled = true
 default_value = 0.1
 

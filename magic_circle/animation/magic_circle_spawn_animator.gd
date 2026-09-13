@@ -2,6 +2,7 @@ class_name MagicCircleSpawnAnimator
 extends Node
 
 signal effect_weight_changed(effect_weight: float)
+signal vertical_spawn_progress_changed(progress: float)
 signal spawn_finished
 
 const ROTATION_TWEEN_SAMPLE_COUNT := 256
@@ -34,6 +35,7 @@ func _process(delta: float) -> void:
 		_apply_ring_state(index, ring_local_time)
 		_apply_body_state(index, body_local_time)
 
+	vertical_spawn_progress_changed.emit(_vertical_spawn_progress())
 	var total_duration := _get_total_duration()
 	effect_weight_changed.emit(_spawn_effect_weight(total_duration))
 	if _elapsed >= total_duration:
@@ -77,6 +79,7 @@ func _prepare_spawn_state() -> void:
 	_build_rotation_tween_lookup()
 	_elapsed = 0.0
 	effect_weight_changed.emit(0.0)
+	vertical_spawn_progress_changed.emit(0.0)
 	for index in _layers.size():
 		var ring_local_time := -_ring_start_time(index)
 		var body_local_time := ring_local_time - _body_start_delay(index)
@@ -100,10 +103,10 @@ func _apply_ring_state(index: int, local_time: float) -> void:
 
 
 func _apply_body_state(index: int, local_time: float) -> void:
-	var scale_progress := _scale_progress(local_time)
+	var body_scale_progress := _body_scale_progress(local_time)
 	var rotation_progress := _normalized_progress(local_time, profile.rotation_duration)
 	var rotation_offset := _rotation_offset_angle(rotation_progress)
-	_layers[index].apply_body_state(scale_progress, rotation_offset)
+	_layers[index].apply_body_state(body_scale_progress, rotation_offset)
 
 
 func _get_ring_source_index(index: int) -> int:
@@ -164,15 +167,15 @@ func _normalized_progress(local_time: float, duration: float) -> float:
 	return clampf(local_time / duration, 0.0, 1.0)
 
 
-func _scale_progress(local_time: float) -> float:
-	var progress := _normalized_progress(local_time, profile.scale_duration)
+func _body_scale_progress(local_time: float) -> float:
+	var progress := _normalized_progress(local_time, profile.body_scale_duration)
 	return float(Tween.interpolate_value(
 		0.0,
 		1.0,
 		progress,
 		1.0,
-		profile.scale_transition,
-		profile.scale_ease
+		profile.body_scale_transition,
+		profile.body_scale_ease
 	))
 
 
@@ -230,7 +233,7 @@ func _sample_remaining_tween_area(progress: float) -> float:
 
 
 func _get_total_duration() -> float:
-	var body_duration := maxf(profile.scale_duration, profile.rotation_duration)
+	var body_duration := maxf(profile.body_scale_duration, profile.rotation_duration)
 	var total_duration := 0.0
 	for index in _layers.size():
 		total_duration = maxf(
@@ -253,4 +256,30 @@ func _finish_spawn() -> void:
 		layer.restore_animation_state()
 	_playing = false
 	set_process(false)
+	vertical_spawn_progress_changed.emit(1.0)
 	spawn_finished.emit()
+
+
+func _vertical_spawn_progress() -> float:
+	if _layers.size() <= 1:
+		return 1.0
+
+	var bottom_y: float = _layers[0].global_position.y
+	var top_y: float = _layers[_layers.size() - 1].global_position.y
+	if is_equal_approx(bottom_y, top_y):
+		return 1.0
+
+	var highest_ring_y: float = bottom_y
+	for index in _layers.size():
+		var ring_local_time := _elapsed - _ring_start_time(index)
+		if ring_local_time < 0.0:
+			continue
+
+		var source_index := _get_ring_source_index(index)
+		var rise_progress := _ring_rise_progress(index, ring_local_time)
+		var source_y := _layers[source_index].global_position.y
+		var target_y := _layers[index].global_position.y
+		var current_ring_y := lerpf(source_y, target_y, rise_progress)
+		highest_ring_y = maxf(highest_ring_y, current_ring_y)
+
+	return clampf(inverse_lerp(bottom_y, top_y, highest_ring_y), 0.0, 1.0)

@@ -20,6 +20,10 @@ const LAYER_SCENE: PackedScene = preload("res://magic_circle/3d/magic_circle_lay
 		_connect_layout_signal()
 		_rebuild_layers()
 
+@export_group("Rising Particles")
+@export_range(0.0, 80.0, 0.5, "suffix:m") var rising_particles_initial_height: float = 35.0
+@export_range(20.0, 160.0, 0.5, "suffix:m") var rising_particles_final_height: float = 120.0
+
 var _layers: Array[MagicCircleLayer3D] = []
 var _base_light_energy: float = 0.0
 var _effect_weight: float = 1.0
@@ -31,6 +35,7 @@ var _effect_weight: float = 1.0
 @onready var _layers_container: Node3D = $Layers
 @onready var _spawn_animator: MagicCircleSpawnAnimator = $MagicCircleSpawnAnimator
 @onready var _local_light: OmniLight3D = $LocalLight
+@onready var _rising_particles: GPUParticles3D = $RisingParticles
 
 
 func _ready() -> void:
@@ -44,8 +49,11 @@ func _ready() -> void:
 	assert(appearance != null, "MagicCircle3D: Appearanceが設定されていません。")
 	assert(layout != null, "MagicCircle3D: Layoutが設定されていません。")
 	assert(not _layers.is_empty(), "MagicCircle3D: Layoutには1つ以上のLayerを設定してください。")
+	if rising_particles_final_height < rising_particles_initial_height:
+		push_warning("MagicCircle3D: RisingParticlesのfinal heightはinitial height以上に設定してください。")
 	_base_light_energy = _local_light.light_energy
 	_spawn_animator.effect_weight_changed.connect(_on_effect_weight_changed)
+	_spawn_animator.vertical_spawn_progress_changed.connect(_on_vertical_spawn_progress_changed)
 	for layer in _layers:
 		layer.bind_viewports(_body_viewport, _ring_viewport, _glow_ring_viewport)
 	_spawn_animator.setup(_layers, _rotation_source)
@@ -62,6 +70,22 @@ func is_spawn_playing() -> bool:
 func _on_effect_weight_changed(effect_weight: float) -> void:
 	_effect_weight = clampf(effect_weight, 0.0, 1.0)
 	_apply_light_energy()
+
+
+func _on_vertical_spawn_progress_changed(progress: float) -> void:
+	var material := _rising_particles.process_material as ParticleProcessMaterial
+	assert(material != null, "MagicCircle3D: RisingParticlesにはParticleProcessMaterialを設定してください。")
+
+	var current_height := lerpf(
+		rising_particles_initial_height,
+		rising_particles_final_height,
+		clampf(progress, 0.0, 1.0)
+	)
+	var ground_local_y := _rising_particles.to_local(Vector3.ZERO).y
+	var emission_shape_offset := material.emission_shape_offset
+	emission_shape_offset.y = ground_local_y + current_height * 0.5
+	material.emission_ring_height = current_height
+	material.emission_shape_offset = emission_shape_offset
 
 
 func _connect_appearance_signal() -> void:

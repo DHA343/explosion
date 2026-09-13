@@ -46,7 +46,7 @@ volumetric_fog_emission_energy = 0.0
 volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -61,7 +61,7 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t144h"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -76,82 +76,7 @@ radial_velocity_max = -500.0
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="Shader" id="Shader_8v5r3"]
-code = "shader_type sky;
-render_mode use_debanding;
-
-uniform vec4 zenith_color : source_color = vec4(0.003, 0.007, 0.025, 1.0);
-uniform vec4 horizon_color : source_color = vec4(0.025, 0.045, 0.11, 1.0);
-uniform vec4 star_color : source_color = vec4(0.72, 0.82, 1.0, 1.0);
-uniform float star_density : hint_range(0.001, 0.03, 0.001) = 0.009;
-uniform float star_intensity : hint_range(0.0, 8.0, 0.05) = 2.2;
-uniform float milky_way_intensity : hint_range(0.0, 1.0, 0.01) = 0.12;
-
-float hash_21(vec2 value) {
-	vec3 value_3 = fract(vec3(value.xyx) * 0.1031);
-	value_3 += dot(value_3, value_3.yzx + 33.33);
-	return fract((value_3.x + value_3.y) * value_3.z);
-}
-
-float value_noise(vec2 position) {
-	vec2 cell = floor(position);
-	vec2 local_position = fract(position);
-	vec2 smooth_position = local_position * local_position * (3.0 - 2.0 * local_position);
-	float bottom = mix(hash_21(cell), hash_21(cell + vec2(1.0, 0.0)), smooth_position.x);
-	float top = mix(hash_21(cell + vec2(0.0, 1.0)), hash_21(cell + vec2(1.0, 1.0)), smooth_position.x);
-	return mix(bottom, top, smooth_position.y);
-}
-
-void sky() {
-	vec3 direction = normalize(EYEDIR);
-	float sky_height = clamp(direction.y * 0.5 + 0.5, 0.0, 1.0);
-	float zenith_mix = smoothstep(0.12, 0.92, sky_height);
-	vec3 color = mix(horizon_color.rgb, zenith_color.rgb, zenith_mix);
-
-	vec2 spherical_uv = vec2(
-		atan(direction.z, direction.x) / TAU + 0.5,
-		asin(clamp(direction.y, -1.0, 1.0)) / PI + 0.5
-	);
-	vec2 star_grid_size = vec2(900.0, 450.0);
-	vec2 star_grid_position = spherical_uv * star_grid_size;
-	vec2 star_cell = floor(star_grid_position);
-	vec2 star_local_position = fract(star_grid_position) - 0.5;
-
-	float star_random = hash_21(star_cell);
-	float star_exists = step(1.0 - star_density, star_random);
-	float star_radius = mix(0.035, 0.16, hash_21(star_cell + vec2(19.7, 71.3)));
-	float star_shape = 1.0 - smoothstep(star_radius, star_radius * 2.2, length(star_local_position));
-	float twinkle = mix(0.72, 1.18, 0.5 + 0.5 * sin(TIME * 1.4 + star_random * 47.0));
-	float above_horizon = smoothstep(-0.03, 0.12, direction.y);
-	float star = star_exists * star_shape * twinkle * above_horizon;
-
-	vec3 galactic_normal = normalize(vec3(0.24, 0.91, 0.34));
-	float galactic_distance = abs(dot(direction, galactic_normal));
-	float milky_way = pow(max(0.0, 1.0 - galactic_distance * 5.5), 3.0);
-	float milky_noise = mix(0.35, 1.0, value_noise(spherical_uv * vec2(240.0, 120.0)));
-	milky_way *= milky_noise * above_horizon * milky_way_intensity;
-
-	color += star_color.rgb * star * star_intensity;
-	color += vec3(0.18, 0.24, 0.42) * milky_way;
-	COLOR = color;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q1nrn"]
-shader = SubResource("Shader_8v5r3")
-shader_parameter/zenith_color = Color(0.003, 0.007, 0.025, 1)
-shader_parameter/horizon_color = Color(0.025, 0.045, 0.11, 1)
-shader_parameter/star_color = Color(0.72, 0.82, 1, 1)
-shader_parameter/star_density = 0.009
-shader_parameter/star_intensity = 2.2
-shader_parameter/milky_way_intensity = 0.12
-
-[sub_resource type="Sky" id="Sky_nplok"]
-sky_material = SubResource("ShaderMaterial_q1nrn")
-process_mode = 2
-
-[sub_resource type="Environment" id="Environment_vkr08"]
-sky = SubResource("Sky_nplok")
+[sub_resource type="Environment" id="Environment_t144h"]
 ambient_light_source = 2
 ambient_light_color = Color(0.065, 0.09, 0.18, 1)
 ambient_light_energy = 0.32
@@ -171,11 +96,10 @@ volumetric_fog_length = 250.0
 volumetric_fog_sky_affect = 0.8
 
 [sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
-size = Vector2(0.315, 0.315)
+size = Vector2(1.05, 1.05)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
-size = Vector3(0.3, 0.3, 0.3)
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
@@ -311,13 +235,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_eoufh")
+process_material = SubResource("ParticleProcessMaterial_8v5r3")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_t144h")
+process_material = SubResource("ParticleProcessMaterial_eoufh")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -337,7 +261,7 @@ render_target_update_mode = 4
 [node name="DistortionCamera" type="Camera3D" parent="DistortionCapture/DistortionViewport" unique_id=165995022]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.747)
 cull_mask = 2
-environment = SubResource("Environment_vkr08")
+environment = SubResource("Environment_t144h")
 current = true
 
 [node name="InflowStreaks" type="MeshInstance3D" parent="." unique_id=165995019]
@@ -567,7 +491,7 @@ particle_opacity = 0.6
 particle_emission_strength = 2.0
 
 [node name="DriftParticles" type="GPUParticles3D" parent="." unique_id=2007976816]
-amount = 1500
+amount = 300
 lifetime = 4.0
 preprocess = 5.0
 randomness = 0.3

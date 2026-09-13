@@ -1,11 +1,11 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://phd34swsok0n"]
 
-[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://energy_sphere/drift_particles/drift_particle_shader.tres" id="1_afrw1"]
+[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://component/circle_particle_shader.tres" id="1_afrw1"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_afrw1")
 shader_parameter/color = Color(0, 0.7833333, 1, 1)
-shader_parameter/radius_ratio = 0.0150000007125
+shader_parameter/radius_ratio = 0.01999999955296
 shader_parameter/falloff = 3.0000000447036004
 shader_parameter/intensity = 3.0000000447036004

@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://d1lpjccja18x5"]
+
+[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://component/circle_particle_shader.tres" id="1_lxu5l"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_lxu5l")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/radius_ratio = 0.1
+shader_parameter/falloff = 2.0
+shader_parameter/intensity = 2.0

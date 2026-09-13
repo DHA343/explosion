@@ -91,9 +91,9 @@ func apply_ring_state(
 	_glow_ring.transform = glow_ring_transform
 
 
-func apply_body_state(scale_progress: float, rotation_offset: float) -> void:
+func apply_body_state(body_scale_progress: float, rotation_offset: float) -> void:
 	var animated_basis := _base_body_basis * Basis(Vector3.FORWARD, rotation_offset)
-	animated_basis = animated_basis.scaled(Vector3.ONE * scale_progress)
+	animated_basis = animated_basis.scaled(Vector3.ONE * body_scale_progress)
 
 	var body_transform := _body.transform
 	body_transform.basis = animated_basis
