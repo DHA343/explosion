@@ -22,6 +22,7 @@ initial_velocity_min = 0.099999994
 initial_velocity_max = 0.099999994
 gravity = Vector3(0, 0, 0)
 scale_min = 0.39999998
+color = Color(0, 0.5590001, 0.86, 1)
 alpha_curve = SubResource("CurveTexture_ho8gj")
 turbulence_enabled = true
 turbulence_noise_scale = 2.0

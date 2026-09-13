@@ -36,6 +36,9 @@ input_name = "color"
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_pl5ec"]
 operator = 2
 
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_pl5ec"]
+input_name = "color"
+
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_im35f"]
 input_name = "uv"
 
@@ -64,10 +67,6 @@ default_value = 2.0
 output_port_for_preview = 0
 operator = 5
 
-[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_eoe0r"]
-parameter_name = "color"
-default_value_enabled = true
-
 [resource]
 flags/unshaded = true
 nodes/fragment/0/position = Vector2(1440, 240)
@@ -83,8 +82,6 @@ nodes/fragment/6/node = SubResource("VisualShaderNodeFloatParameter_je0mn")
 nodes/fragment/6/position = Vector2(-60, 680)
 nodes/fragment/7/node = SubResource("VisualShaderNodeFloatOp_ljnt7")
 nodes/fragment/7/position = Vector2(540, 320)
-nodes/fragment/9/node = SubResource("VisualShaderNodeColorParameter_eoe0r")
-nodes/fragment/9/position = Vector2(380, -100)
 nodes/fragment/10/node = SubResource("VisualShaderNodeVectorOp_1w5mi")
 nodes/fragment/10/position = Vector2(860, 20)
 nodes/fragment/11/node = SubResource("VisualShaderNodeClamp_pl5ec")
@@ -103,4 +100,6 @@ nodes/fragment/17/node = SubResource("VisualShaderNodeInput_1w5mi")
 nodes/fragment/17/position = Vector2(620, 720)
 nodes/fragment/18/node = SubResource("VisualShaderNodeFloatOp_pl5ec")
 nodes/fragment/18/position = Vector2(1020, 360)
-nodes/fragment/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 4, 0, 5, 0, 6, 0, 7, 1, 9, 0, 10, 0, 7, 0, 10, 1, 10, 0, 13, 0, 12, 0, 13, 1, 13, 0, 0, 0, 11, 0, 7, 0, 5, 0, 15, 2, 15, 0, 11, 0, 14, 0, 16, 0, 16, 0, 15, 0, 7, 0, 18, 0, 18, 0, 0, 1, 17, 4, 18, 1)
+nodes/fragment/19/node = SubResource("VisualShaderNodeInput_pl5ec")
+nodes/fragment/19/position = Vector2(420, -60)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 4, 0, 4, 0, 5, 0, 7, 0, 10, 1, 10, 0, 13, 0, 12, 0, 13, 1, 13, 0, 0, 0, 11, 0, 7, 0, 5, 0, 15, 2, 15, 0, 11, 0, 14, 0, 16, 0, 16, 0, 15, 0, 7, 0, 18, 0, 18, 0, 0, 1, 17, 4, 18, 1, 19, 0, 10, 0, 6, 0, 7, 1)

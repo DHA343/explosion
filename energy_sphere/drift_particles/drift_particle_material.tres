@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://phd34swsok0n"]
 
-[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://component/circle_particle_shader.tres" id="1_afrw1"]
+[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://energy_sphere/drift_particles/drift_particle_shader.tres" id="1_afrw1"]
 
 [resource]
 render_priority = 0

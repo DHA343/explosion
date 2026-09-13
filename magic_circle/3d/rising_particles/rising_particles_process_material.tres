@@ -1,7 +1,7 @@
 [gd_resource type="ParticleProcessMaterial" format=3 uid="uid://d0earmb4jg6de"]
 
 [sub_resource type="Curve" id="Curve_kjvk3"]
-_data = [Vector2(0, 0), 0.0, 10.0, 0, 1, Vector2(0.1, 1), 10.0, 0.0, 0, 0, Vector2(0.90000004, 1), 0.0, -10.000003, 0, 1, Vector2(1, 0), -10.000003, 0.0, 1, 0]
+_data = [Vector2(0, 0), 0.0, 6.666666, 0, 1, Vector2(0.15, 1), 6.666666, 0.0, 1, 1, Vector2(0.85, 1), 0.0, -6.6666675, 1, 0, Vector2(1, 0), -6.6666675, 0.0, 1, 0]
 point_count = 4
 metadata/_snap_enabled = true
 metadata/_snap_count = 20
@@ -9,18 +9,34 @@ metadata/_snap_count = 20
 [sub_resource type="CurveTexture" id="CurveTexture_h4oct"]
 curve = SubResource("Curve_kjvk3")
 
+[sub_resource type="Gradient" id="Gradient_i1bgr"]
+offsets = PackedFloat32Array(0, 0.36507937, 0.78968257, 1)
+colors = PackedColorArray(0.6833334, 0, 1, 1, 1, 0.487, 0.19, 1, 0.95000005, 1, 0, 1, 0.9885, 1, 0.77, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qj36r"]
+gradient = SubResource("Gradient_i1bgr")
+
+[sub_resource type="Curve" id="Curve_i1bgr"]
+_data = [Vector2(0, 0.59615386), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.59615386), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_i1bgr"]
+curve = SubResource("Curve_i1bgr")
+
 [resource]
 resource_local_to_scene = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
 emission_ring_height = 0.0
-emission_ring_radius = 10.0
+emission_ring_radius = 8.0
 emission_ring_inner_radius = 0.0
 emission_ring_cone_angle = 90.0
 direction = Vector3(0, 1, 0)
-spread = 0.0
-initial_velocity_min = 8.0
-initial_velocity_max = 14.0
+spread = 7.0
+initial_velocity_min = 14.0
+initial_velocity_max = 18.0
 gravity = Vector3(0, 0, 0)
-scale_min = 0.5
+scale_min = 0.79999995
+scale_curve = SubResource("CurveTexture_i1bgr")
+color_initial_ramp = SubResource("GradientTexture1D_qj36r")
 alpha_curve = SubResource("CurveTexture_h4oct")

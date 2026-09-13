@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://d1lpjccja18x5"]
+
+[ext_resource type="Shader" uid="uid://bmc7kyip1t4h4" path="res://magic_circle/3d/rising_particles/rising_particle_shader.tres" id="1_erfym"]
+
+[resource]
+render_priority = -1
+shader = ExtResource("1_erfym")
+shader_parameter/edge_softness = 0.8999999798832
+shader_parameter/size = 0.7999999821184
+shader_parameter/shape_power = 0.39999999478452003
+shader_parameter/intensity = 3.0000000447036004

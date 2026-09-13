@@ -2,6 +2,7 @@ class_name RisingParticles3D
 extends GPUParticles3D
 
 @export_range(20.0, 160.0, 0.5, "suffix:m") var final_height: float = 120.0
+@export_range(0.0, 20.0, 0.5, "suffix:m") var spawn_depth: float = 5.0
 
 
 func _ready() -> void:
@@ -19,11 +20,14 @@ func set_spawn_progress(progress: float) -> void:
 	assert(material != null, "RisingParticles3D: ParticleProcessMaterialを設定してください。")
 
 	var spawn_progress := clampf(progress, 0.0, 1.0)
-	var current_height := final_height * spawn_progress
 	var ground_local_y := to_local(Vector3.ZERO).y
+	var bottom_y := ground_local_y - spawn_depth
+	var top_y := ground_local_y + final_height * spawn_progress
+	var current_height := top_y - bottom_y
+
 	var offset := material.emission_shape_offset
 	amount_ratio = spawn_progress
-	offset.y = ground_local_y + current_height * 0.5
+	offset.y = (bottom_y + top_y) * 0.5
 	material.emission_ring_height = current_height
 	material.emission_shape_offset = offset
 
