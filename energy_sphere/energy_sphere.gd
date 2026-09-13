@@ -17,7 +17,6 @@ const SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 @onready var _distortion_viewport: SubViewport = $DistortionCapture/DistortionViewport
 @onready var _distortion_shell: DistortionShell = $DistortionShell
 @onready var _aura_flow: AuraFlow = $AuraFlow
-@onready var _streams: Node3D = $Streams
 @onready var _core_glow: MeshInstance3D = $CoreGlow
 @onready var _core_color: MeshInstance3D = $CoreColor
 
@@ -49,8 +48,6 @@ func _update_radius() -> void:
 	_inflow_streaks.radius = radius
 	_distortion_shell.radius = radius
 	_aura_flow.radius = radius
-	for stream: StreamLine in _streams.get_children():
-		stream.radius = radius
 	_update_core_radius()
 
 
