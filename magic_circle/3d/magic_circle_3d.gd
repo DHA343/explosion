@@ -37,6 +37,12 @@ var _effect_weight: float = 1.0
 func _ready() -> void:
 	_connect_appearance_signal()
 	_connect_layout_signal()
+	if not Engine.is_editor_hint():
+		_base_light_energy = _local_light.light_energy
+		_spawn_animator.effect_weight_changed.connect(_on_effect_weight_changed)
+		_spawn_animator.spawn_started.connect(_rising_particles.begin_spawn)
+		_spawn_animator.vertical_spawn_progress_changed.connect(_rising_particles.set_spawn_progress)
+		_spawn_animator.spawn_finished.connect(_rising_particles.end_spawn)
 	_rebuild_layers()
 	_apply_appearance()
 	if Engine.is_editor_hint():
@@ -45,14 +51,6 @@ func _ready() -> void:
 	assert(appearance != null, "MagicCircle3D: Appearanceが設定されていません。")
 	assert(layout != null, "MagicCircle3D: Layoutが設定されていません。")
 	assert(not _layers.is_empty(), "MagicCircle3D: Layoutには1つ以上のLayerを設定してください。")
-	_base_light_energy = _local_light.light_energy
-	_spawn_animator.effect_weight_changed.connect(_on_effect_weight_changed)
-	_spawn_animator.spawn_started.connect(_rising_particles.begin_spawn)
-	_spawn_animator.vertical_spawn_progress_changed.connect(_rising_particles.set_spawn_progress)
-	_spawn_animator.spawn_finished.connect(_rising_particles.end_spawn)
-	for layer in _layers:
-		layer.bind_viewports(_body_viewport, _ring_viewport, _glow_ring_viewport)
-	_spawn_animator.setup(_layers, _rotation_source)
 
 
 func play_spawn() -> void:
@@ -114,6 +112,8 @@ func _rebuild_layers() -> void:
 	if not is_node_ready():
 		return
 
+	if not Engine.is_editor_hint():
+		_spawn_animator.stop()
 	_clear_layers()
 	if layout == null:
 		return
@@ -134,6 +134,12 @@ func _rebuild_layers() -> void:
 		if appearance != null:
 			layer.set_appearance(appearance)
 		_layers.append(layer)
+
+	if Engine.is_editor_hint() or _layers.is_empty():
+		return
+	for layer in _layers:
+		layer.bind_viewports(_body_viewport, _ring_viewport, _glow_ring_viewport)
+	_spawn_animator.setup(_layers, _rotation_source)
 
 
 func _clear_layers() -> void:

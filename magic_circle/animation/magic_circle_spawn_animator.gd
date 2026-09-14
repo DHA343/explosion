@@ -44,7 +44,8 @@ func _process(delta: float) -> void:
 
 
 func setup(layers: Array[MagicCircleLayer3D], rotation_source: MagicCircle) -> void:
-	_layers = layers
+	stop()
+	_layers.assign(layers)
 	_rotation_source = rotation_source
 	assert(profile != null, "MagicCircleSpawnAnimator: Spawn Profileが設定されていません。")
 	for layer in _layers:
@@ -68,6 +69,17 @@ func play_spawn() -> void:
 
 func is_playing() -> bool:
 	return _playing
+
+
+func stop() -> void:
+	if _playing:
+		for layer in _layers:
+			if is_instance_valid(layer):
+				layer.restore_animation_state()
+	_playing = false
+	set_process(false)
+	_layers.clear()
+	_rotation_source = null
 
 
 func _prepare_waiting_state() -> void:

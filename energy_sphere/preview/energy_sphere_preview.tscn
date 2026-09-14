@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://energy_sphere/preview/energy_sphere_preview.gd" id="1_preview"]
+[ext_resource type="Script" uid="uid://j78tcl0ddsjq" path="res://energy_sphere/orbit_camera.gd" id="2_orbit"]
+[ext_resource type="PackedScene" uid="uid://c0kne2q7bmeo4" path="res://energy_sphere/energy_sphere.tscn" id="3_sphere"]
+
+[sub_resource type="Environment" id="Environment_preview"]
+ambient_light_source = 2
+ambient_light_color = Color(0.065, 0.09, 0.18, 1)
+ambient_light_energy = 0.32
+reflected_light_source = 2
+tonemap_mode = 2
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 0.64
+glow_strength = 1.05
+glow_bloom = 0.15
+fog_enabled = true
+fog_light_color = Color(0.018, 0.028, 0.065, 1)
+fog_light_energy = 0.35
+fog_density = 0.003
+fog_sky_affect = 0.35
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0001
+volumetric_fog_albedo = Color(0.72, 0.76, 0.84, 1)
+volumetric_fog_emission_energy = 0.0
+volumetric_fog_length = 250.0
+volumetric_fog_sky_affect = 0.8
+
+[node name="EnergySpherePreview" type="Node3D"]
+script = ExtResource("1_preview")
+
+[node name="NightEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_preview")
+
+[node name="OrbitCamera" type="Node3D" parent="."]
+script = ExtResource("2_orbit")
+
+[node name="Camera3D" type="Camera3D" parent="OrbitCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.747)
+cull_mask = 1048573
+current = true
+
+[node name="EnergySphere" parent="." instance=ExtResource("3_sphere")]

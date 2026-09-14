@@ -12,19 +12,27 @@ var radius: float = 0.5:
 			_update_projected_radius()
 
 var _projected_radius_uv: float = 0.25
+var _source_camera: Camera3D
 
 
 func _ready() -> void:
-	_update_projected_radius()
+	set_process(false)
 
 
 func _process(_delta: float) -> void:
 	_update_projected_radius()
 
 
+func setup(source_camera: Camera3D) -> void:
+	assert(source_camera != null, "DistortionShell requires a source Camera3D.")
+	_source_camera = source_camera
+	_update_projected_radius()
+	set_process(true)
+
+
 func _update_projected_radius() -> void:
-	var camera := get_viewport().get_camera_3d()
-	if camera == null:
+	if not is_instance_valid(_source_camera):
+		set_process(false)
 		return
 
 	var viewport_height := get_viewport().get_visible_rect().size.y
@@ -32,18 +40,18 @@ func _update_projected_radius() -> void:
 		return
 
 	var center := global_position
-	if camera.is_position_behind(center):
+	if _source_camera.is_position_behind(center):
 		return
 
 	var projected_radius_pixels: float
-	match camera.projection:
+	match _source_camera.projection:
 		Camera3D.PROJECTION_ORTHOGONAL:
-			var edge_world := center + camera.global_basis.y * radius
-			projected_radius_pixels = camera.unproject_position(center).distance_to(
-				camera.unproject_position(edge_world)
+			var edge_world := center + _source_camera.global_basis.y * radius
+			projected_radius_pixels = _source_camera.unproject_position(center).distance_to(
+				_source_camera.unproject_position(edge_world)
 			)
 		Camera3D.PROJECTION_PERSPECTIVE, Camera3D.PROJECTION_FRUSTUM:
-			projected_radius_pixels = _calculate_perspective_radius_pixels(camera, center)
+			projected_radius_pixels = _calculate_perspective_radius_pixels(_source_camera, center)
 		_:
 			return
 

@@ -1,4 +1,5 @@
 @tool
+class_name DistortionCapture
 extends Node
 
 const DISTORTION_CAPTURE_PROCESS_PRIORITY: int = 100
@@ -11,30 +12,24 @@ var _capture_environment: Environment
 
 func _ready() -> void:
 	process_priority = DISTORTION_CAPTURE_PROCESS_PRIORITY
-	_sync_capture()
+	set_process(false)
 
 
 func _process(_delta: float) -> void:
-	_sync_capture()
+	_sync_camera_properties()
 
 
-func _sync_capture() -> void:
-	var main_camera := get_viewport().get_camera_3d()
-	if main_camera == null:
-		return
-
-	if main_camera != _source_camera:
-		_source_camera = main_camera
-		_setup_capture_environment(main_camera)
-
-	main_camera.set_cull_mask_value(2, false)
-
-	_sync_camera_properties(main_camera)
+func setup(source_camera: Camera3D) -> void:
+	assert(source_camera != null, "DistortionCapture requires a source Camera3D.")
+	_source_camera = source_camera
+	_setup_capture_environment()
+	_sync_camera_properties()
+	set_process(true)
 
 
-func _setup_capture_environment(main_camera: Camera3D) -> void:
-	var source_environment := main_camera.environment
-	var world := main_camera.get_world_3d()
+func _setup_capture_environment() -> void:
+	var source_environment := _source_camera.environment
+	var world := _source_camera.get_world_3d()
 
 	if source_environment == null and world != null:
 		source_environment = world.environment
@@ -58,14 +53,18 @@ func _setup_capture_environment(main_camera: Camera3D) -> void:
 	_distortion_camera.environment = _capture_environment
 
 
-func _sync_camera_properties(main_camera: Camera3D) -> void:
-	_distortion_camera.global_transform = main_camera.global_transform
-	_distortion_camera.projection = main_camera.projection
-	_distortion_camera.fov = main_camera.fov
-	_distortion_camera.size = main_camera.size
-	_distortion_camera.near = main_camera.near
-	_distortion_camera.far = main_camera.far
-	_distortion_camera.keep_aspect = main_camera.keep_aspect
-	_distortion_camera.frustum_offset = main_camera.frustum_offset
-	_distortion_camera.h_offset = main_camera.h_offset
-	_distortion_camera.v_offset = main_camera.v_offset
+func _sync_camera_properties() -> void:
+	if not is_instance_valid(_source_camera):
+		set_process(false)
+		return
+
+	_distortion_camera.global_transform = _source_camera.global_transform
+	_distortion_camera.projection = _source_camera.projection
+	_distortion_camera.fov = _source_camera.fov
+	_distortion_camera.size = _source_camera.size
+	_distortion_camera.near = _source_camera.near
+	_distortion_camera.far = _source_camera.far
+	_distortion_camera.keep_aspect = _source_camera.keep_aspect
+	_distortion_camera.frustum_offset = _source_camera.frustum_offset
+	_distortion_camera.h_offset = _source_camera.h_offset
+	_distortion_camera.v_offset = _source_camera.v_offset
