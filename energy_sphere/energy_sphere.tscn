@@ -21,7 +21,7 @@
 [ext_resource type="Material" uid="uid://dxkdcs2auo6qo" path="res://energy_sphere/drift_particles/drift_particles_process_material.tres" id="22_eoufh"]
 [ext_resource type="Material" uid="uid://phd34swsok0n" path="res://energy_sphere/drift_particles/drift_particle_material.tres" id="23_t144h"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -36,7 +36,7 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -83,13 +83,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_8v5r3")
+process_material = SubResource("ParticleProcessMaterial_tknrg")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_eoufh")
+process_material = SubResource("ParticleProcessMaterial_b0480")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -195,7 +195,7 @@ particle_opacity = 0.6
 particle_emission_strength = 2.0
 
 [node name="DriftParticles" type="GPUParticles3D" parent="." unique_id=2007976816]
-amount = 300
+amount = 500
 lifetime = 4.0
 preprocess = 5.0
 randomness = 0.3

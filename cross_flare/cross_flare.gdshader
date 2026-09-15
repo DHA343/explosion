@@ -25,13 +25,13 @@ instance uniform float breakup_seed = 1.0;
 instance uniform vec2 stepped_parameters = vec2(0.0, 24.0);
 instance uniform vec4 motion_timing_a = vec4(0.36, 0.38, 0.82, 0.46);
 instance uniform vec4 motion_timing_b = vec4(0.70, 0.68, 0.85, 0.70);
-instance uniform vec2 motion_timing_c = vec2(0.86, 0.30);
-instance uniform vec2 ring_shape = vec2(0.065, 0.4);
+instance uniform vec4 ring_shape = vec4(0.065, 0.4, 0.86, 0.30);
 // Breakup strength, start, fragment count, irregularity.
 instance uniform vec4 tail_parameters = vec4(0.0, 0.84, 4.0, 0.65);
+instance uniform float shape_power = 0.50;
 
 const float HALO_MIN_WIDTH_RATIO = 0.2;
-const float CROSS_REFERENCE_WIDTH = 0.055;
+const float FLARE_REFERENCE_WIDTH = 0.055;
 const float RING_COLOR_OFFSET = 0.0;
 const float INNER_COLOR_OFFSET = 0.15;
 const float RING_FADE_SOFTNESS = 0.4;
@@ -105,20 +105,24 @@ vec4 motion_at(float age) {
 	float growth = smoothstep(0.0, motion_timing_a.x, age);
 	float contraction = mix(1.0, 0.55,
 		smoothstep(motion_timing_a.w, motion_timing_b.x, age));
-	float stretch = smoothstep(motion_timing_b.w, motion_timing_c.x, age);
+	float stretch = smoothstep(motion_timing_b.w, ring_shape.z, age);
 	float long_arm = max(0.001, 0.68 * growth * mix(contraction, 1.15, stretch));
 	float short_arm = max(0.001, 0.68 * growth * 0.93 * contraction
 		* (1.0 - smoothstep(motion_timing_b.y, motion_timing_b.z, age)));
 	float width_fade = smoothstep(motion_timing_a.y, motion_timing_a.z, age);
-	float width = max(0.001, 0.055 * growth * mix(1.0, motion_timing_c.y, width_fade));
+	float width = max(0.001, 0.055 * growth * mix(1.0, ring_shape.w, width_fade));
 	vec4 pose = vec4(long_arm, short_arm, width, -0.4 + rotation);
 	if (variant_value() == 1) {
 		pose = vec4(short_arm, long_arm, width, -0.8 + rotation);
 	} else if (variant_value() == 2) {
 		float squash = smoothstep(0.045, 0.13, age) * (1.0 - smoothstep(0.24, 0.34, age));
-		float burst = exp(-pow((age - 0.36) / 0.075, 2.0));
 		pose.y *= mix(1.0, 0.22, squash);
-		pose.z += 0.09 * squash + 0.23 * burst;
+		float rise_end = clamp(motion_timing_a.x * 0.55, 0.12, 0.32);
+		float fall_start = max(motion_timing_a.y, motion_timing_a.x);
+		float fall_end = max(fall_start + 0.08, motion_timing_a.z);
+		float thickness_profile = smoothstep(0.04, rise_end, age)
+			* (1.0 - smoothstep(fall_start, fall_end, age));
+		pose.z *= mix(0.42, 2.0, thickness_profile);
 		pose.w = rotation;
 	}
 	return pose;
@@ -147,31 +151,14 @@ float tail_opacity(vec2 point, float age) {
 	return mix(1.0, smoothstep(0.0, 0.35, remaining), tail_parameters.x);
 }
 
-vec2 cross_metrics(vec2 point, vec2 reach, float width, float age) {
-	vec2 q = abs(point);
-	float horizontal_t = q.x / max(reach.x, 0.001);
-	float vertical_t = q.y / max(reach.y, 0.001);
-	float horizontal_width = width * pow(max(1.0 - horizontal_t, 0.0), 2.4);
-	float vertical_width = width * pow(max(1.0 - vertical_t, 0.0), 2.4);
-	// The final streak retains a broad body; only its ends taper to zero.
-	float streak = smoothstep(motion_timing_b.y, motion_timing_b.z, age);
-	if (variant_value() == 1) {
-		vertical_width = mix(vertical_width,
-			width * sqrt(max(1.0 - vertical_t * vertical_t, 0.0)), streak);
-	} else {
-		horizontal_width = mix(horizontal_width,
-			width * sqrt(max(1.0 - horizontal_t * horizontal_t, 0.0)), streak);
-	}
-	float horizontal_body = q.y - horizontal_width;
-	float vertical_body = q.x - vertical_width;
-	float horizontal_tip = length(vec2(max(q.x - reach.x, 0.0), q.y));
-	float vertical_tip = length(vec2(q.x, max(q.y - reach.y, 0.0)));
-	float horizontal = mix(horizontal_body, horizontal_tip, step(reach.x, q.x));
-	float vertical = mix(vertical_body, vertical_tip, step(reach.y, q.y));
-	if (horizontal <= vertical) {
-		return vec2(horizontal, horizontal_width);
-	}
-	return vec2(vertical, vertical_width);
+vec2 flare_metrics(vec2 point, vec2 reach, float width) {
+	vec2 normalized = abs(point) / max(reach, vec2(0.001));
+	float width_ratio = max(width / FLARE_REFERENCE_WIDTH, 0.0);
+	float width_adjustment = (width_ratio - 1.0) * 0.22;
+	float effective_shape_power = clamp(shape_power + width_adjustment, 0.25, 0.80);
+	float shape = pow(normalized.x, effective_shape_power)
+		+ pow(normalized.y, effective_shape_power);
+	return vec2(shape - 1.0, width);
 }
 
 vec3 crescent(vec2 point, vec2 color_point, float radius, float thick_angle,
@@ -259,16 +246,13 @@ void fragment() {
 	vec2 color_plane = (UV * 2.0 - 1.0) * 1.2;
 	vec2 point = rotate_point(color_plane, initial_angle);
 	vec2 q = rotate_point(point, pose.w);
-	vec2 cross_data = cross_metrics(q, pose.xy, pose.z, sampled_progress);
-	float shape_distance = cross_data.x;
-	float local_width = cross_data.y;
-	// abs/min at the thin centerline cancel screen derivatives. Use the
-	// unmodified coordinates so opposite sides receive identical filtering.
-	float pixel_width = 0.5 * (length(dFdx(q)) + length(dFdy(q)));
-	float aa = max(pixel_width, 0.001);
+	vec2 flare_data = flare_metrics(q, pose.xy, pose.z);
+	float shape_distance = flare_data.x;
+	float local_width = flare_data.y;
+	float aa = max(fwidth(shape_distance), 0.001);
 	float body = 1.0 - smoothstep(-aa, aa, shape_distance);
 	float outside = max(shape_distance, 0.0);
-	float local_width_factor = clamp(local_width / CROSS_REFERENCE_WIDTH,
+	float local_width_factor = clamp(local_width / FLARE_REFERENCE_WIDTH,
 		HALO_MIN_WIDTH_RATIO, 1.0);
 	float effective_halo_width = max(effect_parameters.w * local_width_factor, 0.001);
 	float halo_distance = outside / effective_halo_width;
