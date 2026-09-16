@@ -6,12 +6,12 @@ const FLARE_HALF_EXTENT_SCALE: float = 1.5
 
 @export_group("Spawn")
 @export var enabled: bool = true
-@export_range(0.0, 1000.0, 1.0, "suffix:/s") var spawn_rate: float = 10.0
+@export_range(0.0, 100.0, 0.5, "suffix:/s") var max_spawn_rate: float = 17.0
+@export_range(0.1, 10.0, 0.1, "suffix:s") var spawn_rate_ramp_duration: float = 3.0
 @export_range(0.0, 1.0, 0.01) var spawn_interval_random_ratio: float = 0.2
 @export_range(1, 500, 1) var max_active_count: int = 100
 
 @export_group("Spawn Area")
-@export_node_path("Node3D") var energy_sphere_path: NodePath = NodePath("../EnergySphere")
 @export_range(0.0, 10.0, 0.1, "suffix:m") var inner_radius: float = 0.5
 @export_range(0.0, 10.0, 0.1, "suffix:m") var outer_radius: float = 10.0
 @export_range(0.0, 10.0, 0.1, "suffix:m") var top_height: float = 1.0
@@ -20,34 +20,64 @@ const FLARE_HALF_EXTENT_SCALE: float = 1.5
 @export_range(0.0, 1.0, 0.01, "suffix:m") var ground_clearance: float = 0.1
 
 var _active_flares: Array[CrossFlare] = []
-var _spawn_time_remaining: float = 0.0
+var _spawn_elapsed: float = 0.0
+var _spawn_accumulator: float = 0.0
+var _next_spawn_threshold: float = 1.0
+var _spawning: bool = false
 var _rng := RandomNumberGenerator.new()
-var _reported_missing_energy_sphere: bool = false
 var _reported_invalid_spawn_area: bool = false
-@onready var _energy_sphere: Node3D = get_node_or_null(energy_sphere_path)
 
 
 func _ready() -> void:
 	_rng.randomize()
-
-	if _energy_sphere == null:
-		_report_missing_energy_sphere()
+	set_process(false)
 
 
 func _process(delta: float) -> void:
 	_prune_invalid_flares()
-
-	if not enabled or spawn_rate <= 0.0:
+	if not _spawning:
 		return
 
-	_spawn_time_remaining -= delta
-	while _spawn_time_remaining <= 0.0:
-		if _active_flares.size() >= maxi(max_active_count, 0):
-			_spawn_time_remaining = _get_next_spawn_interval()
+	_spawn_elapsed += delta
+	if not enabled:
+		return
+
+	var current_spawn_rate := _get_current_spawn_rate()
+	if current_spawn_rate <= 0.0:
+		return
+
+	_spawn_accumulator += current_spawn_rate * delta
+	var active_limit := maxi(max_active_count, 0)
+	while _spawn_accumulator >= _next_spawn_threshold:
+		if _active_flares.size() >= active_limit:
+			_spawn_accumulator = 0.0
+			_next_spawn_threshold = _get_next_spawn_threshold()
 			break
 
 		_spawn_one()
-		_spawn_time_remaining += _get_next_spawn_interval()
+		_spawn_accumulator -= _next_spawn_threshold
+		_next_spawn_threshold = _get_next_spawn_threshold()
+
+
+func begin_spawn() -> void:
+	_spawn_elapsed = 0.0
+	_spawn_accumulator = 0.0
+	_next_spawn_threshold = _get_next_spawn_threshold()
+	_spawning = true
+	set_process(true)
+
+
+func reset_spawn() -> void:
+	_spawning = false
+	set_process(false)
+	_spawn_elapsed = 0.0
+	_spawn_accumulator = 0.0
+	_next_spawn_threshold = 1.0
+	for flare in _active_flares:
+		if is_instance_valid(flare):
+			flare.hide()
+			flare.queue_free()
+	_active_flares.clear()
 
 
 func spawn(count: int = 1) -> void:
@@ -62,10 +92,6 @@ func spawn(count: int = 1) -> void:
 
 
 func _spawn_one() -> void:
-	if _energy_sphere == null:
-		_report_missing_energy_sphere()
-		return
-
 	if _active_flares.size() >= maxi(max_active_count, 0):
 		return
 
@@ -102,7 +128,7 @@ func _get_spawn_position(flare: CrossFlare) -> Variant:
 		minimum_height = maximum_height
 		maximum_height = height_swap
 
-	var center := _energy_sphere.global_position
+	var center := global_position
 	var minimum_ground_y := (
 		ground_y
 		+ _get_flare_half_extent(flare)
@@ -126,13 +152,17 @@ func _get_spawn_position(flare: CrossFlare) -> Variant:
 		center.z + sin(angle) * radius)
 
 
-func _get_next_spawn_interval() -> float:
-	if spawn_rate <= 0.0:
-		return INF
+func _get_current_spawn_rate() -> float:
+	var ramp_progress := clampf(_spawn_elapsed / spawn_rate_ramp_duration, 0.0, 1.0)
+	return max_spawn_rate * ramp_progress
 
-	var base_interval := 1.0 / spawn_rate
+
+func _get_next_spawn_threshold() -> float:
 	var random_ratio := clampf(spawn_interval_random_ratio, 0.0, 1.0)
-	return base_interval * _rng.randf_range(1.0 - random_ratio, 1.0 + random_ratio)
+	return maxf(
+		_rng.randf_range(1.0 - random_ratio, 1.0 + random_ratio),
+		0.001
+	)
 
 
 func _get_flare_half_extent(flare: CrossFlare) -> float:
@@ -151,13 +181,6 @@ func _prune_invalid_flares() -> void:
 	for index in range(_active_flares.size() - 1, -1, -1):
 		if not is_instance_valid(_active_flares[index]):
 			_active_flares.remove_at(index)
-
-
-func _report_missing_energy_sphere() -> void:
-	if _reported_missing_energy_sphere:
-		return
-	_reported_missing_energy_sphere = true
-	push_error("CrossFlareSpawner requires an EnergySphere Node3D reference.")
 
 
 func _report_invalid_spawn_area_warning() -> void:

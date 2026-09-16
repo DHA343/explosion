@@ -32,6 +32,7 @@ const HAZE_LIFETIME_MIN_PARAMETER: StringName = &"haze_lifetime_min"
 const HAZE_LIFETIME_MAX_PARAMETER: StringName = &"haze_lifetime_max"
 const HAZE_LIFETIME_FADE_START_PARAMETER: StringName = &"haze_lifetime_fade_start"
 const HAZE_DILUTION_POWER_PARAMETER: StringName = &"haze_dilution_power"
+const FLOW_AGE_PARAMETER: StringName = &"flow_age"
 const PARTICLE_SIZE_MIN_RATIO_PARAMETER: StringName = &"particle_size_min_ratio"
 const PARTICLE_SIZE_MAX_RATIO_PARAMETER: StringName = &"particle_size_max_ratio"
 const PARTICLE_LIFETIME_PARAMETER: StringName = &"particle_lifetime"
@@ -308,15 +309,59 @@ var radius: float = 0.5:
 		if is_node_ready():
 			_sync_effect()
 
+var _flow_age: float = 0.0
+var _spawning: bool = false
+
 @onready var _haze_volume: MeshInstance3D = $HazeVolume
 @onready var _cyan_particles: GPUParticles3D = $Particles/CyanParticles
 @onready var _purple_particles: GPUParticles3D = $Particles/PurpleParticles
 
 
 func _ready() -> void:
+	set_process(false)
+	if Engine.is_editor_hint():
+		_flow_age = haze_lifetime_max
+
 	_prepare_particle_resources(_cyan_particles)
 	_prepare_particle_resources(_purple_particles)
 	_sync_effect()
+	if not Engine.is_editor_hint():
+		reset_spawn()
+
+
+func begin_spawn() -> void:
+	_flow_age = 0.0
+	_spawning = true
+	_set_flow_age(_flow_age)
+	_cyan_particles.restart()
+	_purple_particles.restart()
+	_cyan_particles.emitting = true
+	_purple_particles.emitting = true
+	set_process(true)
+
+
+func reset_spawn() -> void:
+	_spawning = false
+	set_process(false)
+	_flow_age = 0.0
+	_set_flow_age(_flow_age)
+	_cyan_particles.emitting = false
+	_purple_particles.emitting = false
+	_cyan_particles.restart()
+	_purple_particles.restart()
+	_cyan_particles.emitting = false
+	_purple_particles.emitting = false
+
+
+func _process(delta: float) -> void:
+	if not _spawning:
+		return
+
+	_flow_age += delta
+	_set_flow_age(_flow_age)
+	if _flow_age >= haze_lifetime_max:
+		_spawning = false
+		set_process(false)
 
 
 func _sync_effect() -> void:
@@ -374,6 +419,18 @@ func _sync_haze_volume() -> void:
 	material.set_shader_parameter(HAZE_DILUTION_POWER_PARAMETER, haze_dilution_power)
 	material.set_shader_parameter(VIEW_FRONT_VISIBILITY_PARAMETER, view_front_visibility)
 	material.set_shader_parameter(VIEW_FALLOFF_POWER_PARAMETER, view_falloff_power)
+	material.set_shader_parameter(
+		FLOW_AGE_PARAMETER,
+		haze_lifetime_max if Engine.is_editor_hint() else _flow_age
+	)
+
+
+func _set_flow_age(flow_age: float) -> void:
+	if not is_node_ready():
+		return
+	var material := _haze_volume.material_override as ShaderMaterial
+	assert(material != null, "AuraFlow requires a ShaderMaterial for HazeVolume.")
+	material.set_shader_parameter(FLOW_AGE_PARAMETER, flow_age)
 
 
 func _prepare_particle_resources(particles: GPUParticles3D) -> void:
@@ -407,7 +464,7 @@ func _sync_particle_system(
 	particles.draw_passes = 1
 	particles.amount = amount_value
 	particles.lifetime = particle_lifetime
-	particles.preprocess = particle_lifetime
+	particles.preprocess = 0.0
 	particles.seed = seed_value
 	particles.visibility_aabb = _get_visibility_aabb()
 

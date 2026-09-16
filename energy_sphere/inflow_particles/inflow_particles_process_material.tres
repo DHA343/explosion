@@ -1,13 +1,19 @@
 [gd_resource type="ParticleProcessMaterial" format=3 uid="uid://dlaqj4btux5in"]
 
 [sub_resource type="Curve" id="Curve_r3xot"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, 0.3), 0.0, 0.0, 0, 0, Vector2(0.75, 0.3), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 metadata/_snap_enabled = true
 metadata/_snap_count = 20
 
 [sub_resource type="CurveTexture" id="CurveTexture_ua4af"]
 curve = SubResource("Curve_r3xot")
+
+[sub_resource type="Gradient" id="Gradient_dperg"]
+colors = PackedColorArray(1, 0.100000024, 0, 1, 1, 0.33333337, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_wa4gk"]
+gradient = SubResource("Gradient_dperg")
 
 [sub_resource type="Curve" id="Curve_dperg"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.49819493, 1), 0.0, 0.0, 0, 0, Vector2(0.99277973, 0), 0.0, 0.0, 0, 0]
@@ -27,7 +33,7 @@ radial_accel_min = -1.0000023
 radial_accel_max = -1.0000023
 scale_min = 0.5
 scale_curve = SubResource("CurveTexture_8v5r3")
-color = Color(1, 0.2833333, 0, 1)
+color_initial_ramp = SubResource("GradientTexture1D_wa4gk")
 alpha_curve = SubResource("CurveTexture_ua4af")
 turbulence_enabled = true
 turbulence_noise_scale = 4.0

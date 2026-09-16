@@ -6,6 +6,7 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, depth_test_dis
 
 const int RAYMARCH_STEPS = 12;
 const int BACKTRACE_STEPS = 3;
+const float FLOW_SPAWN_EDGE_FADE = 0.08;
 
 uniform float sphere_radius = 0.5;
 uniform float volume_radius = 1.8;
@@ -38,6 +39,7 @@ uniform float haze_lifetime_min = 0.35;
 uniform float haze_lifetime_max = 2.6;
 uniform float haze_lifetime_fade_start = 0.72;
 uniform float haze_dilution_power = 0.7;
+uniform float flow_age = 0.0;
 
 uniform float view_front_visibility = 0.08;
 uniform float view_falloff_power = 2.1;
@@ -238,6 +240,11 @@ void fragment() {
 				if (age_ratio >= 1.0) {
 					survival = 0.0;
 				}
+				float spawn_weight = 1.0 - smoothstep(
+					flow_age,
+					flow_age + FLOW_SPAWN_EDGE_FADE,
+					trace_time
+				);
 				float radius_ratio = sample_radius / max(sphere_radius, 0.0001);
 				float dilution = pow(
 					1.0 / max(radius_ratio, 1.0),
@@ -261,8 +268,8 @@ void fragment() {
 				);
 				float cyan_factor = pow(cyan_source, source_contrast);
 				float purple_factor = pow(purple_source, source_contrast);
-				cyan_density = cyan_factor * survival * dilution;
-				purple_density = purple_factor * survival * dilution;
+				cyan_density = cyan_factor * survival * dilution * spawn_weight;
+				purple_density = purple_factor * survival * dilution * spawn_weight;
 			}
 
 			float view_dot = abs(dot(radial_direction, view_direction));

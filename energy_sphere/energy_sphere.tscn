@@ -23,8 +23,9 @@
 [ext_resource type="Material" uid="uid://dhjll5xhpuvho" path="res://energy_sphere/inflow_particles/inflow_particle_material.tres" id="22_t144h"]
 [ext_resource type="Material" uid="uid://phd34swsok0n" path="res://energy_sphere/drift_particles/drift_particle_material.tres" id="23_t144h"]
 [ext_resource type="Script" uid="uid://ye828cxw466t" path="res://energy_sphere/animation/energy_sphere_spawn_animator.gd" id="24_spawn_animator"]
+[ext_resource type="Script" uid="uid://bk5tdvwgh3208" path="res://energy_sphere/cross_flare_spawner.gd" id="25_cross_flare_spawner"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t144h"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -39,7 +40,7 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t144h"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q1nrn"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -59,7 +60,6 @@ size = Vector2(1.05, 1.05)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
-size = Vector3(0.3, 0.3, 0.3)
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
@@ -95,13 +95,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_eoufh")
+process_material = SubResource("ParticleProcessMaterial_t144h")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_t144h")
+process_material = SubResource("ParticleProcessMaterial_q1nrn")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -207,7 +207,7 @@ particle_opacity = 0.6
 particle_emission_strength = 2.0
 
 [node name="DriftParticles" type="GPUParticles3D" parent="." unique_id=2007976816]
-amount = 800
+amount = 1500
 lifetime = 2.0
 preprocess = 5.0
 randomness = 0.3
@@ -218,8 +218,17 @@ process_material = ExtResource("22_eoufh")
 draw_pass_1 = SubResource("QuadMesh_lxxnu")
 
 [node name="InflowParticles" type="GPUParticles3D" parent="." unique_id=1759412496]
-amount = 1500
+amount = 2000
 preprocess = 3.0
 local_coords = true
 process_material = ExtResource("21_8v5r3")
 draw_pass_1 = SubResource("QuadMesh_wrfd4")
+
+[node name="CrossFlareSpawner" type="Node3D" parent="." unique_id=1893553781]
+script = ExtResource("25_cross_flare_spawner")
+spawn_interval_random_ratio = 0.5
+max_active_count = 500
+inner_radius = 0.3
+outer_radius = 3.0
+top_height = 1.5
+ground_clearance = 0.3

@@ -28,6 +28,7 @@ var _radius_progress: float = 1.0
 @onready var _drift_particles: GPUParticles3D = $DriftParticles
 @onready var _inflow_particles: GPUParticles3D = $InflowParticles
 @onready var _spawn_animator: EnergySphereSpawnAnimator = $EnergySphereSpawnAnimator
+@onready var _cross_flare_spawner: CrossFlareSpawner = $CrossFlareSpawner
 
 
 func _ready() -> void:
@@ -74,6 +75,8 @@ func play_spawn() -> void:
 
 	_apply_spawn_progress(0.0)
 	_reset_spawn_particles()
+	_aura_flow.begin_spawn()
+	_cross_flare_spawner.begin_spawn()
 	_spawn_animator.play_spawn()
 
 
@@ -81,6 +84,8 @@ func reset_spawn() -> void:
 	_spawn_animator.reset_spawn()
 	_apply_spawn_progress(0.0)
 	_reset_spawn_particles()
+	_aura_flow.reset_spawn()
+	_cross_flare_spawner.reset_spawn()
 	hide()
 
 

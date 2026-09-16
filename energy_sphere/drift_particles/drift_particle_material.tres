@@ -1,21 +1,15 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://phd34swsok0n"]
 
-[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://energy_sphere/drift_particles/drift_particle_shader.tres" id="1_afrw1"]
-[ext_resource type="Shader" path="res://energy_sphere/particle_halo_shader.tres" id="1_ho8gj"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ua4af"]
-render_priority = 0
-shader = ExtResource("1_ho8gj")
-shader_parameter/radius_ratio = 0.8
-shader_parameter/falloff = 1.5
-shader_parameter/opacity = 0.2
+[ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://energy_sphere/circle_particle_shader.tres" id="1_afrw1"]
 
 [resource]
 render_priority = 0
-next_pass = SubResource("ShaderMaterial_ua4af")
 shader = ExtResource("1_afrw1")
-shader_parameter/radius_ratio = 0.2999999932944
-shader_parameter/falloff = 1.0000000149012
-shader_parameter/intensity = 16.0
+shader_parameter/intensity = 8.0000001192096
+shader_parameter/radius_ratio = 0.1999999955296
+shader_parameter/falloff = 2.0
+shader_parameter/halo_radius_ratio = 0.79999998584372
+shader_parameter/halo_falloff = 1.5000000186265
+shader_parameter/halo_opacity = 0.3999999910592
 shader_parameter/fade_end = 0.3999999910592
-shader_parameter/fade_start = 2.0000000298024
+shader_parameter/fade_start = 1.0000000149012

@@ -84,7 +84,7 @@ mesh = ExtResource("2_haze_mesh")
 [node name="CyanParticles" type="GPUParticles3D" parent="Particles" unique_id=1615177659]
 amount = 2000
 lifetime = 2.0
-preprocess = 2.0
+preprocess = 0.0
 use_fixed_seed = true
 seed = 343
 visibility_aabb = AABB(-1.566, -1.566, -1.566, 3.132, 3.132, 3.132)
@@ -98,7 +98,7 @@ draw_pass_1 = SubResource("QuadMesh_paeml")
 [node name="PurpleParticles" type="GPUParticles3D" parent="Particles" unique_id=1517002635]
 amount = 2000
 lifetime = 2.0
-preprocess = 2.0
+preprocess = 0.0
 use_fixed_seed = true
 seed = 1343
 visibility_aabb = AABB(-1.566, -1.566, -1.566, 3.132, 3.132, 3.132)
