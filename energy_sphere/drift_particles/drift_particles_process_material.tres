@@ -1,27 +1,30 @@
 [gd_resource type="ParticleProcessMaterial" format=3 uid="uid://dxkdcs2auo6qo"]
 
 [sub_resource type="Curve" id="Curve_r4b1u"]
-_data = [Vector2(0, 0), 0.0, 10.0, 0, 1, Vector2(0.1, 1), 10.0, 0.0, 1, 1, Vector2(0.90000004, 1), 0.0, -10.000003, 1, 1, Vector2(1, 0), -10.000003, 0.0, 1, 0]
-point_count = 4
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 metadata/_snap_enabled = true
 metadata/_snap_count = 20
 
 [sub_resource type="CurveTexture" id="CurveTexture_ho8gj"]
 curve = SubResource("Curve_r4b1u")
 
+[sub_resource type="Curve" id="Curve_qj36r"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.50180507, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_i1bgr"]
+curve = SubResource("Curve_qj36r")
+
 [resource]
-emission_shape_offset = Vector3(0, 1, 0)
-emission_shape = 6
-emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 3.0
-emission_ring_radius = 6.0
-emission_ring_inner_radius = 0.3
-emission_ring_cone_angle = 90.0
+emission_shape = 1
+emission_sphere_radius = 10.0
 spread = 90.0
-initial_velocity_min = 0.099999994
-initial_velocity_max = 0.099999994
+initial_velocity_min = 0.19999999
+initial_velocity_max = 0.39999998
 gravity = Vector3(0, 0, 0)
 scale_min = 0.39999998
+scale_curve = SubResource("CurveTexture_i1bgr")
 color = Color(0, 0.5590001, 0.86, 1)
 alpha_curve = SubResource("CurveTexture_ho8gj")
 turbulence_enabled = true

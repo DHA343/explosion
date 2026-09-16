@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d0gmmoygk3fs3"]
 
 [ext_resource type="Script" uid="uid://c3u02k1emetqa" path="res://magic_circle/magic_circle.gd" id="1_magic_circle"]
-[ext_resource type="PackedScene" uid="uid://crsshns6sp01m" path="res://line/Line.tscn" id="2_line"]
+[ext_resource type="PackedScene" uid="uid://crsshns6sp01m" path="res://magic_circle/line/Line.tscn" id="2_line"]
 [ext_resource type="PackedScene" path="res://magic_circle/inner_ring.tscn" id="3_inner_ring"]
 [ext_resource type="PackedScene" uid="uid://pnsy0x5qv1ib" path="res://magic_circle/inner_ring_glow.tscn" id="4_inner_ring_glow"]
 [ext_resource type="Material" uid="uid://cyberr4bu6vbe" path="res://magic_circle/effects/line_material.tres" id="5_outer_ring_material"]

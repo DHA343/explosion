@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dhjll5xhpuvho"]
+
+[ext_resource type="Shader" uid="uid://bxslvmkvb5cf8" path="res://energy_sphere/inflow_particles/inflow_particle_shader.tres" id="1_trys6"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_trys6")
+shader_parameter/radius_ratio = 0.11999999731776
+shader_parameter/falloff = 0.10000000149012
+shader_parameter/intensity = 16.0
+shader_parameter/fade_end = 0.1999999955296
+shader_parameter/fade_start = 1.5000000223518

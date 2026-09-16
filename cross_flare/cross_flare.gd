@@ -45,12 +45,6 @@ const MIN_TIMING_SPAN: float = 0.001
 
 @export var palettes: Array[CrossFlarePalette] = []
 
-@export_group("Flare Shape")
-@export_range(0.25, 0.80, 0.01) var shape_power: float = 0.50:
-	set(value):
-		shape_power = clampf(value, 0.25, 0.80)
-		_update_flare_shape_parameters()
-
 @export_group("Rotation")
 @export_range(-180.0, 180.0, 1.0, "degrees") var angle: float = 0.0:
 	set(value):
@@ -313,7 +307,6 @@ func _ready() -> void:
 	_update_motion_timing()
 	_update_ring_shape_parameters()
 	_update_tail_parameters()
-	_update_flare_shape_parameters()
 	set_instance_shader_parameter(&"progress", 0.0)
 	custom_aabb = AABB(Vector3.ONE * -size * 1.5, Vector3.ONE * size * 3.0)
 	seek(0.0)
@@ -435,23 +428,17 @@ func _update_motion_timing() -> void:
 		Vector4(growth_end, width_fade_start, width_fade_end, shrink_start))
 	set_instance_shader_parameter(&"motion_timing_b",
 		Vector4(shrink_end, shortening_start, shortening_end, stretch_start))
-	set_instance_shader_parameter(&"ring_shape",
-		Vector4(ring_peak_width, ring_min_width_ratio, stretch_end, tail_width_ratio))
+	set_instance_shader_parameter(&"motion_timing_c", Vector2(stretch_end, tail_width_ratio))
 
 
 func _update_ring_shape_parameters() -> void:
-	set_instance_shader_parameter(&"ring_shape",
-		Vector4(ring_peak_width, ring_min_width_ratio, stretch_end, tail_width_ratio))
+	set_instance_shader_parameter(&"ring_shape", Vector2(ring_peak_width, ring_min_width_ratio))
 
 
 func _update_tail_parameters() -> void:
 	set_instance_shader_parameter(&"tail_parameters",
 		Vector4(tail_breakup_strength, tail_breakup_start, tail_fragment_count, tail_irregularity))
 	_update_motion_timing()
-
-
-func _update_flare_shape_parameters() -> void:
-	set_instance_shader_parameter(&"shape_power", shape_power)
 
 
 func _update_variant_size_parameters() -> void:

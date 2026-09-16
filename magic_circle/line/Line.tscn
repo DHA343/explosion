@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://crsshns6sp01m"]
 
-[ext_resource type="Script" uid="uid://loaw40xxcd7g" path="res://line/line.gd" id="1_root"]
-[ext_resource type="Script" uid="uid://cob37wmmouhct" path="res://line/guide_frame.gd" id="2_guide"]
-[ext_resource type="Script" uid="uid://bldwpv5b3a1w6" path="res://line/path_line.gd" id="3_path_line"]
+[ext_resource type="Script" uid="uid://loaw40xxcd7g" path="res://magic_circle/line/line.gd" id="1_root"]
+[ext_resource type="Script" uid="uid://cob37wmmouhct" path="res://magic_circle/line/guide_frame.gd" id="2_guide"]
+[ext_resource type="Script" uid="uid://bldwpv5b3a1w6" path="res://magic_circle/line/path_line.gd" id="3_path_line"]
 [ext_resource type="Material" uid="uid://cyberr4bu6vbe" path="res://magic_circle/effects/line_material.tres" id="3_qewt6"]
-[ext_resource type="Curve2D" uid="uid://b1uftcctxjf44" path="res://line/curve.tres" id="4_curve"]
+[ext_resource type="Curve2D" uid="uid://b1uftcctxjf44" path="res://magic_circle/line/curve.tres" id="4_curve"]
 [ext_resource type="Material" uid="uid://cat7hxl1duwyq" path="res://magic_circle/effects/thin_line_material.tres" id="5_b0jcm"]
 [ext_resource type="Material" uid="uid://0i6t50b7cqwi" path="res://magic_circle/effects/glow_line_material.tres" id="6_k313u"]
 

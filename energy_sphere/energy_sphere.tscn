@@ -18,10 +18,12 @@
 [ext_resource type="Material" uid="uid://bhc1yajk6ihms" path="res://energy_sphere/distortion/distortion_material.tres" id="12_distortion_material"]
 [ext_resource type="Script" uid="uid://7h3q133c87fq" path="res://energy_sphere/distortion/distortion_shell.gd" id="13_distortion_shell"]
 [ext_resource type="PackedScene" uid="uid://di0c8y1ue2ttu" path="res://energy_sphere/aura_flow/aura_flow.tscn" id="14_aura_flow"]
+[ext_resource type="Material" uid="uid://dlaqj4btux5in" path="res://energy_sphere/inflow_particles/inflow_particles_process_material.tres" id="21_8v5r3"]
 [ext_resource type="Material" uid="uid://dxkdcs2auo6qo" path="res://energy_sphere/drift_particles/drift_particles_process_material.tres" id="22_eoufh"]
+[ext_resource type="Material" uid="uid://dhjll5xhpuvho" path="res://energy_sphere/inflow_particles/inflow_particle_material.tres" id="22_t144h"]
 [ext_resource type="Material" uid="uid://phd34swsok0n" path="res://energy_sphere/drift_particles/drift_particle_material.tres" id="23_t144h"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tknrg"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8v5r3"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -36,7 +38,7 @@ radial_velocity_max = -200.00002
 gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b0480"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eoufh"]
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -65,6 +67,11 @@ mesh = ExtResource("10_bnioy")
 
 [sub_resource type="QuadMesh" id="QuadMesh_lxxnu"]
 material = ExtResource("23_t144h")
+size = Vector2(0.1, 0.1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_wrfd4"]
+material = ExtResource("22_t144h")
+size = Vector2(0.1, 0.1)
 
 [node name="EnergySphere" type="Node3D" unique_id=252090666]
 script = ExtResource("3_energy_sphere")
@@ -83,13 +90,13 @@ position = Vector2(800, 800)
 amount = 500
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_tknrg")
+process_material = SubResource("ParticleProcessMaterial_8v5r3")
 
 [node name="InflowStreaksB" parent="InflowStreaksViewport/Position" unique_id=86331800 instance=ExtResource("7_inflow_streaks")]
 amount = 200
 lifetime = 1.2
 trail_lifetime = 0.35000000000000003
-process_material = SubResource("ParticleProcessMaterial_b0480")
+process_material = SubResource("ParticleProcessMaterial_eoufh")
 motion_override_enabled = true
 orbit_velocity_min = 0.05
 orbit_velocity_max = 0.15
@@ -195,8 +202,8 @@ particle_opacity = 0.6
 particle_emission_strength = 2.0
 
 [node name="DriftParticles" type="GPUParticles3D" parent="." unique_id=2007976816]
-amount = 500
-lifetime = 4.0
+amount = 1000
+lifetime = 2.0
 preprocess = 5.0
 randomness = 0.3
 local_coords = true
@@ -204,3 +211,10 @@ transform_align = 1
 transform_align_channel_filter = 1
 process_material = ExtResource("22_eoufh")
 draw_pass_1 = SubResource("QuadMesh_lxxnu")
+
+[node name="InflowParticles" type="GPUParticles3D" parent="." unique_id=1759412496]
+amount = 1500
+preprocess = 3.0
+local_coords = true
+process_material = ExtResource("21_8v5r3")
+draw_pass_1 = SubResource("QuadMesh_wrfd4")
