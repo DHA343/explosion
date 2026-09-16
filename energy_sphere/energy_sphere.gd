@@ -59,6 +59,8 @@ func _ready() -> void:
 
 	if not _spawn_animator.spawn_progress_changed.is_connected(_on_spawn_progress_changed):
 		_spawn_animator.spawn_progress_changed.connect(_on_spawn_progress_changed)
+	if not _spawn_animator.spawn_finished.is_connected(_on_spawn_finished):
+		_spawn_animator.spawn_finished.connect(_on_spawn_finished)
 	reset_spawn()
 
 
@@ -75,7 +77,7 @@ func play_spawn() -> void:
 
 	_apply_spawn_progress(0.0)
 	_reset_spawn_particles()
-	_aura_flow.begin_spawn()
+	_aura_flow.reset_spawn()
 	_cross_flare_spawner.begin_spawn()
 	_spawn_animator.play_spawn()
 
@@ -126,6 +128,10 @@ func _update_core_radius(effective_radius: float) -> void:
 
 func _on_spawn_progress_changed(progress: float) -> void:
 	_apply_spawn_progress(progress)
+
+
+func _on_spawn_finished() -> void:
+	_aura_flow.begin_spawn()
 
 
 func _apply_spawn_progress(progress: float) -> void:

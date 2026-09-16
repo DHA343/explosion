@@ -11,19 +11,21 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		var key_event := event as InputEventKey
-		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_DELETE:
+	if event is not InputEventKey:
+		return
+
+	var key_event := event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
+
+	match key_event.keycode:
+		KEY_1:
+			if not _magic_circle.is_spawn_playing():
+				_magic_circle.play_spawn()
+		KEY_2:
+			if not _energy_sphere.is_spawn_playing():
+				_energy_sphere.play_spawn()
+		KEY_DELETE:
 			_magic_circle.reset_spawn()
 			_energy_sphere.reset_spawn()
 			get_viewport().set_input_as_handled()
-		return
-
-	if event is InputEventMouseButton:
-		var mouse_event := event as InputEventMouseButton
-		if not mouse_event.pressed:
-			return
-		if mouse_event.button_index == MOUSE_BUTTON_XBUTTON1 and not _magic_circle.is_spawn_playing():
-			_magic_circle.play_spawn()
-		elif mouse_event.button_index == MOUSE_BUTTON_XBUTTON2 and not _energy_sphere.is_spawn_playing():
-			_energy_sphere.play_spawn()

@@ -56,10 +56,11 @@ gravity = Vector3(0, 0, 0)
 scale_max = 1.5
 
 [sub_resource type="QuadMesh" id="QuadMesh_inflow_streaks"]
-size = Vector2(1.05, 1.05)
+size = Vector2(0.315, 0.315)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ua4af"]
 material = ExtResource("2_nfcmq")
+size = Vector3(0.3, 0.3, 0.3)
 
 [sub_resource type="MultiMesh" id="MultiMesh_6b1ja"]
 transform_format = 1
@@ -80,6 +81,8 @@ script = ExtResource("3_energy_sphere")
 
 [node name="EnergySphereSpawnAnimator" type="Node" parent="." unique_id=252090667]
 script = ExtResource("24_spawn_animator")
+spawn_duration = 0.7999999999999999
+radius_growth_power = 2.5
 
 [node name="InflowStreaksViewport" type="SubViewport" parent="." unique_id=165995018]
 disable_3d = true

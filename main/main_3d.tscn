@@ -54,7 +54,7 @@ script = ExtResource("1_main")
 environment = SubResource("Environment_night")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=792399058]
-transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 147.20157)
+transform = Transform3D(1, 0, 0, 0, 0.9456866, -0.32507977, 0, 0.32507977, 0.9456866, 0, 1.6, 144.02446)
 cull_mask = 1048573
 current = true
 fov = 50.0
@@ -70,6 +70,7 @@ shadow_enabled = true
 directional_shadow_max_distance = 250.0
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=701398073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12791443, 1.9073486e-06, 0.07839966)
 mesh = SubResource("PlaneMesh_ground")
 
 [node name="MagicCircle3D" parent="." unique_id=1323669472 instance=ExtResource("3_magic_circle")]
