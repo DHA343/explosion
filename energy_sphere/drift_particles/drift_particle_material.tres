@@ -1,9 +1,18 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://phd34swsok0n"]
 
 [ext_resource type="Shader" uid="uid://cy7lf0qa6nwyn" path="res://energy_sphere/drift_particles/drift_particle_shader.tres" id="1_afrw1"]
+[ext_resource type="Shader" path="res://energy_sphere/particle_halo_shader.tres" id="1_ho8gj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ua4af"]
+render_priority = 0
+shader = ExtResource("1_ho8gj")
+shader_parameter/radius_ratio = 0.8
+shader_parameter/falloff = 1.5
+shader_parameter/opacity = 0.2
 
 [resource]
 render_priority = 0
+next_pass = SubResource("ShaderMaterial_ua4af")
 shader = ExtResource("1_afrw1")
 shader_parameter/radius_ratio = 0.2999999932944
 shader_parameter/falloff = 1.0000000149012
