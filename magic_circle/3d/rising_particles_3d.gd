@@ -12,6 +12,7 @@ func _ready() -> void:
 
 func begin_spawn() -> void:
 	set_spawn_progress(0.0)
+	restart()
 	emitting = true
 
 
@@ -35,3 +36,10 @@ func set_spawn_progress(progress: float) -> void:
 func end_spawn() -> void:
 	set_spawn_progress(1.0)
 	emitting = true
+
+
+func reset_spawn() -> void:
+	emitting = false
+	set_spawn_progress(0.0)
+	restart()
+	emitting = false

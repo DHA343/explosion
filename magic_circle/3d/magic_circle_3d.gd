@@ -57,6 +57,13 @@ func play_spawn() -> void:
 	_spawn_animator.play_spawn()
 
 
+func reset_spawn() -> void:
+	_spawn_animator.reset_spawn()
+	_rising_particles.reset_spawn()
+	_effect_weight = 0.0
+	_apply_light_energy()
+
+
 func is_spawn_playing() -> bool:
 	return _spawn_animator.is_playing()
 

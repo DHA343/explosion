@@ -7,11 +7,23 @@ extends Node3D
 
 func _ready() -> void:
 	_energy_sphere.setup(_camera)
+	_magic_circle.reset_spawn()
 
 
 func _input(event: InputEvent) -> void:
-	var mouse_event := event as InputEventMouseButton
-	if mouse_event == null or not mouse_event.pressed:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_DELETE:
+			_magic_circle.reset_spawn()
+			_energy_sphere.reset_spawn()
+			get_viewport().set_input_as_handled()
 		return
-	if mouse_event.button_index == MOUSE_BUTTON_LEFT and not _magic_circle.is_spawn_playing():
-		_magic_circle.play_spawn()
+
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if not mouse_event.pressed:
+			return
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and not _magic_circle.is_spawn_playing():
+			_magic_circle.play_spawn()
+		elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and not _energy_sphere.is_spawn_playing():
+			_energy_sphere.play_spawn()

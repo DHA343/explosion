@@ -71,6 +71,15 @@ func is_playing() -> bool:
 	return _playing
 
 
+func reset_spawn() -> void:
+	_playing = false
+	set_process(false)
+	_elapsed = 0.0
+	if _layers.is_empty() or _rotation_source == null:
+		return
+	_prepare_waiting_state()
+
+
 func stop() -> void:
 	if _playing:
 		for layer in _layers:
