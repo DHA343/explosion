@@ -18,7 +18,7 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -31,7 +31,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
-		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		if (
+			mouse_event.pressed
+			and mouse_event.button_index == MOUSE_BUTTON_LEFT
+			and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED
+		):
 			_capture_first_person_mouse()
 			get_viewport().set_input_as_handled()
 			return

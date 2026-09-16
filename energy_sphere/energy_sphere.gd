@@ -5,6 +5,7 @@ extends Node3D
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 const DISTORTION_TEXTURE_PARAMETER: StringName = &"captured_texture"
 const SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
+const AURA_START_RADIUS_PROGRESS: float = 0.7
 
 @export_range(0.01, 1.0, 0.01) var radius: float = 0.5:
 	set(value):
@@ -15,6 +16,7 @@ const SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
 var _source_camera: Camera3D
 var _spawn_progress: float = 1.0
 var _radius_progress: float = 1.0
+var _aura_started: bool = false
 
 @onready var _streaks_viewport: SubViewport = $InflowStreaksViewport
 @onready var _inflow_streaks: InflowStreaks = $InflowStreaks
@@ -59,8 +61,6 @@ func _ready() -> void:
 
 	if not _spawn_animator.spawn_progress_changed.is_connected(_on_spawn_progress_changed):
 		_spawn_animator.spawn_progress_changed.connect(_on_spawn_progress_changed)
-	if not _spawn_animator.spawn_finished.is_connected(_on_spawn_finished):
-		_spawn_animator.spawn_finished.connect(_on_spawn_finished)
 	reset_spawn()
 
 
@@ -75,14 +75,16 @@ func play_spawn() -> void:
 	if _spawn_animator.is_playing():
 		return
 
+	_aura_started = false
+	_aura_flow.reset_spawn()
 	_apply_spawn_progress(0.0)
 	_reset_spawn_particles()
-	_aura_flow.reset_spawn()
 	_cross_flare_spawner.begin_spawn()
 	_spawn_animator.play_spawn()
 
 
 func reset_spawn() -> void:
+	_aura_started = false
 	_spawn_animator.reset_spawn()
 	_apply_spawn_progress(0.0)
 	_reset_spawn_particles()
@@ -130,10 +132,6 @@ func _on_spawn_progress_changed(progress: float) -> void:
 	_apply_spawn_progress(progress)
 
 
-func _on_spawn_finished() -> void:
-	_aura_flow.begin_spawn()
-
-
 func _apply_spawn_progress(progress: float) -> void:
 	_spawn_progress = clampf(progress, 0.0, 1.0)
 	_radius_progress = pow(_spawn_progress, _spawn_animator.radius_growth_power)
@@ -145,6 +143,11 @@ func _apply_spawn_progress(progress: float) -> void:
 		return
 
 	_apply_effective_radius(radius * _radius_progress)
+
+	if not _aura_started and _radius_progress >= AURA_START_RADIUS_PROGRESS:
+		_aura_started = true
+		_aura_flow.begin_spawn()
+
 	show()
 
 

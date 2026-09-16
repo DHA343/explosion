@@ -45,6 +45,13 @@ const PARTICLE_LAYER: int = 1
 
 @export_group("Appearance")
 
+@export_range(0.1, 2.0, 0.05, "suffix:s")
+var appearance_duration: float = 0.5:
+	set(value):
+		appearance_duration = value
+		if is_node_ready():
+			_sync_effect()
+
 @export var cyan_color: Color = Color(0.18, 0.78, 1.0, 1.0):
 	set(value):
 		cyan_color = value
@@ -310,6 +317,7 @@ var radius: float = 0.5:
 			_sync_effect()
 
 var _flow_age: float = 0.0
+var _appearance_weight: float = 1.0
 var _spawning: bool = false
 
 @onready var _haze_volume: MeshInstance3D = $HazeVolume
@@ -321,6 +329,7 @@ func _ready() -> void:
 	set_process(false)
 	if Engine.is_editor_hint():
 		_flow_age = haze_lifetime_max
+		_appearance_weight = 1.0
 
 	_prepare_particle_resources(_cyan_particles)
 	_prepare_particle_resources(_purple_particles)
@@ -331,8 +340,10 @@ func _ready() -> void:
 
 func begin_spawn() -> void:
 	_flow_age = 0.0
+	_appearance_weight = 0.0
 	_spawning = true
 	_set_flow_age(_flow_age)
+	_set_appearance_opacity()
 	_cyan_particles.restart()
 	_purple_particles.restart()
 	_cyan_particles.emitting = true
@@ -344,7 +355,9 @@ func reset_spawn() -> void:
 	_spawning = false
 	set_process(false)
 	_flow_age = 0.0
+	_appearance_weight = 0.0
 	_set_flow_age(_flow_age)
+	_set_appearance_opacity()
 	_cyan_particles.emitting = false
 	_purple_particles.emitting = false
 	_cyan_particles.restart()
@@ -358,8 +371,13 @@ func _process(delta: float) -> void:
 		return
 
 	_flow_age += delta
+	var progress := clampf(_flow_age / appearance_duration, 0.0, 1.0)
+	_appearance_weight = smoothstep(0.0, 1.0, progress)
 	_set_flow_age(_flow_age)
-	if _flow_age >= haze_lifetime_max:
+	_set_appearance_opacity()
+	if _flow_age >= maxf(haze_lifetime_max, appearance_duration):
+		_appearance_weight = 1.0
+		_set_appearance_opacity()
 		_spawning = false
 		set_process(false)
 
@@ -392,7 +410,7 @@ func _sync_haze_volume() -> void:
 	material.set_shader_parameter(PURPLE_COLOR_PARAMETER, purple_color)
 	material.set_shader_parameter(CYAN_HAZE_DENSITY_PARAMETER, cyan_haze_density)
 	material.set_shader_parameter(PURPLE_HAZE_DENSITY_PARAMETER, purple_haze_density)
-	material.set_shader_parameter(HAZE_OPACITY_PARAMETER, haze_opacity)
+	material.set_shader_parameter(HAZE_OPACITY_PARAMETER, haze_opacity * _appearance_weight)
 	material.set_shader_parameter(HAZE_EMISSION_STRENGTH_PARAMETER, haze_emission_strength)
 	material.set_shader_parameter(FLOW_SEED_PARAMETER, flow_seed)
 	material.set_shader_parameter(RADIAL_SPEED_PARAMETER, radial_speed)
@@ -485,7 +503,10 @@ func _sync_particle_system(
 
 	render_material.set_shader_parameter(PARTICLE_LIFETIME_PARAMETER, particle_lifetime)
 	render_material.set_shader_parameter(PARTICLE_COLOR_PARAMETER, color_value)
-	render_material.set_shader_parameter(PARTICLE_OPACITY_PARAMETER, particle_opacity)
+	render_material.set_shader_parameter(
+		PARTICLE_OPACITY_PARAMETER,
+		particle_opacity * _appearance_weight
+	)
 	render_material.set_shader_parameter(PARTICLE_EMISSION_STRENGTH_PARAMETER, particle_emission_strength)
 	render_material.set_shader_parameter(VIEW_FRONT_VISIBILITY_PARAMETER, view_front_visibility)
 	render_material.set_shader_parameter(VIEW_FALLOFF_POWER_PARAMETER, view_falloff_power)
@@ -495,3 +516,26 @@ func _get_visibility_aabb() -> AABB:
 	var maximum_travel_ratio := (radial_speed + tangential_strength) * (1.0 + radial_variation) * particle_lifetime
 	var extent := radius * (1.35 + maximum_travel_ratio)
 	return AABB(Vector3.ONE * -extent, Vector3.ONE * extent * 2.0)
+
+
+func _set_appearance_opacity() -> void:
+	if not is_node_ready():
+		return
+
+	var material := _haze_volume.material_override as ShaderMaterial
+	assert(material != null, "AuraFlow requires a ShaderMaterial for HazeVolume.")
+	material.set_shader_parameter(HAZE_OPACITY_PARAMETER, haze_opacity * _appearance_weight)
+
+	_set_particle_opacity(_cyan_particles)
+	_set_particle_opacity(_purple_particles)
+
+
+func _set_particle_opacity(particles: GPUParticles3D) -> void:
+	var particle_mesh := particles.draw_pass_1 as QuadMesh
+	assert(particle_mesh != null, "AuraFlow requires a QuadMesh particle draw pass.")
+	var render_material := particle_mesh.material as ShaderMaterial
+	assert(render_material != null, "AuraFlow requires a ShaderMaterial particle render material.")
+	render_material.set_shader_parameter(
+		PARTICLE_OPACITY_PARAMETER,
+		particle_opacity * _appearance_weight
+	)
