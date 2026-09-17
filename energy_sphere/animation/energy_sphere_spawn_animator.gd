@@ -6,6 +6,7 @@ signal spawn_finished
 
 @export_range(0.10, 5.00, 0.05, "suffix:s") var spawn_duration: float = 1.00
 @export_range(0.25, 4.00, 0.05) var radius_growth_power: float = 2.00
+@export_range(0.0, 1.0, 0.01) var aura_start_radius_ratio: float = 0.70
 
 var _elapsed: float = 0.0
 var _playing: bool = false

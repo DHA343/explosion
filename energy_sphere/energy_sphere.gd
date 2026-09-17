@@ -5,9 +5,9 @@ extends Node3D
 const STREAKS_TEXTURE_PARAMETER: StringName = &"streaks_texture"
 const DISTORTION_TEXTURE_PARAMETER: StringName = &"captured_texture"
 const SPHERE_RADIUS_PARAMETER: StringName = &"sphere_radius"
-const AURA_START_RADIUS_PROGRESS: float = 0.7
 
-@export_range(0.01, 1.0, 0.01) var radius: float = 0.5:
+@export_range(0.01, 1.0, 0.01)
+var radius: float = 0.5:
 	set(value):
 		radius = value
 		if is_node_ready():
@@ -53,20 +53,24 @@ func _ready() -> void:
 		DISTORTION_TEXTURE_PARAMETER,
 		_distortion_viewport.get_texture()
 	)
+
 	if _source_camera != null:
 		_setup_distortion()
+
 	if Engine.is_editor_hint():
 		show()
 		return
 
 	if not _spawn_animator.spawn_progress_changed.is_connected(_on_spawn_progress_changed):
 		_spawn_animator.spawn_progress_changed.connect(_on_spawn_progress_changed)
+
 	reset_spawn()
 
 
 func setup(source_camera: Camera3D) -> void:
 	assert(source_camera != null, "EnergySphere requires a source Camera3D.")
 	_source_camera = source_camera
+
 	if is_node_ready():
 		_setup_distortion()
 
@@ -113,11 +117,17 @@ func _apply_effective_radius(effective_radius: float) -> void:
 func _update_core_radius(effective_radius: float) -> void:
 	var core_glow_material := _core_glow.get_active_material(0) as ShaderMaterial
 	assert(core_glow_material != null, "CoreGlow requires a ShaderMaterial.")
-	core_glow_material.set_shader_parameter(SPHERE_RADIUS_PARAMETER, effective_radius)
+	core_glow_material.set_shader_parameter(
+		SPHERE_RADIUS_PARAMETER,
+		effective_radius
+	)
 
 	var core_color_material := _core_color.get_active_material(0) as ShaderMaterial
 	assert(core_color_material != null, "CoreColor requires a ShaderMaterial.")
-	core_color_material.set_shader_parameter(SPHERE_RADIUS_PARAMETER, effective_radius)
+	core_color_material.set_shader_parameter(
+		SPHERE_RADIUS_PARAMETER,
+		effective_radius
+	)
 
 	var core_glow_mesh := _core_glow.mesh as BoxMesh
 	assert(core_glow_mesh != null, "CoreGlow requires a BoxMesh.")
@@ -134,7 +144,11 @@ func _on_spawn_progress_changed(progress: float) -> void:
 
 func _apply_spawn_progress(progress: float) -> void:
 	_spawn_progress = clampf(progress, 0.0, 1.0)
-	_radius_progress = pow(_spawn_progress, _spawn_animator.radius_growth_power)
+	_radius_progress = pow(
+		_spawn_progress,
+		_spawn_animator.radius_growth_power
+	)
+
 	_drift_particles.amount_ratio = _spawn_progress
 	_inflow_particles.amount_ratio = _spawn_progress
 
@@ -144,7 +158,10 @@ func _apply_spawn_progress(progress: float) -> void:
 
 	_apply_effective_radius(radius * _radius_progress)
 
-	if not _aura_started and _radius_progress >= AURA_START_RADIUS_PROGRESS:
+	if (
+		not _aura_started
+		and _radius_progress >= _spawn_animator.aura_start_radius_ratio
+	):
 		_aura_started = true
 		_aura_flow.begin_spawn()
 
